@@ -1,0 +1,63 @@
+package com.jp.dark.models.repository;
+
+import com.jp.dark.models.entities.Visita;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@DataJpaTest
+public class VisitaRepositoryTest {
+
+    @Autowired
+    TestEntityManager entityManager;
+
+    @Autowired
+    VisitaRepository repository;
+
+    @Test
+    @DisplayName("Deve retornar verdadeiro quando existir uma visita registrada no banco de dados.")
+    public void existsByCodigoTest(){
+        //cenario
+        String codigo = "20201104";
+
+        //persisitndo as informações da visita
+        Visita vs = createValidVisita();
+        entityManager.persist(vs);
+
+        //execução
+        boolean exists = repository.existsByCodigo(codigo);
+
+        //verificações
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve retornar falso quando não existir uma visita registrada no banco de dados.")
+    public void returnFalseWhenCodigoDoesNotExist(){
+        //cenario
+        String codigo = "20201104";
+
+        //execução
+        boolean exists = repository.existsByCodigo(codigo);
+
+        //verificações
+        assertThat(exists).isFalse();
+    }
+
+    private Visita createValidVisita() {
+        return Visita.builder()
+                .codigo("20201104")
+                .recomendacao("Realizar analise de solo")
+                .situacao("Pastagem muito ruim.")
+                .build();
+    }
+}
