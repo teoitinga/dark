@@ -78,12 +78,13 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
         return Visita.builder()
                 .codigo(codigo)
                 .recomendacao(visita.getRecomendacao())
-                .situacao(visita.getRecomendacao())
+                .situacao(visita.getSituacao())
                 .build();
     }
 
     @Override
     public Optional<VisitaDTO> getByCodigo(String codigo) {
+
          return repository.findByCodigo(codigo);
     }
 

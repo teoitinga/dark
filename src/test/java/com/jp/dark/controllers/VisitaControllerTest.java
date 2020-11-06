@@ -70,6 +70,7 @@ public class VisitaControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("codigo").isNotEmpty())
                 .andExpect(jsonPath("recomendacao").value(dto.getRecomendacao()))
+                .andExpect(jsonPath("situação").value(dto.getSituacao()))
                 ;
     }
 
