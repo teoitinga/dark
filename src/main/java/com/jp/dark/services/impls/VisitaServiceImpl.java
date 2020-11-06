@@ -7,6 +7,8 @@ import com.jp.dark.models.repository.VisitaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
@@ -78,5 +80,18 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
                 .recomendacao(visita.getRecomendacao())
                 .situacao(visita.getRecomendacao())
                 .build();
+    }
+
+    @Override
+    public Optional<VisitaDTO> getByCodigo(String codigo) {
+         return repository.findByCodigo(codigo);
+    }
+
+    @Override
+    public VisitaDTO update(VisitaDTO visita) {
+        Visita vs = this.toVisita(visita);
+        vs = repository.save(vs);
+
+        return this.toVisitaDto(vs);
     }
 }

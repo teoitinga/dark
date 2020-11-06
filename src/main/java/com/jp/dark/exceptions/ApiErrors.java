@@ -19,6 +19,10 @@ public class ApiErrors {
         this.errors = Arrays.asList(exception.getMessage());
     }
 
+    public ApiErrors(VisitaNotFoundException exception) {
+        this.errors = Arrays.asList(exception.getMessage());
+    }
+
     public List<String> getErrors() {
         return errors;
     }

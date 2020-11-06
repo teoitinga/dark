@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.BusinessException;
+import com.jp.dark.exceptions.VisitaNotFoundException;
+import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.Visita;
 import com.jp.dark.services.VisitaService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +26,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,9 +51,9 @@ public class VisitaControllerTest {
     @DisplayName("Deve criar uma visita com sucesso.")
     public void creaeteVisitaTest() throws Exception{
 
-        VisitaDTO dto = createNewValidVisitaDto();
+        VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
 
-        VisitaDTO savedDto = createNewValidVisitaDto();
+        VisitaDTO savedDto =  VisitaFactory.createNewValidVisitaDto();
         savedDto.setCodigo("2020");
 
         BDDMockito.given(service.save(Mockito.any(VisitaDTO.class))).willReturn(savedDto);
@@ -68,11 +73,8 @@ public class VisitaControllerTest {
                 ;
     }
 
-    private VisitaDTO createNewValidVisitaDto() {
-        return VisitaDTO.builder()
-                .recomendacao("Realizar analise ded solo urgente.")
-                .situacao("Pastagem degradada.")
-                .build();
+    private VisitaDTO ccreateNewValidVisitaDto() {
+        return VisitaFactory.createNewValidVisitaDto();
     }
 
     @Test
@@ -96,10 +98,102 @@ public class VisitaControllerTest {
                 ;
     }
     @Test
+    @DisplayName("Deve atualizar uma visita.")
+    public void updateVisitaTest() throws Exception {
+
+        String codigo = "202011052234";
+
+        VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        BDDMockito.given(service.getByCodigo(Mockito.anyString())).willReturn(Optional.of(VisitaFactory.createSavedVisitaDto()));
+        BDDMockito.given(service.update(Mockito.any(VisitaDTO.class))).willReturn( VisitaFactory.createSavedVisitaDto() );
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(API.concat("/".concat(codigo)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        //verificações
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("codigo").isNotEmpty())
+                .andExpect(jsonPath("codigo").value( codigo ))
+                .andExpect(jsonPath("recomendacao").value( dto.getRecomendacao() ))
+                .andExpect(jsonPath("situacao").value( dto.getSituacao() ))
+                ;
+    }
+
+    @Test
+    @DisplayName("Deve retornar 404 ao tentar atualizar uma visita inexistente.")
+    public void updateVisitaNotFoundTest() throws Exception {
+        String codigo = "20201104";
+
+        VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        BDDMockito.given(service.getByCodigo(Mockito.anyString())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(API.concat("/".concat(codigo)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        //verificações
+        mvc.perform(request)
+                .andExpect(status().isNotFound())
+        ;
+    }
+    @Test
+    @DisplayName("Deve obter informações da visita")
+    public void getDetailsVisitaTest() throws Exception {
+        String codigo = "20201104";
+
+        VisitaDTO visita =  VisitaFactory.createNewValidVisitaDto();
+        visita.setCodigo(codigo);
+
+        BDDMockito.given(service.getByCodigo(codigo)).willReturn(Optional.of(visita));
+
+        //execução
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API.concat("/" + codigo))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("codigo").isNotEmpty())
+                .andExpect(jsonPath("recomendacao").value(visita.getRecomendacao()))
+                .andExpect(jsonPath("situacao").value(visita.getSituacao()))
+                ;
+    }
+    @Test
+    @DisplayName("Deve retornar VisitaNotFoundException ao obter informações da visita que não existe.")
+    public void getDetailsVisitaNotFoundTest() throws Exception {
+        String codigo = "20201104";
+
+        VisitaDTO visita =  VisitaFactory.createNewValidVisitaDto();
+        visita.setCodigo(codigo);
+
+        BDDMockito.given(service.getByCodigo(codigo)).willThrow(new VisitaNotFoundException());
+
+        //execução
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API.concat("/" + codigo))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Visita não encontrada."))
+        ;
+    }
+    @Test
     @DisplayName("Deve lançar erro se o coidigo for duplicado - exemplo de regra de negoicio")
     public void createVisitaWithDuplicatedId() throws Exception {
 
-        VisitaDTO dto = createNewValidVisitaDto();
+        VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
