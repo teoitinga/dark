@@ -10,5 +10,5 @@ public interface VisitaRepository extends JpaRepository<Visita, String> {
 
     boolean existsByCodigo(String codigo);
 
-    Optional<VisitaDTO> findByCodigo(String codigo);
+    Optional<Visita> findByCodigo(String codigo);
 }

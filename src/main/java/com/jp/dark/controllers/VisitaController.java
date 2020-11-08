@@ -12,8 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/visitas")
@@ -39,7 +37,7 @@ public class VisitaController {
     }
     @PutMapping("{codigo}")
     @ResponseStatus(HttpStatus.OK)
-    public VisitaDTO update(@PathVariable String codigo, VisitaDTO dto){
+    public VisitaDTO update(@PathVariable String codigo, @RequestBody @Valid VisitaDTO dto){
         VisitaDTO visita = service.getByCodigo(codigo).orElseThrow(() -> new VisitaNotFoundException());
         visita.setRecomendacao(dto.getRecomendacao());
         visita.setSituacao(dto.getSituacao());

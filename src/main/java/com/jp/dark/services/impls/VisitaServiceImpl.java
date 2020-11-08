@@ -4,6 +4,7 @@ import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.VisitaRepository;
+import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -35,26 +36,27 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
     }
     @Override
     public String createId(String key){
-        return "20201104";
+
+        return Generates.keyCode(key);
     }
 
     @Override
-    public VisitaDTO toVisitaDto(Visita entity) {
+    public VisitaDTO toVisitaDto(Visita visita) {
         String codigo;
         try{
-            codigo = entity.getCodigo();
+            codigo = visita.getCodigo();
         }catch (Exception e){
             codigo = "";
         }
         String recomendacao;
         try{
-            recomendacao= entity.getRecomendacao();
+            recomendacao= visita.getRecomendacao();
         }catch (Exception e){
             recomendacao = "";
         }
         String situacao;
         try{
-            situacao = entity.getSituacao();
+            situacao = visita.getSituacao();
         }catch (Exception e){
             situacao = "";
         }
@@ -85,7 +87,12 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
     @Override
     public Optional<VisitaDTO> getByCodigo(String codigo) {
 
-         return repository.findByCodigo(codigo);
+        Optional<Visita> visita = repository.findByCodigo(codigo);
+
+        if (visita.isPresent()){
+            return Optional.of(toVisitaDto(visita.get()));
+        }
+        return Optional.empty();
     }
 
     @Override

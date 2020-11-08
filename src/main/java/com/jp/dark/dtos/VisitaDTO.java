@@ -18,7 +18,7 @@ public class VisitaDTO {
     @NotEmpty(message = "Você deve informar a situação atual.")
     private String situacao;
 
-    @NotEmpty(message = "Você deve passar uma orientação para a pessoa atendida!")
+    @NotEmpty(message = "Você deve passar uma recomendação para a pessoa atendida!")
     private String recomendacao;
 
 }
