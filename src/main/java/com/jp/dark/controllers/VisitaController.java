@@ -6,6 +6,8 @@ import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.services.VisitaService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +36,11 @@ public class VisitaController {
     @ResponseStatus(HttpStatus.OK)
     public VisitaDTO getDetails(@PathVariable String codigo){
         return service.getByCodigo(codigo).orElseThrow(()->new VisitaNotFoundException());
+    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Page<VisitaDTO> find( VisitaDTO dto, Pageable pageRequest){
+        return service.find(dto, pageRequest);
     }
     @PutMapping("{codigo}")
     @ResponseStatus(HttpStatus.OK)

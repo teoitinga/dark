@@ -2,13 +2,17 @@ package com.jp.dark.services.impls;
 
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.BusinessException;
+import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -60,12 +64,15 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
         }catch (Exception e){
             situacao = "";
         }
-
-        return VisitaDTO.builder()
+        VisitaDTO build = VisitaDTO.builder()
                 .codigo(codigo)
                 .recomendacao(recomendacao)
                 .situacao(situacao)
                 .build();
+
+        log.info("Verificando: {}" , build);
+
+        return build;
 
     }
     @Override
@@ -101,5 +108,36 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
         vs = repository.save(vs);
 
         return this.toVisitaDto(vs);
+    }
+
+    @Override
+    public void delete(Visita visita) {
+        if(visita == null || visita.getCodigo() ==null){
+            throw new VisitaNotFoundException();
+        }
+        this.repository.delete(visita);
+    }
+
+    @Override
+    public Page<VisitaDTO> find(VisitaDTO filter, Pageable pageRequest) {
+
+        Visita vs = this.toVisita(filter);
+
+        Example<Visita> example = Example.of(vs,
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withIgnoreNullValues()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+        );
+
+        Page<Visita> pages = repository.findAll(example, pageRequest);
+
+        List<VisitaDTO> collect = pages.getContent()
+                .stream()
+                .map(entity -> this.toVisitaDto(entity))
+                .collect(Collectors.toList());
+
+        return new PageImpl<VisitaDTO>(collect, pageRequest, pages.getTotalElements());
     }
 }

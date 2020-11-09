@@ -17,16 +17,18 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-public class Visita {
+public class Call {
     @Id
     @Column
     private String codigo;
 
-    @NotEmpty(message = "Você deve informar a situação atual.")
+    @NotEmpty(message = "Você deve informar um serviço.")
     @Column
-    private String situacao;
+    private String servico;
 
-    @NotEmpty(message = "Você deve passar uma orientação para a pessoa atendida!")
     @Column
-    private String recomendacao;
+    private String ocorrencia;
+
+    @Column
+    private Visita visita;
 }

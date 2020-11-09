@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -30,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = VisitaController.class)
 @AutoConfigureMockMvc
 public class VisitaControllerTest {
 
@@ -66,6 +70,30 @@ public class VisitaControllerTest {
                 .andExpect(jsonPath("codigo").isNotEmpty())
                 .andExpect(jsonPath("recomendacao").value(dto.getRecomendacao()))
                 .andExpect(jsonPath("situacao").value(dto.getSituacao()))
+                ;
+    }
+
+    @Test
+    @DisplayName("Deve filtrar as visitas")
+    public void findVisitaTest() throws Exception {
+        String codigo = "20201104";
+
+        VisitaDTO visita = VisitaFactory.createNewValidVisitaDto();
+
+        BDDMockito.given(service.find(Mockito.any(VisitaDTO.class), Mockito.any(Pageable.class)))
+                .willReturn(new PageImpl<VisitaDTO>(Arrays.asList(visita), PageRequest.of(0,100), 1));
+
+        String queryString = String.format("?situacao=%s&page=0&size=100", visita.getSituacao());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0))
                 ;
     }
 
