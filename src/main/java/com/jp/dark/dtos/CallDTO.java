@@ -24,5 +24,4 @@ public class CallDTO {
     @NotEmpty
     private String codigoVisita;
 
-
 }
