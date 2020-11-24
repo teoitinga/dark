@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -20,6 +22,9 @@ public class CallDTO {
     @NotEmpty(message = "Deve informar um serviço prestado")
     private String servico;
 
+    @NotNull(message =  "Deve informar um serviço prestado")
+    private ServiceProvidedDTO serviceProvided;
+
     @NotEmpty(message = "Deve informar uma situação ocorrida.")
     private String ocorrencia;
 
@@ -29,6 +34,11 @@ public class CallDTO {
     @NotEmpty(message = "Deve haver pelo menos 01(um) produtor inscrito.")
     private List<ProdutorMinDTO> produtores;
 
+    @NotNull(message = "Você deve informar o valor do Serviço")
+    private BigDecimal valor;
+
     private String status;
+
+    private LocalDate forecast;
 
 }

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -27,6 +29,9 @@ public class Call extends Auditable{
     @Column
     private String servico;
 
+    @ManyToOne
+    private ServiceProvided serviceProvided;
+
     @Column
     private String ocorrencia;
 
@@ -38,4 +43,10 @@ public class Call extends Auditable{
 
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
+
+    @Column
+    private BigDecimal value;
+
+    @Column
+    private LocalDate forecast;
 }

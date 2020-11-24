@@ -1,7 +1,5 @@
 package com.jp.dark.dtos;
 
-import com.jp.dark.models.enums.EnumCategoria;
-import com.jp.dark.models.enums.EnumPermissao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
