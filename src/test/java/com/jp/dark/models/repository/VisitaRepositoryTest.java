@@ -1,16 +1,22 @@
 package com.jp.dark.models.repository;
 
+import com.jp.dark.auditables.AuditConfiguration;
+import com.jp.dark.auditables.AuditConfigurationTest;
+import com.jp.dark.auditables.AuditorAwareImpl;
 import com.jp.dark.factory.VisitaFactory;
 import com.jp.dark.models.entities.Visita;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
+@Import(AuditConfigurationTest.class)
 public class VisitaRepositoryTest {
 
     @Autowired
@@ -26,6 +33,10 @@ public class VisitaRepositoryTest {
     @Autowired
     VisitaRepository repository;
 
+    @BeforeEach
+    public void setUp(){
+
+    }
     @Test
     @DisplayName("Deve retornar verdadeiro quando existir uma visita registrada no banco de dados.")
     public void existsByCodigoTest(){
@@ -65,6 +76,7 @@ public class VisitaRepositoryTest {
         String codigo = "2020211";
 
         visita.setCodigo(codigo);
+
         entityManager.persist(visita);
 
         //execução
@@ -75,12 +87,16 @@ public class VisitaRepositoryTest {
         assertThat(foundVisita.get().getCodigo()).isEqualTo(codigo);
         assertThat(foundVisita.get().getSituacao()).isEqualTo("Pastagem degradada.");
         assertThat(foundVisita.get().getRecomendacao()).isEqualTo("Realizar analise de solo urgente.");
+        assertThat(foundVisita.get().getCreatedBy()).isEqualTo("Test auditor");
+        assertThat(foundVisita.get().getModifiedBy()).isEqualTo("Test auditor");
+        assertThat(foundVisita.get().getCreated()).isBefore(LocalDateTime.now());
 
     }
     @Test
     @DisplayName("Deve salver um registro de visita")
     public void saveTest(){
         Visita visita = VisitaFactory.createNewValidVisita();
+
         Visita saved = repository.save(visita);
 
         assertThat(saved).isNotNull();
