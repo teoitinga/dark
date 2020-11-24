@@ -8,6 +8,7 @@ import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
@@ -71,6 +72,9 @@ public class CallServiceImpl implements CallService {
 
             VisitaDTO savedVisita = visitaService.save(visita);
             callDTO.setVisita(savedVisita);
+
+            //Configura a chamada como INICIADA
+            callDTO.setStatus(EnumStatus.INICIADA.toString());
         }else{
             callDTO.setVisita(vs.get());
         }
@@ -156,12 +160,20 @@ public class CallServiceImpl implements CallService {
             produtores = null;
         }
 
+        String statusCall;
+        try{
+        statusCall = call.getStatus().getDescription();
+        }catch (NullPointerException ex){
+            statusCall = null;
+        }
+
         return CallDTO.builder()
                 .codigo(codigo)
                 .visita(visita)
                 .servico(servico)
                 .ocorrencia(ocorrencia)
                 .produtores(produtores)
+                .status(statusCall)
                 .build();
     }
 
@@ -186,12 +198,22 @@ public class CallServiceImpl implements CallService {
 
         List<ProdutorMinDTO> produtores = callDto.getProdutores();
 
+        EnumStatus status;
+        try{
+        status = EnumStatus.valueOf(callDto.getStatus());
+        }catch (NullPointerException ex){
+            status = null;
+        }
+
+        List<Persona> produtoresAtendidos = this.personaService.toPersona(produtores);
+
         return Call.builder()
                 .codigo(callDto.getCodigo())
                 .ocorrencia(callDto.getOcorrencia())
                 .visita(visita)
                 .servico(callDto.getServico())
-                .produtores(this.personaService.toPersona(produtores))
+                .produtores(produtoresAtendidos)
+                .status(status)
                 .build();
     }
 }

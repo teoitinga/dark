@@ -1,5 +1,6 @@
 package com.jp.dark.services;
 
+import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.models.entities.Persona;
 
@@ -10,7 +11,9 @@ public interface ProdutorService {
 
     ProdutorDTO toProdutorDTO(Persona produtor);
 
-    Persona toPersona(ProdutorDTO produtor);
-
     boolean cpfExists(@NotEmpty String cpf);
+
+    PersonaDTO update(String cpf, PersonaDTO dto);
+
+    Persona findByCpf(String cpf);
 }

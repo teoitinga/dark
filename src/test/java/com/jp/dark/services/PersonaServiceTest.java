@@ -3,6 +3,8 @@ package com.jp.dark.services;
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.enums.EnumCategoria;
+import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.impls.PersonaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,22 +89,22 @@ public class PersonaServiceTest {
         assertThat(pessoal).isNotNull();
         assertThat(pessoal.get(0).getNome()).isEqualTo(produtores.get(0).getNome());
         assertThat(pessoal.get(0).getCpf()).isEqualTo(produtores.get(0).getCpf());
-        assertThat(pessoal.get(0).getCategoria()).isNull();
+        assertThat(pessoal.get(0).getCategoria()).isEqualTo(EnumCategoria.UNDEFINED);
+        assertThat(pessoal.get(0).getPermissao()).isEqualTo(EnumPermissao.CLIENTES);
         assertThat(pessoal.get(0).getCidade()).isNull();
         assertThat(pessoal.get(0).getEndereco()).isNull();
         assertThat(pessoal.get(0).getNascimento()).isNull();
         assertThat(pessoal.get(0).getTelefone()).isNull();
-        assertThat(pessoal.get(0).getPermissao()).isNull();
         assertThat(pessoal.get(0).getSenha()).isNull();
 
         assertThat(pessoal.get(4).getNome()).isEqualTo(produtores.get(4).getNome());
         assertThat(pessoal.get(4).getCpf()).isEqualTo(produtores.get(4).getCpf());
-        assertThat(pessoal.get(4).getCategoria()).isNull();
+        assertThat(pessoal.get(4).getCategoria()).isEqualTo(EnumCategoria.UNDEFINED);
+        assertThat(pessoal.get(4).getPermissao()).isEqualTo(EnumPermissao.CLIENTES);
         assertThat(pessoal.get(4).getCidade()).isNull();
         assertThat(pessoal.get(4).getEndereco()).isNull();
         assertThat(pessoal.get(4).getNascimento()).isNull();
         assertThat(pessoal.get(4).getTelefone()).isNull();
-        assertThat(pessoal.get(4).getPermissao()).isNull();
         assertThat(pessoal.get(4).getSenha()).isNull();
     }
     @Test
@@ -145,12 +147,12 @@ public class PersonaServiceTest {
         assertThat(persona).isNotNull();
         assertThat(persona.getNome()).isEqualTo(produtor.getNome());
         assertThat(persona.getCpf()).isEqualTo(produtor.getCpf());
-        assertThat(persona.getCategoria()).isNull();
+        assertThat(persona.getCategoria()).isEqualTo(EnumCategoria.UNDEFINED);
         assertThat(persona.getCidade()).isNull();
         assertThat(persona.getEndereco()).isNull();
         assertThat(persona.getNascimento()).isNull();
         assertThat(persona.getTelefone()).isNull();
-        assertThat(persona.getPermissao()).isNull();
+        assertThat(persona.getPermissao()).isEqualTo(EnumPermissao.CLIENTES);
         assertThat(persona.getSenha()).isNull();
 
     }

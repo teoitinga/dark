@@ -68,6 +68,7 @@ public class CallControllerTest {
         mvc.perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("codigo").isNotEmpty())
+                .andExpect(jsonPath("status").value("INICIADA"))
                 .andExpect(jsonPath("produtores", hasSize(5)))
                 ;
     }

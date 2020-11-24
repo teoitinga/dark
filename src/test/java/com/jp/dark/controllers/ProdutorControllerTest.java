@@ -1,12 +1,18 @@
 package com.jp.dark.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jp.dark.dtos.CallDTO;
+import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
+import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.factory.CallFactory;
+import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.ProdutorFactory;
+import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.ProdutorService;
 import com.jp.dark.services.VisitaService;
@@ -25,6 +31,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -91,6 +99,34 @@ public class ProdutorControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors[0]")
                         .value("Persona already exists and cannot be overwritten"))
+        ;
+    }
+
+    @Test
+    @DisplayName("Deve registrar a atualização no registro de um produtor")
+    public void updateTest() throws Exception {
+
+        String cpf = "04459471604";
+
+        PersonaDTO dto = PersonaFactory.createValidPersonaDTO();
+        dto.setCpf(cpf);
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        BDDMockito.given(produtorService.update(Mockito.anyString(), Mockito.any(PersonaDTO.class)))
+                .willReturn(dto);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(API.concat("/".concat(cpf)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        //verificações
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("cpf").isNotEmpty())
+                .andExpect(jsonPath("cpf").value( cpf ))
         ;
     }
 }

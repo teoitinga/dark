@@ -29,4 +29,6 @@ public class CallDTO {
     @NotEmpty(message = "Deve haver pelo menos 01(um) produtor inscrito.")
     private List<ProdutorMinDTO> produtores;
 
+    private String status;
+
 }

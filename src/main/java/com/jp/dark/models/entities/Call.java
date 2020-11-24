@@ -1,6 +1,7 @@
 package com.jp.dark.models.entities;
 
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.models.enums.EnumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table
 public class Call extends Auditable{
+
     @Id
     @Column(nullable = false, unique = true)
     private String codigo;
@@ -33,4 +35,7 @@ public class Call extends Auditable{
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Persona> produtores;
+
+    @Enumerated(EnumType.STRING)
+    private EnumStatus status;
 }

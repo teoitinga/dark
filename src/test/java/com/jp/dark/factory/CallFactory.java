@@ -2,6 +2,7 @@ package com.jp.dark.factory;
 
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.models.entities.Call;
+import com.jp.dark.models.enums.EnumStatus;
 
 public class CallFactory {
 
@@ -12,6 +13,7 @@ public class CallFactory {
                 .servico("Emissão de DAP")
                 .visita(VisitaFactory.createVisitaDto())
                 .produtores(ProdutorFactory.createList5ValidProdutors())
+                .status("INICIADA")
                 .build();
     }
 
@@ -28,6 +30,8 @@ public class CallFactory {
                 .ocorrencia("Sem ocorrências")
                 .servico("Emissão de DAP")
                 .visita(VisitaFactory.createNewValidVisita())
+                .produtores(ProdutorFactory.createList5ValidPersona())
+                .status(EnumStatus.INICIADA)
                 .build();
     }
     public static Call createSavedCall() {
@@ -37,6 +41,7 @@ public class CallFactory {
                 .servico("Emissão de DAP")
                 .visita(VisitaFactory.createNewValidVisita())
                 .produtores(ProdutorFactory.createList5ValidPersona())
+                .status(EnumStatus.INICIADA)
                 .build();
     }
 }

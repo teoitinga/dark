@@ -19,19 +19,20 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable {
 
+    @CreatedBy
+    @Column(nullable = false, updatable = false)
+    private String createdBy;
+
     @CreatedDate
-    @Column
-    protected LocalDateTime createDate;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime created;
+
+    @LastModifiedBy
+    @Column(nullable = false)
+    private String modifiedBy;
 
     @LastModifiedDate
-    @Column
-    protected LocalDateTime lastModifiedDate;
+    @Column(nullable = false)
+    private LocalDateTime modified;
 
-//    @CreatedBy
-//    @Column
-//    private U createdBy;
-//
-//    @LastModifiedBy
-//    @Column
-//    private U lastModifiedBy;
 }

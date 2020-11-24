@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Table
 public class Visita extends Auditable{
+
     @Id
     @Column(nullable = false, unique = true)
     private String codigo;

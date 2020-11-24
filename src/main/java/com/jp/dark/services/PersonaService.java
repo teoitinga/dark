@@ -1,5 +1,7 @@
 package com.jp.dark.services;
 
+import com.jp.dark.dtos.PersonaDTO;
+import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.models.entities.Persona;
 
@@ -19,4 +21,10 @@ public interface PersonaService {
     ProdutorMinDTO toProdutorMinDTO(Persona persona);
 
     List<ProdutorMinDTO> toProdutorMinDTO(List<Persona> produtores);
+
+    PersonaDTO toPersonaDTO(Persona persona);
+
+    Persona toPersona(ProdutorDTO produtor);
+
+    Persona toPersona(PersonaDTO personaDTO);
 }

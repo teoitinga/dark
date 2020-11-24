@@ -33,12 +33,16 @@ public class Persona extends Auditable{
 
     private String endereco;
 
+    private String cep;
+
     private String cidade;
 
     private String senha;
 
+    @Enumerated(EnumType.STRING)
     private EnumCategoria categoria;
 
+    @Enumerated(EnumType.STRING)
     private EnumPermissao permissao;
 
     public Persona(String cpf, String nome) {

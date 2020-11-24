@@ -1,10 +1,14 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.CallDTO;
+import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
+import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
+import com.jp.dark.exceptions.VisitaNotFoundException;
+import com.jp.dark.models.entities.Persona;
 import com.jp.dark.services.ProdutorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +42,17 @@ public class ProdutorController {
     })
     public ProdutorDTO save(@RequestBody @Valid ProdutorDTO dto){
         return service.save(dto);
+    }
+
+    @PutMapping("{cpf}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("update a Produtor rural")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public PersonaDTO update(@PathVariable String cpf, @RequestBody PersonaDTO dto){
+
+        return service.update(cpf, dto);
     }
     /*
     /* ExceptionHandlers

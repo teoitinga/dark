@@ -67,6 +67,7 @@ public class CallServiceTest {
         assertThat(savedDto.getCodigo()).isNotEmpty();
         assertThat(savedDto.getCodigo()).isEqualTo("202010101010");
         assertThat(savedDto.getOcorrencia()).isEqualTo("Realizar analise de solo.");
+        assertThat(savedDto.getStatus()).isEqualTo("iniciada");
         assertThat(savedDto.getProdutores()).hasSize(5);
     }
 }

@@ -1,7 +1,11 @@
 package com.jp.dark.services.impls;
 
+import com.jp.dark.dtos.PersonaDTO;
+import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.enums.EnumCategoria;
+import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.PersonaService;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +110,8 @@ public class PersonaServiceImpl implements PersonaService {
         return Persona.builder()
                 .cpf(cpf)
                 .nome(nome)
+                .permissao(EnumPermissao.CLIENTES)
+                .categoria(EnumCategoria.UNDEFINED)
                 .build();
     }
 
@@ -126,5 +132,81 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     public List<ProdutorMinDTO> toProdutorMinDTO(List<Persona> produtores) {
         return produtores.stream().map(prd->toProdutorMinDTO(prd)).collect(Collectors.toList());
+    }
+
+    @Override
+    public PersonaDTO toPersonaDTO(Persona persona) {
+        String categoria;
+        try{
+            categoria = persona.getCategoria().toString();
+        }catch (NullPointerException ex){
+            categoria = null;
+        }
+        String permissao;
+        try{
+        permissao = persona.getPermissao().toString();
+        }catch (NullPointerException ex){
+            permissao = null;
+        }
+        return PersonaDTO.builder()
+                .cpf(persona.getCpf())
+                .nome(persona.getNome())
+                .categoria(categoria)
+                .cidade(persona.getCidade())
+                .endereco(persona.getEndereco())
+                .nascimento(persona.getNascimento())
+                .telefone(persona.getTelefone())
+                .permissao(permissao)
+                .cep(persona.getCep())
+                .senha(persona.getSenha())
+                .build();
+    }
+    @Override
+    public Persona toPersona(ProdutorDTO produtor) {
+
+        EnumCategoria categoria;
+        try{
+            categoria = EnumCategoria.valueOf(produtor.getCategoria());
+        }catch (NullPointerException ex){
+            categoria = EnumCategoria.OUTROS;
+        }
+
+        return Persona.builder()
+                .cpf(produtor.getCpf())
+                .nome(produtor.getNome())
+                .categoria(categoria)
+                .cidade(produtor.getCidade())
+                .endereco(produtor.getEndereco())
+                .nascimento(produtor.getNascimento())
+                .telefone(produtor.getTelefone())
+                .build();
+    }
+    @Override
+    public Persona toPersona(PersonaDTO personaDTO) {
+        EnumCategoria categoria;
+        try{
+            categoria = EnumCategoria.valueOf(personaDTO.getCategoria());
+        }catch (NullPointerException ex){
+            categoria = EnumCategoria.OUTROS;
+        }
+
+        EnumPermissao permissao = null;
+        try{
+        permissao = EnumPermissao.valueOf(personaDTO.getPermissao());
+        }catch (NullPointerException ex){
+            permissao = null;
+        }
+        return Persona.builder()
+                .cpf(personaDTO.getCpf())
+                .nome(personaDTO.getNome())
+                .categoria(categoria)
+                .cidade(personaDTO.getCidade())
+                .endereco(personaDTO.getEndereco())
+                .nascimento(personaDTO.getNascimento())
+                .telefone(personaDTO.getTelefone())
+                .cep(personaDTO.getCep())
+                .senha(personaDTO.getSenha())
+                .permissao(permissao)
+                .build();
     }
 }
