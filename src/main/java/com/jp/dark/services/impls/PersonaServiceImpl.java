@@ -111,7 +111,6 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public ProdutorMinDTO save(ProdutorMinDTO produtor) {
-        log.info("Salvando registro de Persona {}", produtor);
         Persona save = this.toPersona(produtor);
         return this.toProdutorMinDTO(save);
     }

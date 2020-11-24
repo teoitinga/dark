@@ -101,22 +101,16 @@ public class CallServiceImpl implements CallService {
     }
     @Override
     public ProdutorMinDTO check(ProdutorMinDTO produtor) {
-
         ///verifica se o cpf é valido
-        if(!personaService.cpfIsValid(produtor.getCpf())){
-        log.info("CPF valid: {}", produtor);
-
+        if(personaService.cpfIsValid(produtor.getCpf())){
             //verifica se existe no banco de dados
             if(personaService.PersonaExists(produtor.getCpf())){
                 //////se existir não faz nada, só mantem a instancia
-
-                log.info("Retornando Produtor to save: {}", produtor);
                 return produtor;
             }else {
                 //////se não existir, será feito o registro
-                log.info("Produtor to save: {}", produtor);
                 ProdutorMinDTO saved = personaService.save(produtor);
-                log.info("Produtor to save: {}", produtor);
+
                 return saved;
             }
         }
