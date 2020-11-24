@@ -9,7 +9,9 @@ import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.ProdutorService;
+import com.jp.dark.services.impls.ProdutorServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,8 +32,8 @@ public class ProdutorController {
 
     private ProdutorService service;
 
-    public ProdutorController(ProdutorService service) {
-        this.service = service;
+    public ProdutorController(PersonaRepository repository) {
+        this.service = new ProdutorServiceImpl(repository);
     }
 
     @PostMapping
