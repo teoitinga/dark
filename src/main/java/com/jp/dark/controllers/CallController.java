@@ -3,6 +3,7 @@ package com.jp.dark.controllers;
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.ApiErrors;
+import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.services.CallService;
@@ -41,7 +42,7 @@ public class CallController {
 
         return callService.save(dto);
     }
-    //MethodArgumentNotValidException
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
@@ -54,10 +55,11 @@ public class CallController {
 
         return new ApiErrors(exception);
     }
-//    @ExceptionHandler(VisitaNotFoundException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
-//        return new ApiErrors(exception);
-//    }
+    @ExceptionHandler(ServiceProvidedNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleConstraintViolationException(ServiceProvidedNotFoundException exception){
+
+        return new ApiErrors(exception);
+    }
 
 }

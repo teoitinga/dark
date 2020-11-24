@@ -49,6 +49,7 @@ public class CallControllerTest {
     @Test
     @DisplayName("Deve realizar uma chamada de serviço")
     public void saveTest() throws Exception {
+
         CallDTO dto = CallFactory.createNewCallDto();
         String json = new ObjectMapper().writeValueAsString(dto);
 
@@ -70,6 +71,11 @@ public class CallControllerTest {
                 .andExpect(jsonPath("codigo").isNotEmpty())
                 .andExpect(jsonPath("status").value("INICIADA"))
                 .andExpect(jsonPath("produtores", hasSize(5)))
+                .andExpect(jsonPath("serviceProvided.descricao").value("Cadastro Ambiental Rural"))
+                .andExpect(jsonPath("serviceProvided.referency").value("Elaboração de Cadastro Ambiental Rural"))
+                .andExpect(jsonPath("serviceProvided.defaultValue").value(100))
+                .andExpect(jsonPath("serviceProvided.timeRemaining").value(5))
+                .andExpect(jsonPath("serviceProvided.codigo").value("202010111010"))
                 ;
     }
 

@@ -2,24 +2,30 @@ package com.jp.dark.services.impls;
 
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.dtos.ServiceProvidedDTO;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.CallNotFoundException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
+import com.jp.dark.repository.ServiceProvidedRepository;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
+import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.services.VisitaService;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,15 +40,18 @@ public class CallServiceImpl implements CallService {
 
     private PersonaService personaService;
 
+    private ServiceProvidedService serviceProvided;
+
     public CallServiceImpl(
             CallRepository repository,
             VisitaRepository visitaRepository,
-            PersonaRepository personaRepository
+            PersonaRepository personaRepository,
+            ServiceProvidedRepository serviceProvidedRepository
     ) {
         this.repository = repository;
         this.visitaService = new VisitaServiceImpl(visitaRepository);
         this.personaService = new PersonaServiceImpl(personaRepository);
-
+        this.serviceProvided = new ServiceProvidedServiceImpl(serviceProvidedRepository);
     }
 
     @Override
@@ -79,6 +88,10 @@ public class CallServiceImpl implements CallService {
             callDTO.setVisita(vs.get());
         }
 
+        /*
+        /*Trata as informações do serviço prestado
+        /*
+         */
         //ou então recupera as informações da visita registrada
         Call entity = toCall(callDTO);
 
@@ -167,6 +180,16 @@ public class CallServiceImpl implements CallService {
             statusCall = null;
         }
 
+        /*
+        Configurando os dados do Servico prestado
+         */
+        ServiceProvided serviceProvided = call.getServiceProvided();
+        ServiceProvidedDTO serviceProvidedDTO = this.serviceProvided.toServiceProvidedDTO(call.getServiceProvided());
+
+        LocalDate forecast = call.getForecast();
+
+        BigDecimal valorDoServico = call.getValue();
+
         return CallDTO.builder()
                 .codigo(codigo)
                 .visita(visita)
@@ -174,6 +197,9 @@ public class CallServiceImpl implements CallService {
                 .ocorrencia(ocorrencia)
                 .produtores(produtores)
                 .status(statusCall)
+                .serviceProvided(serviceProvidedDTO)
+                .valor(valorDoServico)
+                .forecast(forecast)
                 .build();
     }
 
@@ -207,6 +233,48 @@ public class CallServiceImpl implements CallService {
 
         List<Persona> produtoresAtendidos = this.personaService.toPersona(produtores);
 
+        ServiceProvided serviceProvided = null;
+        BigDecimal valor = null;
+        String referencyServ = null;
+        try{
+
+        serviceProvided = toServiceProvided(callDto.getServiceProvided());
+        valor = serviceProvided.getDefaultValue();
+        referencyServ = serviceProvided.getReferency();
+
+        }catch (NullPointerException ex){
+
+        }
+
+        //Configurando informação do Campo Servico
+        if(callDto.getServico().equals("") || callDto.getServico() == null){
+            referencyServ = serviceProvided.getReferency();
+        }else{
+            referencyServ = callDto.getServico();
+        }
+        //Configurando a informação do valor do serviço
+        BigDecimal valorDoServico = valor;
+        try{
+            valorDoServico = callDto.getValor();
+        }catch (Exception ex){
+
+        }
+        /*
+        Configurando a previsão de entrega do serviço
+         */
+        int timeRemaining = 7;
+
+        try{
+            timeRemaining = serviceProvided.getTimeRemaining();
+        }catch (Exception ex){
+
+        }
+        log.info("Service provided: {}", serviceProvided);
+        log.info("Tempo pra conclusao: {}", timeRemaining);
+
+        LocalDate forecast = LocalDate.now().plusDays(timeRemaining);
+        log.info("Previsão de entrega: {}", forecast);
+
         return Call.builder()
                 .codigo(callDto.getCodigo())
                 .ocorrencia(callDto.getOcorrencia())
@@ -214,7 +282,15 @@ public class CallServiceImpl implements CallService {
                 .servico(callDto.getServico())
                 .produtores(produtoresAtendidos)
                 .status(status)
+                .value(valorDoServico)
+                .serviceProvided(serviceProvided)
+                .forecast(forecast)
                 .build();
+    }
+
+    private ServiceProvided toServiceProvided(ServiceProvidedDTO serviceProvided) {
+        log.info("Servico informado: {}", serviceProvided);
+        return this.serviceProvided.toServiceProvided(serviceProvided);
     }
 }
 

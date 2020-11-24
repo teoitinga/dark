@@ -4,12 +4,15 @@ import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.factory.CallFactory;
 import com.jp.dark.factory.ProdutorFactory;
+import com.jp.dark.factory.ServiceProvidedFactory;
 import com.jp.dark.factory.VisitaFactory;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
+import com.jp.dark.repository.ServiceProvidedRepository;
 import com.jp.dark.services.impls.CallServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,11 +45,14 @@ public class CallServiceTest {
     VisitaRepository visitaRepository;
 
     @MockBean
-    private PersonaRepository personaRepository;
+    PersonaRepository personaRepository;
+
+    @MockBean
+    ServiceProvidedRepository serviceProvidedRepository;
 
     @BeforeEach
     public void setup(){
-        this.service = new CallServiceImpl(callRepository, visitaRepository, personaRepository);
+        this.service = new CallServiceImpl(callRepository, visitaRepository, personaRepository, serviceProvidedRepository);
     }
     @Test
     @DisplayName("Deve registrar uma chamada válida.")
@@ -60,6 +66,7 @@ public class CallServiceTest {
         Mockito.when( visitaService.save(Mockito.any(VisitaDTO.class)) ).thenReturn(VisitaFactory.createSavedVisitaDto());
         Mockito.when( callRepository.save(Mockito.any(Call.class)) ).thenReturn(CallFactory.createSavedCall());
         Mockito.when( personaRepository.save(Mockito.any(Persona.class)) ).thenReturn(ProdutorFactory.createNewPersona());
+        Mockito.when( serviceProvidedRepository.findByCodigo(Mockito.anyString())).thenReturn(Optional.of(ServiceProvidedFactory.createServiceProvided()));
 
         CallDTO savedDto = this.service.save(call);
 

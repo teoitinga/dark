@@ -4,6 +4,8 @@ import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.enums.EnumStatus;
 
+import java.math.BigDecimal;
+
 public class CallFactory {
 
     public static CallDTO createNewCallDto() {
@@ -14,6 +16,8 @@ public class CallFactory {
                 .visita(VisitaFactory.createVisitaDto())
                 .produtores(ProdutorFactory.createList5ValidProdutors())
                 .status("INICIADA")
+                .serviceProvided(ServiceProvidedFactory.createServiceProvidedDTO())
+                .valor(BigDecimal.valueOf(1100))
                 .build();
     }
 
@@ -32,6 +36,7 @@ public class CallFactory {
                 .visita(VisitaFactory.createNewValidVisita())
                 .produtores(ProdutorFactory.createList5ValidPersona())
                 .status(EnumStatus.INICIADA)
+                .serviceProvided(ServiceProvidedFactory.createServiceProvided())
                 .build();
     }
     public static Call createSavedCall() {
@@ -42,6 +47,7 @@ public class CallFactory {
                 .visita(VisitaFactory.createNewValidVisita())
                 .produtores(ProdutorFactory.createList5ValidPersona())
                 .status(EnumStatus.INICIADA)
+                .serviceProvided(ServiceProvidedFactory.createServiceProvided())
                 .build();
     }
 }
