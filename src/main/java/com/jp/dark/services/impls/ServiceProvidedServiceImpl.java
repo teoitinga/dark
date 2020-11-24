@@ -19,6 +19,16 @@ public class ServiceProvidedServiceImpl implements ServiceProvidedService {
         return this.repository.findByCodigo(serviceProvided.getCodigo())
                 .orElseThrow(()->new ServiceProvidedNotFoundException());
     }
+    @Override
+    public ServiceProvided toServiceProvidedNoContent(ServiceProvidedDTO service) {
+        return ServiceProvided.builder()
+                .defaultValue(service.getDefaultValue())
+                .timeRemaining(service.getTimeRemaining())
+                .referency(service.getReferency())
+                .descricao(service.getDescricao())
+                .codigo(service.getCodigo())
+                .build();
+    }
 
     @Override
     public ServiceProvidedDTO toServiceProvidedDTO(ServiceProvided serviceProvided) {
@@ -29,5 +39,13 @@ public class ServiceProvidedServiceImpl implements ServiceProvidedService {
                 .referency(serviceProvided.getReferency())
                 .timeRemaining(serviceProvided.getTimeRemaining())
                 .build();
+    }
+
+    @Override
+    public ServiceProvidedDTO save(ServiceProvidedDTO dto) {
+        ServiceProvided service = this.toServiceProvidedNoContent(dto);
+        service = this.repository.save(service);
+        ServiceProvidedDTO response = this.toServiceProvidedDTO(service);
+        return response;
     }
 }
