@@ -57,6 +57,7 @@ public class VisitaFactory {
     }
     public static VisitaDTO createVisitaDto() {
         return VisitaDTO.builder()
+                .codigo("20201010")
                 .recomendacao("Realizar analise de solo urgente.")
                 .situacao("Pastagem degradada.")
                 .build();

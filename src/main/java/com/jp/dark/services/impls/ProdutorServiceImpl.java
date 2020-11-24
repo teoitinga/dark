@@ -6,11 +6,13 @@ import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.ProdutorService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
 
 @Service
+@Slf4j
 public class ProdutorServiceImpl implements ProdutorService {
 
     PersonaRepository repository;
@@ -21,6 +23,7 @@ public class ProdutorServiceImpl implements ProdutorService {
 
     @Override
     public ProdutorDTO save(ProdutorDTO produtor) {
+        log.info("Salvando registro de produtor {}", produtor);
         //verifica se já existe um registro para o cpf informado
         if(this.cpfExists(produtor.getCpf())){
             throw new PersonaAlreadyExistsException();

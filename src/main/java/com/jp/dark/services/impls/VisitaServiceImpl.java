@@ -5,35 +5,35 @@ import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.VisitaRepository;
+import com.jp.dark.services.VisitaService;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
-public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
+public class VisitaServiceImpl implements VisitaService {
 
     private VisitaRepository repository;
 
     public VisitaServiceImpl(VisitaRepository repository) {
+
         this.repository = repository;
     }
 
     @Override
     public VisitaDTO save(VisitaDTO visita) {
-
         if( repository.existsByCodigo(visita.getCodigo()) ){
             throw new BusinessException("Identificador já existe");
         }
 
         Visita entity = toVisita(visita);
-        String key = "123";
-        entity.setCodigo(createId(key));
+        entity.setCodigo(createId(visita.getCodigo()));
         entity = repository.save(entity);
 
         return toVisitaDto(entity);
@@ -70,11 +70,9 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
                 .situacao(situacao)
                 .build();
 
-        log.info("Verificando: {}" , build);
-
         return build;
-
     }
+
     @Override
     public Visita toVisita(VisitaDTO visita) {
         String codigo;
@@ -84,10 +82,23 @@ public class VisitaServiceImpl implements com.jp.dark.services.VisitaService {
             codigo = "";
         }
 
+        String recomendacao;
+        try{
+        recomendacao = visita.getRecomendacao();
+        }catch (NullPointerException ex){
+            recomendacao = null;
+        }
+
+        String situacao;
+        try{
+        situacao = visita.getSituacao();
+        }catch (NullPointerException ex){
+            situacao = null;
+        }
         return Visita.builder()
                 .codigo(codigo)
-                .recomendacao(visita.getRecomendacao())
-                .situacao(visita.getSituacao())
+                .recomendacao(recomendacao)
+                .situacao(situacao)
                 .build();
     }
 

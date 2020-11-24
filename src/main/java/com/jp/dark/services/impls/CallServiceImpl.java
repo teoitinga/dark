@@ -1,62 +1,205 @@
 package com.jp.dark.services.impls;
 
 import com.jp.dark.dtos.CallDTO;
+import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.dtos.VisitaDTO;
+import com.jp.dark.exceptions.CallNotFoundException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
+import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.CallRepository;
+import com.jp.dark.models.repository.PersonaRepository;
+import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.services.CallService;
+import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.VisitaService;
 import com.jp.dark.utils.Generates;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class CallServiceImpl implements CallService {
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-    private VisitaService visitaService;
+@Slf4j
+@Service
+public class CallServiceImpl implements CallService {
 
     private CallRepository repository;
 
-    @Override
-    public CallDTO save(CallDTO call) {
+    private VisitaService visitaService;
 
-        //Configura o código da chamada
-        String keyCode = Generates.keyCode("123");
-        call.setCodigo(keyCode);
+    private PersonaService personaService;
 
-        //verifica se a visita existes
-        //VisitaDTO vs = visitaService.getByCodigo(call.getCodigoVisita()).orElseThrow(()-> new VisitaNotFoundException());
+    public CallServiceImpl(
+            CallRepository repository,
+            VisitaRepository visitaRepository,
+            PersonaRepository personaRepository
+    ) {
+        this.repository = repository;
+        this.visitaService = new VisitaServiceImpl(visitaRepository);
+        this.personaService = new PersonaServiceImpl(personaRepository);
 
-        //converte de DTO para chamada
-        Call entity = toCall(call);
-
-        //salva
-        return toCallDto(repository.save(entity));
     }
 
-    private CallDTO toCallDto(Call call) {
+    @Override
+    @Transactional
+    public CallDTO save(CallDTO callDTO) {
+        //Configura o código da chamada com base no primeiro cpf encontrado
+        String primeiroCpf = callDTO.getProdutores().get(0).getCpf();
+        String keyCode = Generates.keyCode(primeiroCpf);
+        callDTO.setCodigo(keyCode);
+
+        //converte de DTO para chamada
+        //primeiro verifica se existe a visita informarda
+        String codigo = callDTO.getVisita().getCodigo();
+        Optional<VisitaDTO> vs = null;
+        try{
+            vs = visitaService.getByCodigo(codigo);
+        }catch (NullPointerException ex){
+            vs = Optional.empty();
+        }
+
+        if(!vs.isPresent()){
+            //caso não exista, é criada a visita com os dados informados.
+            VisitaDTO visita = callDTO.getVisita();
+
+            //informa como chave de código, o CPF do primeiro produtor registrado
+            visita.setCodigo(callDTO.getProdutores().get(0).getCpf());
+
+            VisitaDTO savedVisita = visitaService.save(visita);
+            callDTO.setVisita(savedVisita);
+        }else{
+            callDTO.setVisita(vs.get());
+        }
+
+        //ou então recupera as informações da visita registrada
+        Call entity = toCall(callDTO);
+
+        //trata as informações dos produtores
+        List<ProdutorMinDTO> produtores = callDTO.getProdutores();
+        produtores = checkProdutores(produtores);
+        //converte Produtores validos para Persona
+        List<Persona> pessoalAtendido = toPersona(produtores);
+
+        entity.setProdutores(pessoalAtendido);
+        entity.setCodigo(callDTO.getCodigo());
+        //salva
+        Call savedCall = repository.save(entity);
+        return toCallDto(savedCall);
+    }
+    @Override
+    public List<Persona> toPersona(List<ProdutorMinDTO> produtores) {
+        return personaService.toPersona(produtores);
+    }
+    @Override
+    public List<ProdutorMinDTO> checkProdutores(List<ProdutorMinDTO> produtores) {
+        //para cada produtor da lista...
+        return produtores.stream().map(prd->check(prd)).collect(Collectors.toList());
+    }
+    @Override
+    public ProdutorMinDTO check(ProdutorMinDTO produtor) {
+
+        ///verifica se o cpf é valido
+        if(!personaService.cpfIsValid(produtor.getCpf())){
+        log.info("CPF valid: {}", produtor);
+
+            //verifica se existe no banco de dados
+            if(personaService.PersonaExists(produtor.getCpf())){
+                //////se existir não faz nada, só mantem a instancia
+
+                log.info("Retornando Produtor to save: {}", produtor);
+                return produtor;
+            }else {
+                //////se não existir, será feito o registro
+                log.info("Produtor to save: {}", produtor);
+                ProdutorMinDTO saved = personaService.save(produtor);
+                log.info("Produtor to save: {}", produtor);
+                return saved;
+            }
+        }
+        //retorna os dados validos e registrados
+        return null;
+    }
+
+    @Override
+    public CallDTO toCallDto(Call call) {
+
+        String codigo = "";
+
+        try{
+            codigo = call.getCodigo();
+        }catch (NullPointerException ex){
+            codigo = null;
+        }
+        Visita visitaInfo;
+        VisitaDTO visita = null;
+        try{
+            visitaInfo = call.getVisita();
+            visita = visitaService.toVisitaDto(visitaInfo);
+        }catch (NullPointerException ex){
+            visitaInfo = null;
+        }
+        String servico;
+        try{
+            servico = call.getServico();
+        }catch (NullPointerException ex){
+            servico = null;
+        }
+        String ocorrencia;
+        try{
+            ocorrencia= call.getOcorrencia();
+        }catch (NullPointerException ex){
+            ocorrencia = null;
+        }
+
+        List<ProdutorMinDTO> produtores;
+        try{
+            produtores = this.personaService.toProdutorMinDTO(call.getProdutores());
+        }catch (NullPointerException ex){
+            produtores = null;
+        }
+
         return CallDTO.builder()
-                .codigo(call.getCodigo())
-                .codigoVisita(call.getVisita().getCodigo())
-                .servico(call.getServico())
-                .ocorrencia(call.getOcorrencia())
+                .codigo(codigo)
+                .visita(visita)
+                .servico(servico)
+                .ocorrencia(ocorrencia)
+                .produtores(produtores)
                 .build();
     }
 
-    private Call toCall(CallDTO callDto) {
+    @Override
+    public Call toCall(CallDTO callDto) {
 
         //Verifica se existe a visita informada
-        VisitaDTO vs = visitaService.getByCodigo(callDto.getCodigo()).orElseThrow(()-> new VisitaNotFoundException());
+
+        String codigo;
+        try{
+            codigo = callDto.getCodigo();
+        }catch (NullPointerException ex){
+            throw new CallNotFoundException("Call with null id");
+        }
+
+        Optional<VisitaDTO> visitaByCodigo = visitaService.getByCodigo(codigo);
+        VisitaDTO vs = null;
+        if(visitaByCodigo.isPresent()){
+            vs = visitaByCodigo.get();
+        }
         Visita visita = visitaService.toVisita(vs);
+
+        List<ProdutorMinDTO> produtores = callDto.getProdutores();
 
         return Call.builder()
                 .codigo(callDto.getCodigo())
                 .ocorrencia(callDto.getOcorrencia())
                 .visita(visita)
                 .servico(callDto.getServico())
+                .produtores(this.personaService.toPersona(produtores))
                 .build();
     }
 }
+
+

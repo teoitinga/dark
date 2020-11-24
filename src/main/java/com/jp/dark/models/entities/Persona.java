@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 @Data
@@ -20,14 +18,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-public class Persona {
-    @NotEmpty
+public class Persona extends Auditable{
+
     @Id
-    @CPF
+    @Column(nullable = false, unique = true)
     private String cpf;
 
-    @NotEmpty
-    @Length(min = 10)
+    @Column(nullable = false, unique = true, length = 155)
     private String nome;
 
     private String telefone;
@@ -44,4 +41,8 @@ public class Persona {
 
     private EnumPermissao permissao;
 
+    public Persona(String cpf, String nome) {
+        this.cpf = cpf;
+        this.nome = nome;
+    }
 }

@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -17,9 +14,9 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-public class Visita {
+public class Visita extends Auditable{
     @Id
-    @Column
+    @Column(nullable = false, unique = true)
     private String codigo;
 
     @NotEmpty(message = "Você deve informar a situação atual.")

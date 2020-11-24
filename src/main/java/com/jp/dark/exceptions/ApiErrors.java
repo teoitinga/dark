@@ -2,6 +2,7 @@ package com.jp.dark.exceptions;
 
 import org.springframework.validation.BindingResult;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,14 @@ public class ApiErrors {
     }
 
     public ApiErrors(VisitaNotFoundException exception) {
+        this.errors = Arrays.asList(exception.getMessage());
+    }
+
+    public ApiErrors(PersonaAlreadyExistsException exception) {
+        this.errors = Arrays.asList(exception.getMessage());
+    }
+
+    public ApiErrors(ConstraintViolationException exception) {
         this.errors = Arrays.asList(exception.getMessage());
     }
 

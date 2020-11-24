@@ -2,6 +2,7 @@ package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.VisitaDTO;
+import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.services.CallService;
@@ -10,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.jpa.event.internal.CallbacksFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 @RestController
@@ -37,4 +41,23 @@ public class CallController {
 
         return callService.save(dto);
     }
+    //MethodArgumentNotValidException
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
+        BindingResult bindingResult = exception.getBindingResult();
+        return new ApiErrors(bindingResult);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleConstraintViolationException(ConstraintViolationException exception){
+
+        return new ApiErrors(exception);
+    }
+//    @ExceptionHandler(VisitaNotFoundException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
+//        return new ApiErrors(exception);
+//    }
+
 }

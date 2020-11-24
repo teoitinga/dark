@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +58,7 @@ public class CallControllerTest {
         CallDTO savedCall = CallFactory.createSavedCallDto();
 
         BDDMockito.given(callService.save(dto)).willReturn(savedCall);
+        BDDMockito.given(visitaService.getByCodigo(Mockito.anyString())).willReturn(VisitaFactory.createAnyVisitaDto());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -66,6 +68,7 @@ public class CallControllerTest {
         mvc.perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("codigo").isNotEmpty())
+                .andExpect(jsonPath("produtores", hasSize(5)))
                 ;
     }
 

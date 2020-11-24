@@ -1,16 +1,11 @@
 package com.jp.dark.services;
 
 import com.jp.dark.dtos.ProdutorDTO;
-import com.jp.dark.dtos.VisitaDTO;
-import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.models.entities.Persona;
-import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.PersonaRepository;
-import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.services.impls.ProdutorServiceImpl;
-import com.jp.dark.services.impls.VisitaServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
