@@ -19,12 +19,15 @@ import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.utils.FolderGenerate;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -62,12 +65,14 @@ public class CallServiceImpl implements CallService {
         String keyCode = Generates.keyCode(primeiroCpf);
         callDTO.setCodigo(keyCode);
 
+        boolean isNewVisita = false;
         //converte de DTO para chamada
         //primeiro verifica se existe a visita informarda
         String codigo = callDTO.getVisita().getCodigo();
         Optional<VisitaDTO> vs = null;
         try{
             vs = visitaService.getByCodigo(codigo);
+            isNewVisita = false;
         }catch (NullPointerException ex){
             vs = Optional.empty();
         }
@@ -80,6 +85,8 @@ public class CallServiceImpl implements CallService {
             visita.setCodigo(callDTO.getProdutores().get(0).getCpf());
 
             VisitaDTO savedVisita = visitaService.save(visita);
+            isNewVisita = true;
+
             callDTO.setVisita(savedVisita);
 
             //Configura a chamada como INICIADA
@@ -105,6 +112,30 @@ public class CallServiceImpl implements CallService {
         entity.setCodigo(callDTO.getCodigo());
         //salva
         Call savedCall = repository.save(entity);
+
+        //Verifica se é uma nova visita para a gravação da pasta de atendimento
+        if(isNewVisita){
+
+            /*
+            Definindo o nome da pasta para criação
+             */
+            String folderName = entity.getVisita().getCodigo()
+                    .concat(" - ")
+                    .concat(savedCall.getProdutores().get(0).getNome()
+                            .toUpperCase()
+                    );
+
+            //Define o nome da pasta com todos os caracteres maiusculos e sem caracteres especiais
+            folderName = Normalizer.normalize(folderName, Normalizer.Form.NFKD)
+                    .replaceAll("[^\\p{ASCII}]", "");
+
+            try {
+                FolderGenerate.createFolder(folderName);
+            } catch ( Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         return toCallDto(savedCall);
     }
     @Override

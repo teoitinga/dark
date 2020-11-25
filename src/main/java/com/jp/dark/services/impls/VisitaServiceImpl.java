@@ -6,6 +6,7 @@ import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.utils.FolderGenerate;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
