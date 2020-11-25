@@ -30,4 +30,6 @@ public class ProdutorDTO {
 
     private String cidade;
 
+    private String cep;
+
 }

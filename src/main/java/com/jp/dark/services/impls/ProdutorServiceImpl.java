@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 
 @Service
 @Slf4j
@@ -32,7 +33,7 @@ public class ProdutorServiceImpl implements ProdutorService {
     @Override
     public ProdutorDTO save(ProdutorDTO produtor) {
         //verifica se já existe um registro para o cpf informado
-        if(this.cpfExists(produtor.getCpf())){
+        if(this.cpfExists(produtor.getCpf()) || produtor.getCpf()==null){
             throw new PersonaAlreadyExistsException();
         }
 
@@ -47,7 +48,7 @@ public class ProdutorServiceImpl implements ProdutorService {
         }
 
         //Verifica e configura a categoria
-        EnumCategoria categoria = EnumCategoria.AGRICULTOR_FAMILIAR;
+        EnumCategoria categoria = EnumCategoria.OUTROS;
         try{
             categoria = prd.getCategoria();
         }catch (Exception ex){
@@ -55,7 +56,7 @@ public class ProdutorServiceImpl implements ProdutorService {
         }
         prd.setCategoria(categoria);
         prd.setPermissao(permissao);
-        log.info("Salvando registro {}", prd);
+
         Persona persona = this.repository.save(prd);
         return toProdutorDTO(persona);
     }
@@ -69,15 +70,58 @@ public class ProdutorServiceImpl implements ProdutorService {
             categoria = EnumCategoria.OUTROS.toString();
         }
 
+        String cpf = null;
+        try{
+            cpf = produtor.getCpf();
+        }catch (NullPointerException ex){
+            cpf = null;
+        }
+        String nome = null;
+        try{
+            nome = produtor.getNome();
+        }catch (NullPointerException ex){
+        }
+        String cidade = null;
+        try{
+            cidade = produtor.getCidade();
+        }catch (NullPointerException ex){
 
+        }
+        String endereco  = null;
+        try{
+            endereco = produtor.getEndereco();
+        }catch (NullPointerException ex){
+
+        }
+        LocalDate nascimento = null;
+        try{
+             nascimento = produtor.getNascimento();
+        }catch (NullPointerException ex){
+
+        }
+
+        String telefone = null;
+        try{
+            telefone = produtor.getTelefone();
+        }catch (NullPointerException ex){
+
+        }
+
+        String cep = null;
+        try{
+            cep = produtor.getCep();
+        }catch (NullPointerException ex){
+
+        }
         return ProdutorDTO.builder()
-                .cpf(produtor.getCpf())
-                .nome(produtor.getNome())
+                .cpf(cpf)
+                .nome(nome)
                 .categoria(categoria)
-                .cidade(produtor.getCidade())
-                .endereco(produtor.getEndereco())
-                .nascimento(produtor.getNascimento())
-                .telefone(produtor.getTelefone())
+                .cidade(cidade)
+                .endereco(endereco)
+                .nascimento(nascimento)
+                .telefone(telefone)
+                .cep(cep)
                 .build();
     }
 
@@ -94,11 +138,19 @@ public class ProdutorServiceImpl implements ProdutorService {
         //Busca o registro do produtor com o cpf informado
         Persona persona = this.findByCpf(cpf);
 
-        dto.setCpf(persona.getCpf());
+        String cpfInfo = null;
+        try{
+            cpfInfo = persona.getCpf();
+            dto.setCpf(cpfInfo);
+        }catch (NullPointerException ex){
+
+        }
 
         Persona toSave = this.personaService.toPersona(dto);
 
-        PersonaDTO saved = this.personaService.toPersonaDTO(repository.save(toSave));
+        toSave = repository.save(toSave);
+
+        PersonaDTO saved = this.personaService.toPersonaDTO(toSave);
         return saved;
 
     }

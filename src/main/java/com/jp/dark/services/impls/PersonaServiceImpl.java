@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -148,17 +149,37 @@ public class PersonaServiceImpl implements PersonaService {
         }catch (NullPointerException ex){
             permissao = null;
         }
+        String cpf = null;
+        String nome = null;
+        String cidade = null;
+        LocalDate nascimento = null;
+        String telefone = null;
+        String cep = null;
+        String senha = null;
+        String endereco = null;
+        try{
+             cpf = persona.getCpf();
+         nome = persona.getNome();
+         cidade = persona.getCidade();
+         nascimento = persona.getNascimento();
+         telefone = persona.getTelefone();
+         cep = persona.getCep();
+         senha = persona.getSenha();
+        endereco = persona.getEndereco();
+        }catch (NullPointerException ex){
+
+        }
         return PersonaDTO.builder()
-                .cpf(persona.getCpf())
-                .nome(persona.getNome())
+                .cpf(cpf)
+                .nome(nome)
                 .categoria(categoria)
-                .cidade(persona.getCidade())
-                .endereco(persona.getEndereco())
-                .nascimento(persona.getNascimento())
-                .telefone(persona.getTelefone())
+                .cidade(cidade)
+                .endereco(endereco)
+                .nascimento(nascimento)
+                .telefone(telefone)
                 .permissao(permissao)
-                .cep(persona.getCep())
-                .senha(persona.getSenha())
+                .cep(cep)
+                .senha(senha)
                 .build();
     }
     @Override
@@ -179,6 +200,9 @@ public class PersonaServiceImpl implements PersonaService {
                 .endereco(produtor.getEndereco())
                 .nascimento(produtor.getNascimento())
                 .telefone(produtor.getTelefone())
+                .permissao(EnumPermissao.CLIENTES)
+                .senha(produtor.getCpf())
+                .cep(produtor.getCep())
                 .build();
     }
     @Override
