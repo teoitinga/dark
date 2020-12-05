@@ -1,17 +1,12 @@
 package com.jp.dark.controllers;
 
-import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
-import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.ApiErrors;
-import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
-import com.jp.dark.exceptions.VisitaNotFoundException;
-import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.repository.PersonaRepository;
-import com.jp.dark.services.ProdutorService;
-import com.jp.dark.services.impls.ProdutorServiceImpl;
+import com.jp.dark.services.PersonaService;
+import com.jp.dark.services.impls.PersonaServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,10 +25,10 @@ import javax.validation.Valid;
 @Api("Api de produtores")
 public class ProdutorController {
 
-    private ProdutorService service;
+    private PersonaService service;
 
     public ProdutorController(PersonaRepository repository) {
-        this.service = new ProdutorServiceImpl(repository);
+        this.service = new PersonaServiceImpl(repository);
     }
 
     @PostMapping

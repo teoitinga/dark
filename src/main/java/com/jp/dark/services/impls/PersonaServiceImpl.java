@@ -3,86 +3,112 @@ package com.jp.dark.services.impls;
 import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.exceptions.PersonaNotFoundException;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.PersonaService;
+import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @Slf4j
 public class PersonaServiceImpl implements PersonaService {
-
     private final PersonaRepository repository;
 
-    public PersonaServiceImpl(PersonaRepository repository) {
-        this.repository = repository;
+    public PersonaServiceImpl(PersonaRepository personaRepository) {
+        this.repository = personaRepository;
     }
 
     @Override
-    public boolean cpfIsValid(String CPF) {
-        // considera-se erro CPF's formados por uma sequencia de numeros iguais
-        if (CPF.equals("00000000000") ||
-                CPF.equals("11111111111") ||
-                CPF.equals("22222222222") || CPF.equals("33333333333") ||
-                CPF.equals("44444444444") || CPF.equals("55555555555") ||
-                CPF.equals("66666666666") || CPF.equals("77777777777") ||
-                CPF.equals("88888888888") || CPF.equals("99999999999") ||
-                (CPF.length() != 11))
-            return(false);
+    public List<ProdutorMinDTO> toListProdutorMinDTO(List<Persona> produtores) {
+        return produtores.stream().map(prd->toProdutorMinDTO(prd)).collect(Collectors.toList());
+    }
+    @Override
+    public ProdutorMinDTO toProdutorMinDTO(Persona persona) {
+        return ProdutorMinDTO.builder()
+                .nome(persona.getNome())
+                .cpf(persona.getCpf())
+                .build();
+    }
 
-        char dig10, dig11;
-        int sm, i, r, num, peso;
+    @Override
+    public List<Persona> toListPersona(List<ProdutorMinDTO> produtores) {
+        return produtores.stream().map(prd->toPersona(prd)).collect(Collectors.toList());
+    }
 
-        // "try" - protege o codigo para eventuais erros de conversao de tipo (int)
+    @Override
+    public Persona toPersona(ProdutorMinDTO dto) {
+
+        String nome;
         try {
-            // Calculo do 1o. Digito Verificador
-            sm = 0;
-            peso = 10;
-            for (i=0; i<9; i++) {
-                // converte o i-esimo caractere do CPF em um numero:
-                // por exemplo, transforma o caractere '0' no inteiro 0
-                // (48 eh a posicao de '0' na tabela ASCII)
-                num = (int)(CPF.charAt(i) - 48);
-                sm = sm + (num * peso);
-                peso = peso - 1;
-            }
-
-            r = 11 - (sm % 11);
-            if ((r == 10) || (r == 11))
-                dig10 = '0';
-            else dig10 = (char)(r + 48); // converte no respectivo caractere numerico
-
-            // Calculo do 2o. Digito Verificador
-            sm = 0;
-            peso = 11;
-            for(i=0; i<10; i++) {
-                num = (int)(CPF.charAt(i) - 48);
-                sm = sm + (num * peso);
-                peso = peso - 1;
-            }
-
-            r = 11 - (sm % 11);
-            if ((r == 10) || (r == 11))
-                dig11 = '0';
-            else dig11 = (char)(r + 48);
-
-            // Verifica se os digitos calculados conferem com os digitos informados.
-            if ((dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10)))
-                return(true);
-            else return(false);
-        } catch (InputMismatchException erro) {
-            return(false);
+            nome = dto.getNome();
+        } catch (NullPointerException ex) {
+            nome = null;
         }
+
+        String cpf;
+        try {
+            cpf = dto.getCpf();
+        } catch (NullPointerException ex) {
+            cpf = null;
+        }
+        return Persona.builder()
+                .nome(nome)
+                .cpf(cpf)
+                .permissao(EnumPermissao.CLIENTES)
+                .categoria(EnumCategoria.OUTROS)
+                .build();
+    }
+
+    @Override
+    public ProdutorDTO save(ProdutorDTO dto) {
+        Persona produtor = this.toPersona(dto);
+        return toProdutorDTO(this.repository.save(produtor));
+    }
+
+    @Override
+    public ProdutorDTO toProdutorDTO(Persona dto) {
+        return ProdutorDTO.builder()
+                .cpf(dto.getCpf())
+                .nome(dto.getNome())
+                .telefone(dto.getTelefone())
+                .nascimento(dto.getNascimento())
+                .categoria(dto.getCategoria().toString())
+                .endereco(dto.getEndereco())
+                .cidade(dto.getCidade())
+                .cep(dto.getCep())
+                .build();
+    }
+
+    @Override
+    public Persona toPersona(ProdutorDTO dto) {
+        return Persona.builder()
+                .cpf(dto.getCpf())
+                .nome(dto.getNome())
+                .telefone(dto.getTelefone())
+                .nascimento(dto.getNascimento())
+                .categoria(EnumCategoria.valueOf(dto.getCategoria().toString()))
+                .endereco(dto.getEndereco())
+                .cidade(dto.getCidade())
+                .cep(dto.getCep())
+                .build();
+    }
+
+    @Override
+    public PersonaDTO update(String cpf, PersonaDTO dto) {
+        return null;
+    }
+
+    @Override
+    public boolean cpfIsValid(String cpf) {
+        GeraCpfCnpj geraCpfCnpj = new GeraCpfCnpj();
+        return geraCpfCnpj.isCPF(cpf);
     }
 
     @Override
@@ -94,41 +120,6 @@ public class PersonaServiceImpl implements PersonaService {
     public List<Persona> toPersona(List<ProdutorMinDTO> produtores) {
         return produtores.stream().map(prd->toPersona(prd)).collect(Collectors.toList());
     }
-    @Override
-    public Persona toPersona(ProdutorMinDTO produtor) {
-        String cpf;
-        try{
-            cpf = produtor.getCpf();
-        }catch (NullPointerException ex){
-            cpf = null;
-        }
-        String nome;
-        try{
-            nome= produtor.getNome();
-        }catch (NullPointerException ex){
-            nome = null;
-        }
-        return Persona.builder()
-                .cpf(cpf)
-                .nome(nome)
-                .permissao(EnumPermissao.CLIENTES)
-                .categoria(EnumCategoria.UNDEFINED)
-                .build();
-    }
-
-    @Override
-    public ProdutorMinDTO save(ProdutorMinDTO produtor) {
-        Persona save = this.toPersona(produtor);
-        return this.toProdutorMinDTO(save);
-    }
-
-    @Override
-    public ProdutorMinDTO toProdutorMinDTO(Persona persona) {
-        return ProdutorMinDTO.builder()
-                .cpf(persona.getCpf())
-                .nome(persona.getNome())
-                .build();
-    }
 
     @Override
     public List<ProdutorMinDTO> toProdutorMinDTO(List<Persona> produtores) {
@@ -136,101 +127,13 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public PersonaDTO toPersonaDTO(Persona persona) {
-        String categoria;
-        try{
-            categoria = persona.getCategoria().toString();
-        }catch (NullPointerException ex){
-            categoria = null;
-        }
-        String permissao;
-        try{
-        permissao = persona.getPermissao().toString();
-        }catch (NullPointerException ex){
-            permissao = null;
-        }
-        String cpf = null;
-        String nome = null;
-        String cidade = null;
-        LocalDate nascimento = null;
-        String telefone = null;
-        String cep = null;
-        String senha = null;
-        String endereco = null;
-        try{
-             cpf = persona.getCpf();
-         nome = persona.getNome();
-         cidade = persona.getCidade();
-         nascimento = persona.getNascimento();
-         telefone = persona.getTelefone();
-         cep = persona.getCep();
-         senha = persona.getSenha();
-        endereco = persona.getEndereco();
-        }catch (NullPointerException ex){
-
-        }
-        return PersonaDTO.builder()
-                .cpf(cpf)
-                .nome(nome)
-                .categoria(categoria)
-                .cidade(cidade)
-                .endereco(endereco)
-                .nascimento(nascimento)
-                .telefone(telefone)
-                .permissao(permissao)
-                .cep(cep)
-                .senha(senha)
-                .build();
+    public Persona save(ProdutorMinDTO produtor) {
+        Persona prd = this.toPersona(produtor);
+        return this.repository.saveAndFlush(prd);
     }
+
     @Override
-    public Persona toPersona(ProdutorDTO produtor) {
-
-        EnumCategoria categoria;
-        try{
-            categoria = EnumCategoria.valueOf(produtor.getCategoria());
-        }catch (NullPointerException ex){
-            categoria = EnumCategoria.OUTROS;
-        }
-
-        return Persona.builder()
-                .cpf(produtor.getCpf())
-                .nome(produtor.getNome())
-                .categoria(categoria)
-                .cidade(produtor.getCidade())
-                .endereco(produtor.getEndereco())
-                .nascimento(produtor.getNascimento())
-                .telefone(produtor.getTelefone())
-                .permissao(EnumPermissao.CLIENTES)
-                .senha(produtor.getCpf())
-                .cep(produtor.getCep())
-                .build();
-    }
-    @Override
-    public Persona toPersona(PersonaDTO personaDTO) {
-        EnumCategoria categoria;
-        try{
-            categoria = EnumCategoria.valueOf(personaDTO.getCategoria());
-        }catch (NullPointerException ex){
-            categoria = EnumCategoria.OUTROS;
-        }
-
-        EnumPermissao permissao = null;
-        try{
-        permissao = EnumPermissao.valueOf(personaDTO.getPermissao());
-        }catch (NullPointerException ex){
-            permissao = null;
-        }
-        return Persona.builder()
-                .cpf(personaDTO.getCpf())
-                .nome(personaDTO.getNome())
-                .categoria(categoria)
-                .cidade(personaDTO.getCidade())
-                .endereco(personaDTO.getEndereco())
-                .nascimento(personaDTO.getNascimento())
-                .telefone(personaDTO.getTelefone())
-                .cep(personaDTO.getCep())
-                .senha(personaDTO.getSenha())
-                .permissao(permissao)
-                .build();
+    public Persona findByCpf(String cpfReponsavel) {
+        return repository.findByCpf(cpfReponsavel).orElseThrow(()->new PersonaNotFoundException());
     }
 }

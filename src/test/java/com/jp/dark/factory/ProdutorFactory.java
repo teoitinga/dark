@@ -48,6 +48,21 @@ public class ProdutorFactory {
                 .build();
     }
 
+    public static Persona createValidBryan() {
+        return new Persona("98370916651","Bryan Lorenzo da Luz");
+    }
+    public static Persona createValidMatheus() {
+        return new Persona("48719787618","Matheus Iago Rocha");
+    }
+    public static Persona createValidLara() {
+        return new Persona("38602989687","Lara Yasmin Ramos");
+    }
+    public static Persona createValidRenata() {
+        return new Persona("49174436600","Renata Adriana Lara Figueiredo");
+    }
+    public static Persona createValidLucas() {
+        return new Persona("22987550600","Lucas João Almeida");
+    }
     public static List<ProdutorMinDTO> createList5ValidProdutors() {
 
         List<ProdutorMinDTO> produtores = new ArrayList<>();

@@ -15,28 +15,28 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CallDTO {
+public class CallDTOPost {
 
     private String codigo;
 
-    @NotEmpty(message = "Deve Descrever o serviço prestado")
-    private String servico;
+    @NotEmpty(message = "Deve descrever o serviço prestado")
+    private String servicoPrestado;
 
     @NotNull(message =  "Deve informar o código do serviço prestado")
     private String serviceProvidedCode;
 
     private String ocorrencia;
 
-    private BigDecimal valor;
-
     @NotNull(message =  "Deve informar o funcionario responsave")
     private String CpfReponsavel;
 
-    private String status;
-
-    private String conclusaoPrevista;
+    @NotNull(message = "Você deve informar o valor do Serviço")
+    private BigDecimal valor;
 
     private String servicoQuitadoEm;
 
+    private String status;
+
     private String codigoDaVisita;
+
 }

@@ -10,7 +10,7 @@ public class ServiceProvidedFactory {
     public static ServiceProvided createServiceProvided(){
 
         return ServiceProvided.builder()
-                .codigo("202010111010")
+                .codigo("CAR")
                 .defaultValue(new BigDecimal(100))
                 .descricao("Cadastro Ambiental Rural")
                 .referency("Elaboração de Cadastro Ambiental Rural")
@@ -20,7 +20,7 @@ public class ServiceProvidedFactory {
 
     public static ServiceProvidedDTO createServiceProvidedDTO() {
         return ServiceProvidedDTO.builder()
-                .codigo("202010111010")
+                .codigo("CAR")
                 .defaultValue(new BigDecimal(100))
                 .descricao("Cadastro Ambiental Rural")
                 .referency("Elaboração de Cadastro Ambiental Rural")

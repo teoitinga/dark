@@ -1,10 +1,10 @@
 package com.jp.dark.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.factory.CallFactory;
 import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.Visita;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
 import org.junit.jupiter.api.DisplayName;
@@ -50,16 +50,16 @@ public class CallControllerTest {
     @DisplayName("Deve realizar uma chamada de serviço")
     public void saveTest() throws Exception {
 
-        CallDTO dto = CallFactory.createNewCallDto();
+        CallDTO dto = CallFactory.createCallDto();
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(visitaService.getByCodigo(Mockito.anyString()))
-                .willReturn(Optional.of(VisitaFactory.createSavedVisitaDto()));
+                .willReturn(VisitaFactory.createSavedVisitaDto());
 
         CallDTO savedCall = CallFactory.createSavedCallDto();
-
-        BDDMockito.given(callService.save(dto)).willReturn(savedCall);
-        BDDMockito.given(visitaService.getByCodigo(Mockito.anyString())).willReturn(VisitaFactory.createAnyVisitaDto());
+        Visita vs = VisitaFactory.createVisitaEntity();
+        BDDMockito.given(callService.save(dto, vs)).willReturn(savedCall);
+        BDDMockito.given(visitaService.getByCodigo(Mockito.anyString())).willReturn(VisitaFactory.createVisitaDto());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API)
                 .accept(MediaType.APPLICATION_JSON)

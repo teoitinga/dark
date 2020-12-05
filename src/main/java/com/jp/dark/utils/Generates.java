@@ -1,7 +1,9 @@
 package com.jp.dark.utils;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 public class Generates {
 
@@ -19,9 +21,28 @@ public class Generates {
         StringBuilder codigo = new StringBuilder();
 
         codigo.append(formattedDate);
-        codigo.append("-");
-        codigo.append(id);
+
+        if(!id.equals("")){
+            codigo.append("-");
+        }
+
+        codigo.append(Generates.normalize(id));
 
         return codigo.toString();
+    }
+    public static String normalize(String texto){
+        String folderName = texto.toUpperCase();
+        //Define o nome da pasta com todos os caracteres maiusculos e sem caracteres especiais
+        folderName = Normalizer.normalize(folderName, Normalizer.Form.NFKD)
+                .replaceAll("[^\\p{ASCII}]", "");
+
+        return folderName;
+    }
+    public static String createNumber(){
+
+        Random random = new Random();
+        int numero = random.nextInt(1000);
+
+        return String.valueOf(numero);
     }
 }

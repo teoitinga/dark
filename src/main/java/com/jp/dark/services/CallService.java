@@ -1,23 +1,30 @@
 package com.jp.dark.services;
 
 import com.jp.dark.dtos.CallDTO;
-import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.models.entities.Call;
-import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.entities.Visita;
 
 import java.util.List;
 
 public interface CallService {
+    List<CallDTOPost> toCallDTOPost(List<Call> chamadas);
 
-    CallDTO save(CallDTO call);
+    CallDTOPost toCallDTOPost(Call c);
 
-    List<Persona> toPersona(List<ProdutorMinDTO> produtores);
+    CallDTO save(CallDTO dto, Visita vs);
 
-    List<ProdutorMinDTO> checkProdutores(List<ProdutorMinDTO> produtores);
+    Call toCall(CallDTO dto, Visita codigoDaVisita);
 
-    ProdutorMinDTO check(ProdutorMinDTO produtor);
+    CallDTO toCallDTO(Call call);
 
-    CallDTO toCallDto(Call call);
+    Call toCall(CallDTOPost call);
 
-    Call toCall(CallDTO callDto);
+    List<Call> toCall(List<CallDTOPost> chamadas);
+
+    List<Call> save(List<Call> call);
+
+    Call Save(Call call);
+
+    Call toCall(Call call, Visita vs);
 }

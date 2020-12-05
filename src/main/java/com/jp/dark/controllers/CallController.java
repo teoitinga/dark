@@ -1,16 +1,11 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.CallDTO;
-import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
-import com.jp.dark.exceptions.VisitaNotFoundException;
-import com.jp.dark.models.entities.Visita;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.jpa.event.internal.CallbacksFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,8 +34,7 @@ public class CallController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CallDTO save(@RequestBody @Valid CallDTO dto){
-
-        return callService.save(dto);
+        return dto;//callService.save(dto);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

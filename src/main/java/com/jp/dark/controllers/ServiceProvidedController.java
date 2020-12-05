@@ -1,9 +1,9 @@
 package com.jp.dark.controllers;
 
-import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ServiceProvidedDTO;
+import com.jp.dark.exceptions.ApiErrors;
+import com.jp.dark.exceptions.ServiceProvidedAlreadyException;
 import com.jp.dark.repository.ServiceProvidedRepository;
-import com.jp.dark.services.ProdutorService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.services.impls.ServiceProvidedServiceImpl;
 import io.swagger.annotations.Api;
@@ -37,5 +37,9 @@ public class ServiceProvidedController {
     public ServiceProvidedDTO save(@RequestBody @Valid ServiceProvidedDTO dto){
         return service.save(dto);
     }
-
+    @ExceptionHandler(ServiceProvidedAlreadyException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleServiceProvidedAlreadyException(ServiceProvidedAlreadyException exception){
+        return new ApiErrors(exception);
+    }
 }

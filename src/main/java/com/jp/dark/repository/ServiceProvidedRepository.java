@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface ServiceProvidedRepository extends JpaRepository<ServiceProvided, String> {
     Optional<ServiceProvided> findByCodigo(String codigo);
+
+    boolean existsByCodigo(String serviceProvidedCode);
 }

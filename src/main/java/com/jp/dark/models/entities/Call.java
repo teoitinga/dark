@@ -2,10 +2,7 @@ package com.jp.dark.models.entities;
 
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.models.enums.EnumStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -15,17 +12,18 @@ import java.util.List;
 
 @Data
 @Builder
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
+@Entity
+@EqualsAndHashCode
 public class Call extends Auditable{
 
     @Id
     @Column(nullable = false, unique = true)
     private String codigo;
 
-    @NotEmpty(message = "Você deve informar um serviço.")
+    @NotEmpty(message = "Você deve descrever o serviço prestado.")
     @Column
     private String servico;
 
@@ -38,15 +36,16 @@ public class Call extends Auditable{
     @ManyToOne
     private Visita visita;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Persona> produtores;
-
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
 
     @Column
-    private BigDecimal value;
+    private BigDecimal valor;
 
-    @Column
-    private LocalDate forecast;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Persona responsavel;
+
+    private LocalDate previsaoDeConclusao;
+
+    private LocalDate servicoQuitadoEm;
 }

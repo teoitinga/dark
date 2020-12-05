@@ -1,23 +1,38 @@
 package com.jp.dark.services;
 
+import com.jp.dark.config.Config;
+import com.jp.dark.dtos.PersonaDTO;
+import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
+import com.jp.dark.factory.PersonaFactory;
+import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.models.repository.CallRepository;
+import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
+import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.services.impls.PersonaServiceImpl;
 import com.jp.dark.services.impls.VisitaServiceImpl;
+import com.jp.dark.utils.GeraCpfCnpj;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,42 +46,72 @@ public class VisitaServiceTest {
     VisitaService service;
 
     @MockBean
-    VisitaRepository repository;
+    VisitaRepository visitaRepository;
+
+    @MockBean
+    PersonaService personaService;
+
+    @MockBean
+    CallRepository callRepository;
+
+    @MockBean
+    PersonaRepository personaRepository;
+
+    @MockBean
+    GeraCpfCnpj verifyCpf;
+
+    @MockBean
+    private ServiceProvidedRepository serviceProvidedRepository;
+
+    @MockBean
+    Config config;
 
     @BeforeEach
     public void setup(){
-        this.service = new VisitaServiceImpl(repository);
+        config = new Config();
+        this.service = new VisitaServiceImpl(visitaRepository, callRepository, personaRepository, serviceProvidedRepository, config);
+        this.personaService = new PersonaServiceImpl(personaRepository);
     }
+
     @Test
     @DisplayName("Deve registrar uma visita válida.")
     public void saveTest(){
         //cenario
         VisitaDTO visita = createValidVisita();
 
-        Visita savedVisita = Visita.builder()
-                .codigo("202011040945")
-                .recomendacao("realizar analise de solo.")
-                .situacao("Pastagem degradada")
-                .build();
+        Visita savedVisita = createValidVisitaEntity();
+        Persona validPersona = PersonaFactory.createValidPersona();
+        ProdutorMinDTO produtor = ProdutorFactory.createProdutorMinDto();
 
-        Mockito.when( repository.existsByCodigo(visita.getCodigo()) ).thenReturn(false);
-        Mockito.when( repository.save(Mockito.any(Visita.class)) ).thenReturn(savedVisita);
+
+        Mockito.when( personaService.PersonaExists(Mockito.anyString() )).thenReturn(true);
+        Mockito.when( personaService.save(Mockito.any(ProdutorMinDTO.class)) ).thenReturn(PersonaFactory.createValidPersona());
+        Mockito.when( verifyCpf.isCPF(Mockito.anyString()) ).thenReturn(false);
+        Mockito.when( visitaRepository.save(Mockito.any(Visita.class)) ).thenReturn(savedVisita);
+        Mockito.when( visitaRepository.existsByCodigo(visita.getCodigoVisita()) ).thenReturn(false);
+        Mockito.when( visitaRepository.findByCodigo(Mockito.anyString()) ).thenReturn(null);
 
         //execução
         VisitaDTO savedDto = service.save(visita);
+
         //verificação
-        assertThat(savedDto.getCodigo()).isNotEmpty();
-        assertThat(savedDto.getCodigo()).isEqualTo("202011040945");
-        assertThat(savedDto.getRecomendacao()).isEqualTo("realizar analise de solo.");
-        assertThat(savedDto.getSituacao()).isEqualTo("Pastagem degradada");
+        assertThat(savedDto.getCodigoVisita()).isNotEmpty();
+        assertThat(savedDto.getCodigoVisita()).isEqualTo("20201129");
+        assertThat(savedDto.getRecomendacao()).isEqualTo("Adubação fosfatado na época do plantio");
+        assertThat(savedDto.getSituacaoAtual()).isEqualTo("Apresenta baixa produção e custos altos");
+        assertThat(savedDto.getProdutores().size()).isEqualTo(5);
+        assertThat(savedDto.getChamadas().size()).isEqualTo(3);
+
+
 
     }
 
+    private Visita createValidVisitaEntity() {
+        return VisitaFactory.createVisitaEntity();
+    }
+
     private VisitaDTO createValidVisita() {
-        return VisitaDTO.builder()
-                .recomendacao("realizar analise de solo.")
-                .situacao("Pastagem degradada")
-                .build();
+        return VisitaFactory.createVisitaDto();
     }
 
     @Test
@@ -77,9 +122,8 @@ public class VisitaServiceTest {
         VisitaDTO visita = createValidVisita();
 
         String error_Message = "Identificador já existe";
-
-        Mockito.when( repository.existsByCodigo( visita.getCodigo() ) ).thenReturn( true );
-
+        BDDMockito.when(visitaRepository.findByCodigo(Mockito.anyString()))
+                .thenReturn(VisitaFactory.createSavedVisita());
         //execução
         Throwable exception = Assertions.catchThrowable( () -> service.save( visita ) );
 
@@ -90,50 +134,39 @@ public class VisitaServiceTest {
                 ;
 
         //verificando se chamou a funcao save()
-        Mockito.verify(repository, Mockito.never()).save(Mockito.any(Visita.class));
-        Mockito.verify(repository, Mockito.times(0)).save(Mockito.any(Visita.class));
+        Mockito.verify(visitaRepository, Mockito.never()).save(Mockito.any(Visita.class));
+        Mockito.verify(visitaRepository, Mockito.times(0)).save(Mockito.any(Visita.class));
 
     }
     @Test
     @DisplayName("Deve retornar um objeto VisitaDto se for encontrada no banco de dados.")
     public void getByCodigoTest(){
-        String id = "202011052234";
+        String id = "2020101005";
 
-         Mockito.when( repository.findByCodigo( Mockito.anyString() ) ).thenReturn( VisitaFactory.createSavedVisita() );
+        Mockito.when( visitaRepository.findByCodigo( id ) ).thenReturn( VisitaFactory.createSavedVisita() );
 
-        Optional<VisitaDTO> visita = this.service.getByCodigo(id);
-
-        //verificando se chamou a funcao save()
-        Mockito.verify(repository, Mockito.times(1)).findByCodigo(Mockito.anyString());
-        assertThat(visita.isPresent()).isTrue();
-        assertThat(visita.get().getCodigo()).isEqualTo(id);
-        assertThat(visita.get().getRecomendacao()).isEqualTo("Realizar analise de solo urgente.");
-        assertThat(visita.get().getSituacao()).isEqualTo("Pastagem degradada.");
-    }
-    @Test
-    @DisplayName("Deve retornar vazio ao tentar obter uma visita cujo código não existe no BD.")
-    public void getByCodigoNotFoundTest(){
-        String id = "202011052234";
-
-         Mockito.when( repository.findByCodigo( Mockito.anyString() ) ).thenReturn( Optional.empty() );
-
-        Optional<VisitaDTO> visita = this.service.getByCodigo(id);
+        VisitaDTO visita = this.service.getByCodigo(id);
 
         //verificando se chamou a funcao save()
-        Mockito.verify(repository, Mockito.times(1)).findByCodigo(Mockito.anyString());
-        assertThat(visita.isPresent()).isFalse();
-
+        Mockito.verify(visitaRepository, Mockito.times(1)).findByCodigo(Mockito.anyString());
+        assertThat(visita.getCodigoVisita()).isEqualTo(id);
+        assertThat(visita.getRecomendacao()).isEqualTo("Procurar o IEG/SUPRAM");
+        assertThat(visita.getSituacaoAtual()).isEqualTo("Pastagem degradada.");
     }
+
     @Test
     @DisplayName("Deve deletar uma visita")
     public void delete(){
         Visita visita = VisitaFactory.createNewValidVisita();
 
+        visita.setCodigo("2020");
+        Mockito.when( visitaRepository.findByCodigo( "2020" ) ).thenReturn(Optional.of(visita) );
+
         //execução
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(()->service.delete(visita));
 
         //verificações
-        Mockito.verify(repository, Mockito.times(1)).delete(visita);
+        Mockito.verify(visitaRepository, Mockito.times(1)).delete(visita);
 
     }
     @Test
@@ -146,70 +179,44 @@ public class VisitaServiceTest {
 
 
         //verificações
-        Mockito.verify(repository, Mockito.never()).delete(visita);
+        Mockito.verify(visitaRepository, Mockito.never()).delete(visita);
     }
-    @Test
-    @DisplayName("Deve filtrar as propriedade da visita.")
-    public void findTest(){
 
-        Visita visita = VisitaFactory.createNewValidVisita();
-
-        VisitaDTO visitaDto = VisitaFactory.createNewValidVisitaDto();
-
-        List<Visita> list = Arrays.asList(visita);
-
-        long totalElements = 1;
-
-        PageRequest pageRequest = PageRequest.of(0, 10);
-
-        Page<Visita> page = new PageImpl<Visita>(list, pageRequest, totalElements);
-
-        Mockito.when( repository.findAll(
-                Mockito.any(Example.class),
-                Mockito.any(Pageable.class)
-                ) )
-                .thenReturn(page);
-
-        Page<VisitaDTO> result = service.find(visitaDto, pageRequest);
-
-        assertThat(result.getTotalElements()).isEqualTo(1);
-        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
-        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
-
-    }
     @Test
     @DisplayName("Deve ocorrer erro ao deletar uma visita inexistente")
     public void deleteNullVisitaTest(){
-        Visita visita = null;
+        Visita visita = VisitaFactory.createVisitaEntity();
 
         //execução
         org.junit.jupiter.api.Assertions.assertThrows(VisitaNotFoundException.class, ()->service.delete(visita));
 
-
         //verificações
-        Mockito.verify(repository, Mockito.never()).delete(visita);
+        Mockito.verify(visitaRepository, Mockito.never()).delete(visita);
     }
     @Test
-    @DisplayName("Deve atualizar a visita")
-    public void updateTest(){
-        //visita a atualizar
-        Visita visita = VisitaFactory.createNewValidVisita();
-        //visita.setCodigo("20201105");
+    @DisplayName("Deve checkar se o produtor está registrado no Banco de dados e salvar, caso noecessário.")
+    public void checkTest(){
+        ProdutorMinDTO prd = ProdutorFactory.createProdutorMinDto();
 
-        VisitaDTO visitaDto = new VisitaDTO();
+        Mockito.when(personaService.PersonaExists(Mockito.anyString())).thenReturn(true);
+        Persona checked = this.service.check(prd);
 
-        //simula a atualização
-        Visita updatingVisita = VisitaFactory.createNewValidVisita();
-
-        Mockito.when(repository.save(Mockito.any(Visita.class))).thenReturn(updatingVisita);
-
-        //execução
-        visitaDto = service.update(visitaDto);
-
-        //verificações
-        assertThat(visitaDto.getCodigo()).isEqualTo(visita.getCodigo());
-        assertThat(visitaDto.getRecomendacao()).isEqualTo(visita.getRecomendacao());
-        assertThat(visitaDto.getSituacao()).isEqualTo(visita.getSituacao());
-
+        assertThat(checked).isNotNull();
+        Mockito.verify(personaRepository, Mockito.never()).save(Mockito.any(Persona.class));
     }
+    @Test
+    @DisplayName("Deve checkar se o produtor está registrado no Banco de dados e salvar.")
+    public void checkNoExistTest(){
+        ProdutorMinDTO prd = ProdutorFactory.createProdutorMinDto();
+
+        Mockito.when(personaService.PersonaExists(Mockito.anyString())).thenReturn(false);
+        Mockito.when(personaService.save(Mockito.any(ProdutorMinDTO.class))).thenReturn(PersonaFactory.createValidPersona());
+        Mockito.when(personaRepository.save(Mockito.any(Persona.class))).thenReturn(PersonaFactory.createValidPersona());
+
+        Persona checked = this.service.check(prd);
+
+        assertThat(checked).isNotNull();
+        Mockito.verify(personaRepository, Mockito.times(1)).save(Mockito.any(Persona.class));
+    }
+
 }

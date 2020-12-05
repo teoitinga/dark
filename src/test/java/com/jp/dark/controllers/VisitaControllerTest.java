@@ -1,11 +1,21 @@
 package com.jp.dark.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jp.dark.config.Config;
+import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
+import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.Visita;
+import com.jp.dark.models.repository.CallRepository;
+import com.jp.dark.models.repository.PersonaRepository;
+import com.jp.dark.models.repository.VisitaRepository;
+import com.jp.dark.repository.ServiceProvidedRepository;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.services.impls.VisitaServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +36,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,16 +55,35 @@ public class VisitaControllerTest {
     @MockBean
     VisitaService service;
 
+    @MockBean
+    VisitaRepository visitaRepository;
+
+    @MockBean
+    CallRepository callRepository;
+
+    @MockBean
+    PersonaRepository personaRepository;
+
+    @MockBean
+    ServiceProvidedRepository serviceProvidedRepository;
+
+    @MockBean
+    private Config config;
+
+    @BeforeEach
+    public void setUp(){
+        //this.service = new VisitaServiceImpl(visitaRepository, callRepository, personaRepository, serviceProvidedRepository, config);
+    }
     @Test
     @DisplayName("Deve criar uma visita com sucesso.")
-    public void creaeteVisitaTest() throws Exception{
+    public void createVisitaTest() throws Exception{
 
         VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
 
         VisitaDTO savedDto =  VisitaFactory.createNewValidVisitaDto();
-        savedDto.setCodigo("2020");
 
-        BDDMockito.given(service.save(Mockito.any(VisitaDTO.class))).willReturn(savedDto);
+        BDDMockito.given(service.save(dto)).willReturn(savedDto);
+        BDDMockito.given(service.verifyProdutores(Mockito.anyList())).willReturn(ProdutorFactory.createList5ValidPersona());
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
@@ -67,9 +95,10 @@ public class VisitaControllerTest {
 
         mvc.perform(request)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("codigo").isNotEmpty())
                 .andExpect(jsonPath("recomendacao").value(dto.getRecomendacao()))
-                .andExpect(jsonPath("situacao").value(dto.getSituacao()))
+                .andExpect(jsonPath("situacaoAtual").value(dto.getSituacaoAtual()))
+                .andExpect(jsonPath("produtores", hasSize(5)))
+                .andExpect(jsonPath("chamadas ", hasSize(3)))
                 ;
     }
 
@@ -83,7 +112,7 @@ public class VisitaControllerTest {
         BDDMockito.given(service.find(Mockito.any(VisitaDTO.class), Mockito.any(Pageable.class)))
                 .willReturn(new PageImpl<VisitaDTO>(Arrays.asList(visita), PageRequest.of(0,100), 1));
 
-        String queryString = String.format("?situacao=%s&page=0&size=100", visita.getSituacao());
+        String queryString = String.format("?situacao=%s&page=0&size=100", visita.getSituacaoAtual());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API.concat(queryString))
                 .accept(MediaType.APPLICATION_JSON);
@@ -114,35 +143,7 @@ public class VisitaControllerTest {
 
        mvc.perform(request)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("errors", hasSize(2)))
-                ;
-    }
-    @Test
-    @DisplayName("Deve atualizar uma visita.")
-    public void updateVisitaTest() throws Exception {
-
-        String codigo = "202011052234";
-
-        VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
-
-        String json = new ObjectMapper().writeValueAsString(dto);
-
-        BDDMockito.given(service.getByCodigo(Mockito.anyString())).willReturn(Optional.of(VisitaFactory.createSavedVisitaDto()));
-        BDDMockito.given(service.update(Mockito.any(VisitaDTO.class))).willReturn( VisitaFactory.createSavedVisitaDto() );
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(API.concat("/".concat(codigo)))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(json);
-
-        //verificações
-        mvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("codigo").isNotEmpty())
-                .andExpect(jsonPath("codigo").value( codigo ))
-                .andExpect(jsonPath("recomendacao").value( dto.getRecomendacao() ))
-                .andExpect(jsonPath("situacao").value( dto.getSituacao() ))
+                .andExpect(jsonPath("errors", hasSize(4)))
                 ;
     }
 
@@ -154,8 +155,8 @@ public class VisitaControllerTest {
         VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
 
         String json = new ObjectMapper().writeValueAsString(dto);
+        BDDMockito.when(service.getByCodigo(codigo)).thenThrow(new VisitaNotFoundException());
 
-        BDDMockito.given(service.getByCodigo(Mockito.anyString())).willReturn(Optional.empty());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .put(API.concat("/".concat(codigo)))
@@ -174,9 +175,10 @@ public class VisitaControllerTest {
         String codigo = "20201104";
 
         VisitaDTO visita =  VisitaFactory.createNewValidVisitaDto();
-        visita.setCodigo(codigo);
+        visita.setCodigoVisita(codigo);
 
-        BDDMockito.given(service.getByCodigo(codigo)).willReturn(Optional.of(visita));
+
+        BDDMockito.when(service.getByCodigo(codigo)).thenReturn(visita);
 
         //execução
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API.concat("/" + codigo))
@@ -184,9 +186,9 @@ public class VisitaControllerTest {
 
         mvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("codigo").isNotEmpty())
+                .andExpect(jsonPath("codigoVisita").isNotEmpty())
                 .andExpect(jsonPath("recomendacao").value(visita.getRecomendacao()))
-                .andExpect(jsonPath("situacao").value(visita.getSituacao()))
+                .andExpect(jsonPath("situacaoAtual").value(visita.getSituacaoAtual()))
                 ;
     }
     @Test
@@ -195,7 +197,7 @@ public class VisitaControllerTest {
         String codigo = "20201104";
 
         VisitaDTO visita =  VisitaFactory.createNewValidVisitaDto();
-        visita.setCodigo(codigo);
+        visita.setCodigoVisita(codigo);
 
         BDDMockito.given(service.getByCodigo(codigo)).willThrow(new VisitaNotFoundException());
 

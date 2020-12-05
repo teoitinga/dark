@@ -28,6 +28,7 @@ public class VisitaController {
     private VisitaService service;
 
     public VisitaController(VisitaService service) {
+
         this.service = service;
     }
 
@@ -45,7 +46,7 @@ public class VisitaController {
             @ApiResponse(code = 200, message = "")
     })
     public VisitaDTO getDetails(@PathVariable String codigo){
-        return service.getByCodigo(codigo).orElseThrow(()->new VisitaNotFoundException());
+        return service.getByCodigo(codigo);
     }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -55,23 +56,6 @@ public class VisitaController {
     })
     public Page<VisitaDTO> find( VisitaDTO dto, Pageable pageRequest){
         return service.find(dto, pageRequest);
-    }
-
-    @PutMapping("{codigo}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("update a Visita")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "")
-    })
-    public VisitaDTO update(@PathVariable String codigo, @RequestBody @Valid VisitaDTO dto){
-        VisitaDTO visita = service.getByCodigo(codigo).orElseThrow(() -> new VisitaNotFoundException());
-        visita.setRecomendacao(dto.getRecomendacao());
-        visita.setSituacao(dto.getSituacao());
-
-        visita = service.update(visita);
-
-        return visita;
-
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -87,9 +71,10 @@ public class VisitaController {
         return new ApiErrors(exception);
     }
 
-    @ExceptionHandler(VisitaNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
-        return new ApiErrors(exception);
-    }
+//    @ExceptionHandler(VisitaNotFoundException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
+//        return new ApiErrors(exception);
+//    }
+
 }

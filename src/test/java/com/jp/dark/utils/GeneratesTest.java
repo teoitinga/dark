@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -36,4 +37,5 @@ public class GeneratesTest {
         assertThat(response).isNotEmpty();
         assertThat(response).isEqualTo(codigo.toString());
     }
+
 }

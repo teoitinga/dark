@@ -7,6 +7,7 @@ import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.impls.PersonaServiceImpl;
+import com.jp.dark.utils.GeraCpfCnpj;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ public class PersonaServiceTest {
     @MockBean
     PersonaRepository repository;
 
+    @MockBean
+    GeraCpfCnpj geraCpfCnpj;
+
     @BeforeEach
     public void setup(){
         this.service = new PersonaServiceImpl(repository);
@@ -48,6 +52,8 @@ public class PersonaServiceTest {
     @DisplayName("Deve retornar false caso o CPF seja invalido")
     public void cpfIsInValidTest(){
         String cpf = "11111111111";
+
+        Mockito.when(this.geraCpfCnpj.isCPF(Mockito.anyString())).thenReturn(false);
 
         boolean isValid = this.service.cpfIsValid(cpf);
 
@@ -77,36 +83,7 @@ public class PersonaServiceTest {
 
         assertThat(personaExists).isFalse();
     }
-    @Test
-    @DisplayName("Deve verificar o upcast de uma lista de ProdutorMinDTO para Persona")
-    public void toPersonaTest(){
-        List<ProdutorMinDTO> produtores = ProdutorFactory.createList5ValidProdutors();
 
-        List<Persona> pessoal = this.service.toPersona(produtores);
-
-        assertThat(pessoal).hasSize(5);
-        assertThat(pessoal).isNotEmpty();
-        assertThat(pessoal).isNotNull();
-        assertThat(pessoal.get(0).getNome()).isEqualTo(produtores.get(0).getNome());
-        assertThat(pessoal.get(0).getCpf()).isEqualTo(produtores.get(0).getCpf());
-        assertThat(pessoal.get(0).getCategoria()).isEqualTo(EnumCategoria.UNDEFINED);
-        assertThat(pessoal.get(0).getPermissao()).isEqualTo(EnumPermissao.CLIENTES);
-        assertThat(pessoal.get(0).getCidade()).isNull();
-        assertThat(pessoal.get(0).getEndereco()).isNull();
-        assertThat(pessoal.get(0).getNascimento()).isNull();
-        assertThat(pessoal.get(0).getTelefone()).isNull();
-        assertThat(pessoal.get(0).getSenha()).isNull();
-
-        assertThat(pessoal.get(4).getNome()).isEqualTo(produtores.get(4).getNome());
-        assertThat(pessoal.get(4).getCpf()).isEqualTo(produtores.get(4).getCpf());
-        assertThat(pessoal.get(4).getCategoria()).isEqualTo(EnumCategoria.UNDEFINED);
-        assertThat(pessoal.get(4).getPermissao()).isEqualTo(EnumPermissao.CLIENTES);
-        assertThat(pessoal.get(4).getCidade()).isNull();
-        assertThat(pessoal.get(4).getEndereco()).isNull();
-        assertThat(pessoal.get(4).getNascimento()).isNull();
-        assertThat(pessoal.get(4).getTelefone()).isNull();
-        assertThat(pessoal.get(4).getSenha()).isNull();
-    }
     @Test
     @DisplayName("Deve verificar o downcast de uma lista de Persona para ProdutorMinDTO")
     public void toProdutorMinDTOTest(){
@@ -137,23 +114,5 @@ public class PersonaServiceTest {
 
     }
 
-    @Test
-    @DisplayName("Deve verificar o upcast de ProdutorMinDTO para Persona")
-    public void toPersonaSingleTest(){
-        ProdutorMinDTO produtor = ProdutorFactory.createProdutorMinDto();
 
-        Persona persona = this.service.toPersona(produtor);
-
-        assertThat(persona).isNotNull();
-        assertThat(persona.getNome()).isEqualTo(produtor.getNome());
-        assertThat(persona.getCpf()).isEqualTo(produtor.getCpf());
-        assertThat(persona.getCategoria()).isEqualTo(EnumCategoria.UNDEFINED);
-        assertThat(persona.getCidade()).isNull();
-        assertThat(persona.getEndereco()).isNull();
-        assertThat(persona.getNascimento()).isNull();
-        assertThat(persona.getTelefone()).isNull();
-        assertThat(persona.getPermissao()).isEqualTo(EnumPermissao.CLIENTES);
-        assertThat(persona.getSenha()).isNull();
-
-    }
 }

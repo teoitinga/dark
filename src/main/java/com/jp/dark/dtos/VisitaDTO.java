@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,12 +16,24 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class VisitaDTO {
 
-    private String codigo;
+    private String codigoVisita;
 
-    @NotEmpty(message = "Você deve informar a situação atual.")
-    private String situacao;
+    private String situacaoAtual;
 
-    @NotEmpty(message = "Você deve passar uma recomendação para a pessoa atendida!")
+    private String orientacao;
+
     private String recomendacao;
+
+    @NotEmpty(message = "Você deve registrar pelo menos uma chamada!")
+    private List<CallDTOPost> chamadas;
+
+    @NotEmpty(message = "Você deve informar a propriedade ou local do atendimento.")
+    private String localDoAtendimeno;
+
+    @NotEmpty(message = "Deve haver pelo menos 01(um) produtor inscrito.")
+    private List<ProdutorMinDTO> produtores;
+
+    @NotNull(message = "Você deve informar a data da visita.")
+    private String dataDaVisita;
 
 }

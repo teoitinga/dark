@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,7 +26,21 @@ public class Visita extends Auditable{
     @Column
     private String situacao;
 
-    @NotEmpty(message = "Você deve passar uma orientação para a pessoa atendida!")
     @Column
     private String recomendacao;
+
+    @OneToMany(mappedBy = "visita", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Call> chamadas;
+
+    @NotEmpty(message = "Você deve informar a propriedade ou local do atendimento.")
+    @Column
+    private  String localDoAtendimento;
+
+    @Column
+    private  String orientacao;
+
+    @ManyToMany
+    private List<Persona> produtores;
+
+    private LocalDate dataDaVisita;
 }

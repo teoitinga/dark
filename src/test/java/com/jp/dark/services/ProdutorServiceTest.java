@@ -5,7 +5,6 @@ import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.repository.PersonaRepository;
-import com.jp.dark.services.impls.ProdutorServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,14 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class ProdutorServiceTest {
 
-    ProdutorService service;
+    PersonaService service;
 
     @MockBean
     PersonaRepository repository;
 
     @BeforeEach
     public void setup(){
-        this.service = new ProdutorServiceImpl(repository);
+        //this.service = new ProdutorServiceImpl(repository);
     }
     @Test
     @DisplayName("Deve registrar um produtor válido.")

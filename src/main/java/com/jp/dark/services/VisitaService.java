@@ -1,26 +1,36 @@
 package com.jp.dark.services;
 
+import com.jp.dark.dtos.CallDTOPost;
+import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.dtos.VisitaDTO;
+import com.jp.dark.models.entities.Call;
+import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface VisitaService {
-    VisitaDTO save(VisitaDTO any);
+    public VisitaDTO save(VisitaDTO visitaDto);
 
-    String createId(String key);
+    abstract Visita findByCodigo(String codigo);
 
-    VisitaDTO toVisitaDto(Visita entity);
+    List<Call> verifyCalls(List<CallDTOPost> chamadas, Visita visita);
 
-    Visita toVisita(VisitaDTO visita);
+    List<Persona> verifyProdutores(List<ProdutorMinDTO> produtores);
 
-    Optional<VisitaDTO> getByCodigo(String codigo);
+    Persona check(ProdutorMinDTO prd);
 
-    VisitaDTO update(VisitaDTO visita);
+    boolean personaExists(String cpf);
+
+    boolean cpfIsValid(String cpf);
+
+    VisitaDTO getByCodigo(String codigo);
+
+    VisitaDTO toVisitaDTO(Visita vs);
+
+    Page<VisitaDTO> find(VisitaDTO dto, Pageable pageRequest);
 
     void delete(Visita visita);
-
-    Page<VisitaDTO> find(VisitaDTO filter, Pageable pageRequest);
 }

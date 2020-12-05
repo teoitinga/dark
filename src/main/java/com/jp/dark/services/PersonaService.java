@@ -8,23 +8,31 @@ import com.jp.dark.models.entities.Persona;
 import java.util.List;
 
 public interface PersonaService {
+    List<ProdutorMinDTO> toListProdutorMinDTO(List<Persona> produtores);
+
+    ProdutorMinDTO toProdutorMinDTO(Persona persona);
+
+    List<Persona> toListPersona(List<ProdutorMinDTO> produtores);
+
+    Persona toPersona(ProdutorMinDTO dto);
+
+    ProdutorDTO save(ProdutorDTO dto);
+
+    ProdutorDTO toProdutorDTO(Persona dto);
+
+    Persona toPersona(ProdutorDTO dto);
+
+    PersonaDTO update(String cpf, PersonaDTO dto);
+
     boolean cpfIsValid(String cpf);
 
     boolean PersonaExists(String cpf);
 
     List<Persona> toPersona(List<ProdutorMinDTO> produtores);
 
-    Persona toPersona(ProdutorMinDTO produtor);
-
-    ProdutorMinDTO save(ProdutorMinDTO produtor);
-
-    ProdutorMinDTO toProdutorMinDTO(Persona persona);
-
     List<ProdutorMinDTO> toProdutorMinDTO(List<Persona> produtores);
 
-    PersonaDTO toPersonaDTO(Persona persona);
+    Persona save(ProdutorMinDTO produtor);
 
-    Persona toPersona(ProdutorDTO produtor);
-
-    Persona toPersona(PersonaDTO personaDTO);
+    Persona findByCpf(String cpfReponsavel);
 }

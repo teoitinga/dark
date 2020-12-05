@@ -3,8 +3,13 @@ package com.jp.dark.models.repository;
 import com.jp.dark.auditables.AuditConfiguration;
 import com.jp.dark.auditables.AuditConfigurationTest;
 import com.jp.dark.auditables.AuditorAwareImpl;
+import com.jp.dark.factory.PersonaFactory;
+import com.jp.dark.factory.ProdutorFactory;
+import com.jp.dark.factory.ServiceProvidedFactory;
 import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.repository.ServiceProvidedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +37,12 @@ public class VisitaRepositoryTest {
 
     @Autowired
     VisitaRepository repository;
+
+    @Autowired
+    ServiceProvidedRepository serviceProvidedRepository;
+
+    @Autowired
+    PersonaRepository personaRepository;
 
     @BeforeEach
     public void setUp(){
@@ -76,6 +87,15 @@ public class VisitaRepositoryTest {
         String codigo = "2020211";
 
         visita.setCodigo(codigo);
+        ServiceProvided serviceProvided = ServiceProvidedFactory.createServiceProvided();
+
+        serviceProvided = serviceProvidedRepository.save(serviceProvided);
+
+        personaRepository.save(ProdutorFactory.createValidLucas());
+        personaRepository.save(ProdutorFactory.createValidMatheus());
+        personaRepository.save(ProdutorFactory.createValidBryan());
+        personaRepository.save(ProdutorFactory.createValidLara());
+        personaRepository.save(ProdutorFactory.createValidRenata());
 
         entityManager.persist(visita);
 
@@ -93,9 +113,18 @@ public class VisitaRepositoryTest {
 
     }
     @Test
-    @DisplayName("Deve salver um registro de visita")
+    @DisplayName("Deve salvar um registro de visita")
     public void saveTest(){
         Visita visita = VisitaFactory.createNewValidVisita();
+
+        ServiceProvided serviceProvided = ServiceProvidedFactory.createServiceProvided();
+
+        this.serviceProvidedRepository.save(serviceProvided);
+        personaRepository.save(ProdutorFactory.createValidLucas());
+        personaRepository.save(ProdutorFactory.createValidMatheus());
+        personaRepository.save(ProdutorFactory.createValidBryan());
+        personaRepository.save(ProdutorFactory.createValidLara());
+        personaRepository.save(ProdutorFactory.createValidRenata());
 
         Visita saved = repository.save(visita);
 
