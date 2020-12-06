@@ -2,6 +2,7 @@ package com.jp.dark.factory;
 
 
 import com.jp.dark.dtos.PricesDTO;
+import com.jp.dark.models.entities.InfoPrice;
 import com.jp.dark.models.entities.PricesItem;
 
 import java.math.BigDecimal;
@@ -63,6 +64,16 @@ public class PricesFactory {
                 .especificação("Boi Magro")
                 .unidade("@")
                 .id(1)
+                .build();
+
+    }
+
+    public static InfoPrice createValidInfoPrice() {
+        return InfoPrice.builder()
+                .especificacao(PricesFactory.createPriceItem())
+                .produtorInformante(PersonaFactory.createValidPersona())
+                .qtdPorUnid(15)
+                .valor(BigDecimal.valueOf(320.50))
                 .build();
 
     }

@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Builder
@@ -15,8 +14,15 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table
 public class PricesItem {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
     private String especificação;
+
     private String unidade;
+
+    private String unidadeDescricao;
+
     private String detalhes;
 }

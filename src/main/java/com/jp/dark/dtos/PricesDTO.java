@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class PricesDTO {
 
-    private int id;
+    private Integer id;
 
     @NotNull(message = "Você deve informar o valor unitário do produto vendido.")
     private BigDecimal valorUnitario;

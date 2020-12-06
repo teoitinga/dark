@@ -32,5 +32,5 @@ public class ServiceProvided extends Auditable{
     private BigDecimal defaultValue;
 
     @Column
-    private int timeRemaining;
+    private Integer timeRemaining;
 }

@@ -23,5 +23,5 @@ public class ServiceProvidedDTO {
 
     private BigDecimal defaultValue;
 
-    private int timeRemaining;
+    private Integer timeRemaining;
 }

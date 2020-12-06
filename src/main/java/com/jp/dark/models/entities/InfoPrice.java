@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class InfoPrice extends Auditable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @NotNull
@@ -27,7 +27,7 @@ public class InfoPrice extends Auditable{
     private BigDecimal valor;
 
     @Column(columnDefinition = "integer default 1")
-    private int qtdPorUnid;
+    private Integer qtdPorUnid;
 
     @ManyToOne
     private PricesItem especificacao;
