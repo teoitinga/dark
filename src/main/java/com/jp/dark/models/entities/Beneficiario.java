@@ -1,29 +1,35 @@
-package com.jp.dark.dtos;
+package com.jp.dark.models.entities;
 
+import com.jp.dark.dtos.ProdutorMinDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class BeneficiarioDTO {
+@Table
+public class Beneficiario extends Auditable{
 
+    @Id
+    @Column(nullable = false, unique = true)
     private Integer id;
 
     @NotNull(message = "Você deve informar o beneficiario.")
-    private ProdutorMinDTO beneficiario;
+    @ManyToOne
+    private Persona beneficiario;
 
     @NotNull(message = "Você deve informar a quantidade.")
     private Integer quantidade;
 
-    @NotNull(message = "Você deve informar o código do programa.")
-    private Integer codigoDoPrograma;
+    @ManyToOne
+    private Programa programa;
 
     private String observacoes;
-
 }

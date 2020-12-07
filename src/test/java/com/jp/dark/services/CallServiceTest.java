@@ -1,18 +1,18 @@
 package com.jp.dark.services;
 
+import com.jp.dark.config.Config;
 import com.jp.dark.dtos.CallDTO;
-import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.factory.CallFactory;
-import com.jp.dark.factory.ProdutorFactory;
+import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.ServiceProvidedFactory;
 import com.jp.dark.factory.VisitaFactory;
 import com.jp.dark.models.entities.Call;
-import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
-import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ServiceProvidedRepository;
+import com.jp.dark.services.impls.CallServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,9 +49,12 @@ public class CallServiceTest {
     @MockBean
     ServiceProvidedRepository serviceProvidedRepository;
 
+    Config config;
+
     @BeforeEach
     public void setup(){
-        //this.service = new CallServiceImpl(callRepository, visitaRepository, personaRepository, serviceProvidedRepository);
+        this.config = new Config();
+        this.service = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, visitaRepository);
     }
     @Test
     @DisplayName("Deve registrar uma chamada válida.")
@@ -59,16 +62,23 @@ public class CallServiceTest {
         CallDTO call = CallFactory.createCallDto();
         Call callmodified = CallFactory.createCall();
 
-        //VisitaDTO visita = VisitaFactory.createVisitaDto();
         Visita visita = VisitaFactory.createVisitaEntity();
 
+        Mockito.when(serviceProvidedRepository.findByCodigo(Mockito.anyString()))
+                .thenReturn(Optional.of(ServiceProvidedFactory.createServiceProvided()));
+
+        Mockito.when(personaRepository.findByCpf(Mockito.anyString()))
+                .thenReturn(Optional.of(PersonaFactory.createValidPersona()));
+
+        Mockito.when(callRepository.save(Mockito.any(Call.class)))
+                .thenReturn(CallFactory.createCall());
 
         CallDTO savedDto = this.service.save(call, visita);
 
         //verificação
         assertThat(savedDto.getCodigo()).isNotEmpty();
-        assertThat(savedDto.getCodigo()).isEqualTo("202010101010");
-        assertThat(savedDto.getOcorrencia()).isEqualTo("Realizar analise de solo.");
-        assertThat(savedDto.getStatus()).isEqualTo("iniciada");
+        assertThat(savedDto.getCodigo()).isEqualTo("2001");
+        assertThat(savedDto.getOcorrencia()).isEqualTo("No ocurrency");
+        assertThat(savedDto.getStatus()).isEqualTo("CANCELADA");
     }
 }

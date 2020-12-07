@@ -1,7 +1,6 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.MultiplosBeneficiariosDTO;
-import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ProgramaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

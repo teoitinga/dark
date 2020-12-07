@@ -1,6 +1,7 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.CallDTO;
+import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
@@ -33,8 +34,8 @@ public class CallController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CallDTO save(@RequestBody @Valid CallDTO dto){
-        return dto;//callService.save(dto);
+    public CallDTOPost save(@RequestBody @Valid CallDTOPost dto){
+        return callService.save(dto);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

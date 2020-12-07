@@ -1,9 +1,11 @@
 package com.jp.dark.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jp.dark.dtos.BeneficiarioDTO;
 import com.jp.dark.dtos.MultiplosBeneficiariosDTO;
 import com.jp.dark.factory.BeneficiarioFactory;
+import com.jp.dark.models.entities.Beneficiario;
+import com.jp.dark.models.repository.BeneficiarioRepository;
+import com.jp.dark.models.repository.ProgramaRepository;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ProgramaService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -41,6 +42,15 @@ public class ProgramaControllerTest {
     @MockBean
     private ProgramaService service;
 
+    @MockBean
+    private ProgramaRepository repository;
+
+    @MockBean
+    private PersonaService personaService;
+
+    @MockBean
+    private BeneficiarioRepository beneficiarioRepository;
+
     @Test
     @DisplayName("Deve registrar um ou varios produtores atendidos em um programa municipal.")
     public void registerListTest() throws Exception{
@@ -50,6 +60,7 @@ public class ProgramaControllerTest {
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.when(this.service.save(Mockito.any(MultiplosBeneficiariosDTO.class))).thenReturn(dto);
+        BDDMockito.when(this.beneficiarioRepository.save(Mockito.any(Beneficiario.class))).thenReturn(BeneficiarioFactory.createBeneficiario());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(API)

@@ -15,20 +15,40 @@ public class CallFactory {
     public static CallDTO createCallDto() {
 
         return  CallDTO.builder()
-
+                .codigoDaVisita("2001")
+                .servico("Servicao")
+                .serviceProvidedCode("LM")
+                .ocorrencia("No ocurrency")
+                .status(EnumStatus.CANCELADA.toString())
+                .CpfReponsavel("04459471604")
+                .valor(BigDecimal.valueOf(159))
                 .build();
     }
 
     public static CallDTO createSavedCallDto() {
         return  CallDTO.builder()
-
+                .codigoDaVisita("2001")
+                .servico("Servicao")
+                .serviceProvidedCode("LM")
+                .ocorrencia("No ocurrency")
+                .status(EnumStatus.CANCELADA.toString())
+                .CpfReponsavel("04459471604")
+                .valor(BigDecimal.valueOf(159))
                 .build();
 
     }
 
     public static Call createCall() {
         return  Call.builder()
-
+                .codigo("2001")
+                .servico("Servicao")
+                .serviceProvided(ServiceProvidedFactory.createServiceProvided())
+                .ocorrencia("No ocurrency")
+                .status(EnumStatus.CANCELADA)
+                .responsavel(PersonaFactory.createValidPersona())
+                .valor(BigDecimal.valueOf(159))
+                .previsaoDeConclusao(LocalDate.of(2021,01,04))
+                .visita(VisitaFactory.createVisitaEntity())
                 .build();
     }
 
@@ -77,6 +97,8 @@ public class CallFactory {
     public static List<Call> createListWith3Call() {
         List<Call> list = new ArrayList<>();
         list.add(createAnyCall());
+        list.add(createOtherCall());
+        list.add(createThirdCall());
 
         return list;
 
@@ -86,6 +108,30 @@ public class CallFactory {
         return Call.builder()
                 .codigo("20201030")
                 .servico("Elaboração de projeto")
+                .previsaoDeConclusao(LocalDate.of(2020,12,22))
+                .valor(BigDecimal.valueOf(180))
+                .ocorrencia("Sem ocorrências")
+                .status(EnumStatus.INICIADA)
+                .serviceProvided(ServiceProvidedFactory.createServiceProvided())
+                .responsavel(PersonaFactory.createValidPersona())
+                .build();
+    }
+    private static Call createOtherCall() {
+        return Call.builder()
+                .codigo("20201030")
+                .servico("Elaboração de CAR")
+                .previsaoDeConclusao(LocalDate.of(2020,12,22))
+                .valor(BigDecimal.valueOf(0))
+                .ocorrencia("Sem ocorrências***")
+                .status(EnumStatus.INICIADA)
+                .serviceProvided(ServiceProvidedFactory.createServiceProvided())
+                .responsavel(PersonaFactory.createValidPersona())
+                .build();
+    }
+    private static Call createThirdCall() {
+        return Call.builder()
+                .codigo("20201030")
+                .servico("Elaboração de outro projeto")
                 .previsaoDeConclusao(LocalDate.of(2020,12,22))
                 .valor(BigDecimal.valueOf(180))
                 .ocorrencia("Sem ocorrências")

@@ -5,7 +5,7 @@ import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.repository.PersonaRepository;
-import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ServiceProvidedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

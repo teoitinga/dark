@@ -2,19 +2,16 @@ package com.jp.dark.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jp.dark.config.Config;
-import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.factory.VisitaFactory;
-import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
-import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.VisitaService;
-import com.jp.dark.services.impls.VisitaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -147,28 +144,6 @@ public class VisitaControllerTest {
                 ;
     }
 
-    @Test
-    @DisplayName("Deve retornar 404 ao tentar atualizar uma visita inexistente.")
-    public void updateVisitaNotFoundTest() throws Exception {
-        String codigo = "20201104";
-
-        VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
-
-        String json = new ObjectMapper().writeValueAsString(dto);
-        BDDMockito.when(service.getByCodigo(codigo)).thenThrow(new VisitaNotFoundException());
-
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(API.concat("/".concat(codigo)))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(json);
-
-        //verificações
-        mvc.perform(request)
-                .andExpect(status().isNotFound())
-        ;
-    }
     @Test
     @DisplayName("Deve obter informações da visita")
     public void getDetailsVisitaTest() throws Exception {

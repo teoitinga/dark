@@ -1,15 +1,11 @@
 package com.jp.dark.models.repository;
 
-import com.jp.dark.auditables.AuditConfiguration;
 import com.jp.dark.auditables.AuditConfigurationTest;
-import com.jp.dark.auditables.AuditorAwareImpl;
-import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.factory.ServiceProvidedFactory;
 import com.jp.dark.factory.VisitaFactory;
 import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.entities.Visita;
-import com.jp.dark.repository.ServiceProvidedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,12 +49,20 @@ public class VisitaRepositoryTest {
     public void existsByCodigoTest(){
         //cenario
         String codigo = "20201104";
+        Visita visita = VisitaFactory.createNewValidVisita();
 
-        //persisitndo as informações da visita
-        Visita vs = VisitaFactory.createNewValidVisita();
-        vs.setCodigo(codigo);
+        visita.setCodigo(codigo);
+        ServiceProvided serviceProvided = ServiceProvidedFactory.createServiceProvided();
 
-        entityManager.persist(vs);
+        serviceProvided = serviceProvidedRepository.save(serviceProvided);
+
+        personaRepository.save(ProdutorFactory.createValidLucas());
+        personaRepository.save(ProdutorFactory.createValidMatheus());
+        personaRepository.save(ProdutorFactory.createValidBryan());
+        personaRepository.save(ProdutorFactory.createValidLara());
+        personaRepository.save(ProdutorFactory.createValidRenata());
+
+        entityManager.persist(visita);
 
         //execução
         boolean exists = repository.existsByCodigo(codigo);
@@ -106,7 +110,7 @@ public class VisitaRepositoryTest {
         assertThat(foundVisita.isPresent()).isTrue();
         assertThat(foundVisita.get().getCodigo()).isEqualTo(codigo);
         assertThat(foundVisita.get().getSituacao()).isEqualTo("Pastagem degradada.");
-        assertThat(foundVisita.get().getRecomendacao()).isEqualTo("Realizar analise de solo urgente.");
+        assertThat(foundVisita.get().getRecomendacao()).isEqualTo("Procurar o IEG/SUPRAM");
         assertThat(foundVisita.get().getCreatedBy()).isEqualTo("Test auditor");
         assertThat(foundVisita.get().getModifiedBy()).isEqualTo("Test auditor");
         assertThat(foundVisita.get().getCreated()).isBefore(LocalDateTime.now());

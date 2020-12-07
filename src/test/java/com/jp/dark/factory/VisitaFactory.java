@@ -38,6 +38,18 @@ public class VisitaFactory {
                 .localDoAtendimeno("Faz Bom sucesso")
                 .build();
     }
+    public static Visita createVisitaSaved() {
+        return Visita.builder()
+                .codigo("20201129")
+                .situacao("Apresenta baixa produção e custos altos")
+                .orientacao("Realizar coleta e amostra de solo")
+                .dataDaVisita(LocalDate.of(2020,11,19))
+                .recomendacao("Adubação fosfatado na época do plantio")
+                .produtores(ProdutorFactory.createList5ValidPersona())
+                .chamadas(CallFactory.createListWith3Call())
+                .localDoAtendimento("Faz Bom sucesso")
+                .build();
+    }
 
     public static Visita createVisitaEntity() {
         return Visita.builder()
@@ -71,7 +83,7 @@ public class VisitaFactory {
                 .orientacao("Obter a outorga para uso da água")
                 .recomendacao("Procurar o IEG/SUPRAM")
                 .dataDaVisita(LocalDate.of(2020,5,12))
-                .situacao("Bando de maconheiros")
+                .situacao("Pastagem degradada.")
                 .build();
     }
 }

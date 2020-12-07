@@ -3,6 +3,7 @@ package com.jp.dark.services.impls;
 import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.PersonaNotFoundException;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.enums.EnumCategoria;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class PersonaServiceImpl implements PersonaService {
+
     private final PersonaRepository repository;
 
     public PersonaServiceImpl(PersonaRepository personaRepository) {
@@ -68,18 +70,42 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public ProdutorDTO save(ProdutorDTO dto) {
+        /*
+        1- Verifica se o produtor já está registrado
+         */
+        boolean exists = this.personaExists(dto.getCpf());
+
+        if(exists){
+            throw new PersonaAlreadyExistsException();
+        }
+
+        String categoria;
+        try{
+            categoria = dto.getCategoria();
+        }catch (NullPointerException ex){
+            categoria = EnumCategoria.OUTROS.toString();
+        }
+        dto.setCategoria(categoria);
+
         Persona produtor = this.toPersona(dto);
-        return toProdutorDTO(this.repository.save(produtor));
+
+
+        Persona saved = this.repository.save(produtor);
+
+        return toProdutorDTO(saved);
     }
 
     @Override
     public ProdutorDTO toProdutorDTO(Persona dto) {
+
+        String categoria = dto.getCategoria().toString();
+
         return ProdutorDTO.builder()
                 .cpf(dto.getCpf())
                 .nome(dto.getNome())
                 .telefone(dto.getTelefone())
                 .nascimento(dto.getNascimento())
-                .categoria(dto.getCategoria().toString())
+                .categoria(categoria)
                 .endereco(dto.getEndereco())
                 .cidade(dto.getCidade())
                 .cep(dto.getCep())
@@ -93,7 +119,8 @@ public class PersonaServiceImpl implements PersonaService {
                 .nome(dto.getNome())
                 .telefone(dto.getTelefone())
                 .nascimento(dto.getNascimento())
-                .categoria(EnumCategoria.valueOf(dto.getCategoria().toString()))
+                .categoria(EnumCategoria.valueOf(dto.getCategoria()))
+                .permissao(EnumPermissao.CLIENTES)
                 .endereco(dto.getEndereco())
                 .cidade(dto.getCidade())
                 .cep(dto.getCep())
@@ -112,7 +139,7 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public boolean PersonaExists(String cpf) {
+    public boolean personaExists(String cpf) {
         return repository.existsByCpf(cpf);
     }
 
@@ -129,11 +156,12 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     public Persona save(ProdutorMinDTO produtor) {
         Persona prd = this.toPersona(produtor);
-        return this.repository.saveAndFlush(prd);
+        return this.repository.save(prd);
     }
 
     @Override
     public Persona findByCpf(String cpfReponsavel) {
+        log.info("Pesquisando CPF: {}", cpfReponsavel);
         return repository.findByCpf(cpfReponsavel).orElseThrow(()->new PersonaNotFoundException());
     }
 }

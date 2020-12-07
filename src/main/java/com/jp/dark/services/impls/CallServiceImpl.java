@@ -3,7 +3,6 @@ package com.jp.dark.services.impls;
 import com.jp.dark.config.Config;
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
-import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.entities.Visita;
@@ -11,7 +10,7 @@ import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
-import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,7 +96,9 @@ public class CallServiceImpl implements CallService {
     }
         Call chamada = this.toCall(dto, vs);
 
-        return this.toCallDTO(this.repository.save(chamada));
+        chamada = this.repository.save(chamada);
+        log.info("Chamada saveed {}", chamada);
+        return this.toCallDTO(chamada);
     }
 
     @Override
@@ -113,7 +113,6 @@ public class CallServiceImpl implements CallService {
         }catch (NullPointerException ex){
             dataQuitado = null;
         }
-
         return Call.builder()
                 .serviceProvided(this.serviceProvidedService.findByCodigoService(dto.getServiceProvidedCode()))
                 .status(EnumStatus.valueOf(dto.getStatus()))
@@ -214,4 +213,12 @@ public class CallServiceImpl implements CallService {
         response.setVisita(vs);
         return response;
     }
+
+    @Override
+    public CallDTOPost save(CallDTOPost dto) {
+        Call call = this.toCall(dto);
+        Call saved = this.repository.save(call);
+        return this.toCallDTOPost(saved);
+    }
+
 }

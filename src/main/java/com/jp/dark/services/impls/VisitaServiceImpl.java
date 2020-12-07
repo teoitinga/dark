@@ -4,7 +4,6 @@ import com.jp.dark.config.Config;
 import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.dtos.VisitaDTO;
-import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Persona;
@@ -12,7 +11,7 @@ import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
-import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
@@ -24,20 +23,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -87,6 +80,7 @@ public class VisitaServiceImpl implements VisitaService {
         /*
         1- Verifica consistencia das informações dos produtores
          */
+        log.info("Productors {}", visitaDto.getProdutores().size());
         List<Persona> produtores = verifyProdutores(visitaDto.getProdutores());
 
         //Configura produtores
@@ -137,6 +131,7 @@ public class VisitaServiceImpl implements VisitaService {
         7 - Configurando a recomendação
          */
         String recomendacao = visitaDto.getRecomendacao();
+        visitaToSave.setRecomendacao(recomendacao);
         /*
         8 - Configurando a Data da visita
          */
@@ -154,10 +149,10 @@ public class VisitaServiceImpl implements VisitaService {
         3 - Verifica consistencia das informações das chamadas
         */
 
-        visitaSaved = this.repository.save(visitaSaved);
-
         List<Call> calls = verifyCalls(visitaDto.getChamadas(), visitaSaved);
+        log.info("Calls {}", calls.size());
         calls = this.callService.save(calls);
+        log.info("Callas {}", calls.size());
         visitaSaved.setChamadas(calls);
         /*
         Fim do bloco que trata as chamdas
@@ -185,8 +180,7 @@ public class VisitaServiceImpl implements VisitaService {
         /*
         Verifica se existe o serviço referente às chamadas
          */
-        Visita vs = visitaSaved;//this.findByCodigo(chamadas.get(0).getCodigoDaVisita());
-
+        Visita vs = visitaSaved;
 
         List<Call> response = chamadas.stream()
                 .filter(call->this.serviceProvidedService.serviceExists(call.getServiceProvidedCode()))
@@ -196,7 +190,6 @@ public class VisitaServiceImpl implements VisitaService {
                 .map(call->this.callService.toCall(call, vs))
                 .collect(Collectors.toList());
 
-        //response.stream().map(call-> call.setVisita(vs)));
         return response;
     }
 
@@ -216,9 +209,9 @@ public class VisitaServiceImpl implements VisitaService {
 
     @Override
     public Persona check(ProdutorMinDTO prd) {
+        log.info("Produtor {}", prd);
             if(this.personaExists(prd.getCpf())){
                 //Se existe no banco de dados, somente retorna as informações deste produtor
-//                return this.personaService.toPersona(prd);
                 return this.personaService.findByCpf(prd.getCpf());
             }else{
                 //Se não existe, é feito o registro deste produtor no banco de dados
@@ -228,7 +221,7 @@ public class VisitaServiceImpl implements VisitaService {
     }
     @Override
     public boolean personaExists(String cpf) {
-        return this.personaService.PersonaExists(cpf);
+        return this.personaService.personaExists(cpf);
     }
 
     @Override

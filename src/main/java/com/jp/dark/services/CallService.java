@@ -27,4 +27,6 @@ public interface CallService {
     Call Save(Call call);
 
     Call toCall(Call call, Visita vs);
+
+    CallDTOPost save(CallDTOPost dto);
 }

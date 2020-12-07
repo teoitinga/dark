@@ -68,7 +68,7 @@ public class PersonaServiceTest {
 
         Mockito.when(repository.existsByCpf(cpf)).thenReturn(true);
 
-        boolean personaExists = this.service.PersonaExists(cpf);
+        boolean personaExists = this.service.personaExists(cpf);
 
         assertThat(personaExists).isTrue();
     }
@@ -79,7 +79,7 @@ public class PersonaServiceTest {
 
         Mockito.when(repository.existsByCpf(cpf)).thenReturn(false);
 
-        boolean personaExists = this.service.PersonaExists(cpf);
+        boolean personaExists = this.service.personaExists(cpf);
 
         assertThat(personaExists).isFalse();
     }

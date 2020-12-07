@@ -4,11 +4,10 @@ import com.jp.dark.dtos.PricesDTO;
 import com.jp.dark.models.entities.InfoPrice;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.PricesItem;
-import com.jp.dark.repository.InfoPriceRepository;
+import com.jp.dark.models.repository.InfoPriceRepository;
 import com.jp.dark.services.InfoPriceService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.PricesItemService;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

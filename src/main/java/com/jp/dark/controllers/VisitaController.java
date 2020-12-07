@@ -71,10 +71,10 @@ public class VisitaController {
         return new ApiErrors(exception);
     }
 
-//    @ExceptionHandler(VisitaNotFoundException.class)
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
-//        return new ApiErrors(exception);
-//    }
+    @ExceptionHandler(VisitaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
+        return new ApiErrors(exception);
+    }
 
 }

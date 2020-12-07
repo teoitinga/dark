@@ -1,4 +1,4 @@
-package com.jp.dark.repository;
+package com.jp.dark.models.repository;
 
 import com.jp.dark.models.entities.ServiceProvided;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,9 +2,12 @@ package com.jp.dark.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jp.dark.dtos.CallDTO;
+import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.factory.CallFactory;
 import com.jp.dark.factory.VisitaFactory;
+import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
 import org.junit.jupiter.api.DisplayName;
@@ -46,20 +49,24 @@ public class CallControllerTest {
     @MockBean
     private CallService callService;
 
+    @MockBean
+    CallRepository repository;
+
     @Test
     @DisplayName("Deve realizar uma chamada de serviço")
     public void saveTest() throws Exception {
 
-        CallDTO dto = CallFactory.createCallDto();
+        CallDTOPost dto = CallFactory.createOtherCallDTOPost();
         String json = new ObjectMapper().writeValueAsString(dto);
 
         BDDMockito.given(visitaService.getByCodigo(Mockito.anyString()))
                 .willReturn(VisitaFactory.createSavedVisitaDto());
 
-        CallDTO savedCall = CallFactory.createSavedCallDto();
+        CallDTOPost savedCall = CallFactory.createAnyCallDTOPost();
         Visita vs = VisitaFactory.createVisitaEntity();
-        BDDMockito.given(callService.save(dto, vs)).willReturn(savedCall);
+        BDDMockito.given(callService.save(dto)).willReturn(savedCall);
         BDDMockito.given(visitaService.getByCodigo(Mockito.anyString())).willReturn(VisitaFactory.createVisitaDto());
+        BDDMockito.given(repository.save(Mockito.any(Call.class))).willReturn(CallFactory.createCall());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -70,12 +77,7 @@ public class CallControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("codigo").isNotEmpty())
                 .andExpect(jsonPath("status").value("INICIADA"))
-                .andExpect(jsonPath("produtores", hasSize(5)))
-                .andExpect(jsonPath("serviceProvided.descricao").value("Cadastro Ambiental Rural"))
-                .andExpect(jsonPath("serviceProvided.referency").value("Elaboração de Cadastro Ambiental Rural"))
-                .andExpect(jsonPath("serviceProvided.defaultValue").value(100))
-                .andExpect(jsonPath("serviceProvided.timeRemaining").value(5))
-                .andExpect(jsonPath("serviceProvided.codigo").value("202010111010"))
+                .andExpect(jsonPath("serviceProvidedCode").value("LM"))
                 ;
     }
 

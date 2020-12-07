@@ -26,7 +26,7 @@ public interface PersonaService {
 
     boolean cpfIsValid(String cpf);
 
-    boolean PersonaExists(String cpf);
+    boolean personaExists(String cpf);
 
     List<Persona> toPersona(List<ProdutorMinDTO> produtores);
 

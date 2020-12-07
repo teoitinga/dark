@@ -2,9 +2,11 @@ package com.jp.dark.services;
 
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
+import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.repository.PersonaRepository;
+import com.jp.dark.services.impls.PersonaServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,18 +30,15 @@ public class ProdutorServiceTest {
 
     @BeforeEach
     public void setup(){
-        //this.service = new ProdutorServiceImpl(repository);
+        this.service = new PersonaServiceImpl(repository);
     }
     @Test
     @DisplayName("Deve registrar um produtor válido.")
     public void saveTest(){
         ProdutorDTO produtor = ProdutorFactory.createNewProdutorDto();
 
-        ProdutorDTO savedprodutor = ProdutorFactory.createNewProdutorDto();
-        Persona saved = ProdutorFactory.createNewPersona();
+        Mockito.when(this.repository.save(Mockito.any(Persona.class))).thenReturn(ProdutorFactory.createSavedFabio());
 
-        Mockito.when( repository.existsByCpf(Mockito.anyString()) ).thenReturn(false);
-        Mockito.when( repository.save(Mockito.any(Persona.class)) ).thenReturn(saved);
         //execução
         ProdutorDTO savedDto = service.save(produtor);
 
@@ -57,6 +56,7 @@ public class ProdutorServiceTest {
         Persona saved = ProdutorFactory.createNewPersona();
 
         Mockito.when( repository.existsByCpf(Mockito.anyString()) ).thenReturn(true);
+        Mockito.when( repository.save(Mockito.any(Persona.class)) ).thenReturn(ProdutorFactory.createValidBryan());
 
         String error_Message = "Persona already exists and cannot be overwritten";
 

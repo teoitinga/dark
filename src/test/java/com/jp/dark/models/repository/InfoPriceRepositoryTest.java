@@ -6,7 +6,6 @@ import com.jp.dark.factory.PricesFactory;
 import com.jp.dark.models.entities.InfoPrice;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.PricesItem;
-import com.jp.dark.repository.InfoPriceRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

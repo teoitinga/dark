@@ -4,7 +4,7 @@ import com.jp.dark.dtos.PricesDTO;
 import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.PricesFactory;
 import com.jp.dark.models.entities.InfoPrice;
-import com.jp.dark.repository.InfoPriceRepository;
+import com.jp.dark.models.repository.InfoPriceRepository;
 import com.jp.dark.services.impls.InfoPriceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.BIG_DECIMAL;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

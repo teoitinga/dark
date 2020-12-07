@@ -1,12 +1,14 @@
 package com.jp.dark.dtos;
 
+import com.jp.dark.models.entities.Beneficiario;
+import com.jp.dark.models.entities.Persona;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -16,11 +18,15 @@ import java.util.List;
 @NoArgsConstructor
 public class MultiplosBeneficiariosDTO {
 
+    @Id
+    @Column(nullable = false, unique = true)
     private Integer id;
 
-    @NotEmpty(message = "Você deve informar pelo menos um beneficiario.")
+    @NotNull(message = "Você deve informar o beneficiario.")
     private List<BeneficiarioDTO> beneficiarios;
 
-    @NotNull(message = "Você deve informar o programa que foi atendido.")
+    @NotNull(message = "Você deve informar o Programa executado.")
     private Integer codigoDoPrograma;
+
+
 }

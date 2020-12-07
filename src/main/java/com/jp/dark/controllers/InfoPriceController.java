@@ -2,9 +2,7 @@ package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.PricesDTO;
 import com.jp.dark.exceptions.ApiErrors;
-import com.jp.dark.repository.InfoPriceRepository;
 import com.jp.dark.services.InfoPriceService;
-import com.jp.dark.services.impls.InfoPriceServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

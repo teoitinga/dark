@@ -3,7 +3,9 @@ package com.jp.dark.factory;
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.enums.EnumCategoria;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,24 @@ public class ProdutorFactory {
         return ProdutorDTO.builder()
                 .cpf("34546628692")
                 .nome("Fábio Cauã Moreira")
+                .nascimento(LocalDate.of(1993,12,19))
+                .cidade("Itinga")
+                .cep("39610000")
+                .endereco("Rua da amargura, 22")
+                .telefone("32331522")
+                .categoria(EnumCategoria.AGRICULTOR_FAMILIAR.toString())
+                .build();
+    }
+    public static Persona createSavedFabio() {
+        return Persona.builder()
+                .cpf("34546628692")
+                .nome("Fábio Cauã Moreira")
+                .nascimento(LocalDate.of(1993,12,19))
+                .cidade("Itinga")
+                .cep("39610000")
+                .endereco("Rua da amargura, 22")
+                .telefone("32331522")
+                .categoria(EnumCategoria.AGRICULTOR_FAMILIAR)
                 .build();
     }
     public static ProdutorMinDTO createProdutorMinDto() {
@@ -26,6 +46,12 @@ public class ProdutorFactory {
                 .builder()
                 .cpf("34546628692")
                 .nome("Fábio Cauã Moreira")
+                .nascimento(LocalDate.of(1993,12,19))
+                .cidade("Itinga")
+                .cep("39610000")
+                .endereco("Rua da amargura, 22")
+                .telefone("32331522")
+                .categoria(EnumCategoria.AGRICULTOR_FAMILIAR)
                 .build();
     }
 
@@ -84,5 +110,17 @@ public class ProdutorFactory {
         produtores.add(new Persona("22987550600","Lucas João Almeida"));
 
         return produtores;
+    }
+
+    public static ProdutorMinDTO createLucas() {
+        return new ProdutorMinDTO("22987550600","Lucas João Almeida");
+    }
+
+    public static ProdutorMinDTO createLara() {
+        return new ProdutorMinDTO("38602989687","Lara Yasmin Ramos");
+    }
+
+    public static ProdutorMinDTO createBryan() {
+        return new ProdutorMinDTO("98370916651","Bryan Lorenzo da Luz");
     }
 }

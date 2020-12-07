@@ -4,7 +4,7 @@ import com.jp.dark.dtos.ServiceProvidedDTO;
 import com.jp.dark.exceptions.ServiceProvidedAlreadyException;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.models.entities.ServiceProvided;
-import com.jp.dark.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.ServiceProvidedService;
 import org.springframework.stereotype.Service;
 
