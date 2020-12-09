@@ -12,6 +12,7 @@ import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
@@ -23,8 +24,12 @@ public class PersonaServiceImpl implements PersonaService {
 
     private final PersonaRepository repository;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository) {
+    private PasswordEncoder passwordEncoder;
+
+    public PersonaServiceImpl(PersonaRepository personaRepository,
+                              PasswordEncoder passwordEncoder   ) {
         this.repository = personaRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -90,6 +95,17 @@ public class PersonaServiceImpl implements PersonaService {
         Persona produtor = this.toPersona(dto);
 
 
+        /*
+        Configura a senha cryptografada do usuario, caso não tenha informa, é atribuido o numero do CPF
+         */
+        String senha;
+        try{
+        senha = produtor.getSenha();
+        }catch (NullPointerException ex){
+            senha = produtor.getCpf();
+        }
+        produtor.setSenha(passwordEncoder.encode(senha));
+
         Persona saved = this.repository.save(produtor);
 
         return toProdutorDTO(saved);
@@ -129,6 +145,17 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public PersonaDTO update(String cpf, PersonaDTO dto) {
+
+        /*
+        Configura a senha cryptografada do usuario, caso não tenha informa, é atribuido o numero do CPF
+         */
+        String senha;
+        try{
+            senha = dto.getSenha();
+        }catch (NullPointerException ex){
+            senha = dto.getCpf();
+        }
+        dto.setSenha(passwordEncoder.encode(senha));
         return null;
     }
 
@@ -161,7 +188,6 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public Persona findByCpf(String cpfReponsavel) {
-        log.info("Pesquisando CPF: {}", cpfReponsavel);
         return repository.findByCpf(cpfReponsavel).orElseThrow(()->new PersonaNotFoundException());
     }
 }

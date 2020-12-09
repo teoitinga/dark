@@ -1,5 +1,6 @@
 package com.jp.dark.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class ProdutorDTO {
 
     private String telefone;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/YYYY")
     private LocalDate nascimento;
 
     private String categoria;

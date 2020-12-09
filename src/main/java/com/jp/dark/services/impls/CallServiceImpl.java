@@ -16,6 +16,7 @@ import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,16 +33,18 @@ public class CallServiceImpl implements CallService {
     private PersonaService personaService;
     private Config config;
     private VisitaRepository visitaRepository;
+    private PasswordEncoder passwordEncoder;
 
     public CallServiceImpl(CallRepository callRepository,
                            Config config,
                            PersonaRepository personaRepository,
                            ServiceProvidedRepository serviceRepository,
-                           VisitaRepository visitaRepository) {
+                           VisitaRepository visitaRepository,
+                           PasswordEncoder passwordEncoder) {
 
         this.repository = callRepository;
         this.serviceProvidedService = new ServiceProvidedServiceImpl(serviceRepository);
-        this.personaService = new PersonaServiceImpl(personaRepository);
+        this.personaService = new PersonaServiceImpl(personaRepository, passwordEncoder);
         this.visitaRepository = visitaRepository;
         this.config = config;
     }

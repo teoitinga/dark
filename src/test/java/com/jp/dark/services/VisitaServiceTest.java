@@ -28,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -57,6 +58,9 @@ public class VisitaServiceTest {
     GeraCpfCnpj verifyCpf;
 
     @MockBean
+    PasswordEncoder passwordEncoder;
+
+    @MockBean
     private ServiceProvidedRepository serviceProvidedRepository;
 
     @MockBean
@@ -71,9 +75,9 @@ public class VisitaServiceTest {
     @BeforeEach
     public void setup(){
         config = new Config();
-        this.service = new VisitaServiceImpl(visitaRepository, callRepository, personaRepository, serviceProvidedRepository, config);
-        this.personaService = new PersonaServiceImpl(personaRepository);
-        this.callService = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, visitaRepository);
+        this.service = new VisitaServiceImpl(visitaRepository, callRepository, personaRepository, serviceProvidedRepository, config, passwordEncoder);
+        this.personaService = new PersonaServiceImpl(personaRepository, passwordEncoder);
+        this.callService = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, visitaRepository, passwordEncoder);
         this.serviceProvidedService = new ServiceProvidedServiceImpl(serviceProvidedRepository);
     }
 

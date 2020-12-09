@@ -12,8 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -32,9 +34,12 @@ public class PersonaServiceTest {
     @MockBean
     GeraCpfCnpj geraCpfCnpj;
 
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void setup(){
-        this.service = new PersonaServiceImpl(repository);
+        this.service = new PersonaServiceImpl(repository, passwordEncoder);
     }
 
     @Test

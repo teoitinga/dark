@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,10 @@ public class ProdutorController {
 
     private PersonaService service;
 
-    public ProdutorController(PersonaRepository repository) {
-        this.service = new PersonaServiceImpl(repository);
+    private PasswordEncoder passwordEncoder;
+
+    public ProdutorController(PersonaRepository repository, PasswordEncoder passwordEncoder) {
+        this.service = new PersonaServiceImpl(repository, passwordEncoder);
     }
 
     @PostMapping

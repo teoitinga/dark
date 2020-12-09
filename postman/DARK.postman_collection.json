@@ -1,0 +1,175 @@
+{
+	"info": {
+		"_postman_id": "32b208c1-53d6-4842-907e-43a5e76af402",
+		"name": "DARK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Visita POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "54645011-b416-4711-a6c6-8cf084c24110",
+						"exec": [
+							"pm.test(\"Status code is 200\",  () => {\r",
+							"\r",
+							"  const responseJson = pm.response.json();\r",
+							"\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(responseJson.codigoVisita).to.is.not.null;\r",
+							"  pm.expect(responseJson.situacaoAtual).to.eql(\"Ta danado\");\r",
+							"  pm.expect(responseJson.orientacao).to.eql(\"Planta a mandioca\");\r",
+							"  pm.expect(responseJson.recomendacao).to.eql(\"vai que é bruto\");\r",
+							"  pm.expect(responseJson.dataDaVisita).to.eql(\"2020-10-26\");\r",
+							"  pm.expect(responseJson.localDoAtendimeno).to.eql(\"Fazenda Alibaba\");\r",
+							"  pm.expect(responseJson.chamadas.length).is.equal(3);\r",
+							"  pm.expect(responseJson.chamadas[0].servicoPrestado).to.eql(\"Elaboração de laudo de limite de crédito\");\r",
+							"  pm.expect(responseJson.produtores.length).is.equal(2);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"Nâo houve\",\r\n      \"serviceProvidedCode\": \"LM\",\r\n      \"servicoPrestado\": \"Elaboração de laudo de limite de crédito\",\r\n      \"valor\": 120\r\n    },\r\n        {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"também não\",\r\n      \"serviceProvidedCode\": \"ATER\",\r\n      \"servicoPrestado\": \"Elaboração de laudo de limite de crédito\",\r\n      \"valor\": 260\r\n    },\r\n            {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"também não\",\r\n      \"serviceProvidedCode\": \"LAS\",\r\n      \"servicoPrestado\": \"Elaboração de declaração de aptidão\",\r\n      \"valor\": 0\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-10-26\",\r\n  \"localDoAtendimeno\": \"Fazenda Alibaba\",\r\n  \"orientacao\": \"Planta a mandioca\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"04459471604\",\r\n      \"nome\": \"João Paulo Santana\"\r\n    },\r\n        {\r\n      \"cpf\": \"08967854676\",\r\n      \"nome\": \"Levi Manuel da Conceição\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"vai que é bruto\",\r\n  \"situacaoAtual\": \"Ta danado\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/visitas",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"visitas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Visita PUT",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"recomendacao\":\"Pastagem plantar mais coisas\",\r\n    \"situacao\":\"Pastagem muito ruim, análise de solo com baixos indices\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/visitas/20201122135606-123",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"visitas",
+						"20201122135606-123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Visita GET",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"recomendacao\":\"Pastagem plantar mais coisas\",\r\n    \"situacao\":\"Pastagem muito ruim, análise de solo com baixos indices\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/visitas",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"visitas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Visita GET BY ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"recomendacao\":\"Pastagem plantar mais coisas\",\r\n    \"situacao\":\"Pastagem muito ruim, análise de solo com baixos indices\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/visitas/20201123220403-044594716044",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"visitas",
+						"20201123220403-044594716044"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chamadas POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n  \"servico\": \"Tentativa de cadastro de CAR\",\r\n  \"ocorrencia\": \"tudo ok até agora\",\r\n  \"visita\": {\r\n    \"situacao\": \"trem doido demais sô\",\r\n    \"recomendacao\": \"procurar um que sabe fazer, menos eu\"\r\n  },\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"04459471604\",\r\n      \"nome\": \"José Alirio\"\r\n    },\r\n    {\r\n      \"cpf\": \"36353494610\",\r\n      \"nome\": \"Lucas João Almeida\"\r\n    },\r\n    {\r\n      \"cpf\": \"99527488680\",\r\n      \"nome\": \"Flávia Juliana Sales\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/chamadas",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"chamadas"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

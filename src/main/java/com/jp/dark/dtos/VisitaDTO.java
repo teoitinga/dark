@@ -1,5 +1,6 @@
 package com.jp.dark.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class VisitaDTO {
     private List<ProdutorMinDTO> produtores;
 
     @NotNull(message = "Você deve informar a data da visita.")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/YYYY")
     private String dataDaVisita;
 
 }
