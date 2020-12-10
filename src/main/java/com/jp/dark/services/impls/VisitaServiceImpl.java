@@ -16,6 +16,7 @@ import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.utils.FolderGenerate;
 import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +81,6 @@ public class VisitaServiceImpl implements VisitaService {
         /*
         1- Verifica consistencia das informações dos produtores
          */
-        log.info("Productors {}", visitaDto.getProdutores().size());
         List<Persona> produtores = verifyProdutores(visitaDto.getProdutores());
 
         //Configura produtores
@@ -150,13 +150,31 @@ public class VisitaServiceImpl implements VisitaService {
         */
 
         List<Call> calls = verifyCalls(visitaDto.getChamadas(), visitaSaved);
-        log.info("Calls {}", calls.size());
         calls = this.callService.save(calls);
-        log.info("Callas {}", calls.size());
         visitaSaved.setChamadas(calls);
         /*
         Fim do bloco que trata as chamdas
          */
+
+        /*
+        ############# Cria a pasta de atendimento
+         */
+        if(visitaDto.isCreateFolder()){
+
+        StringBuilder idFolder = new StringBuilder();
+        idFolder.append(visitaSaved.getProdutores().get(0).getCpf());
+        idFolder.append(" -");
+        idFolder.append(visitaSaved.getProdutores().get(0).getNome());
+
+        LocalDateTime data = visitaSaved.getDataDaVisita().atTime(LocalDateTime.now().getHour(),
+                LocalDateTime.now().getMinute(),
+                LocalDateTime.now().getSecond());
+
+        String folderName = Generates.keyCodeWithDate(idFolder.toString(), data);
+
+        FolderGenerate.createFolder(folderName);
+
+        }
 
         return toVisitaDTO(visitaSaved);
     }
@@ -209,7 +227,6 @@ public class VisitaServiceImpl implements VisitaService {
 
     @Override
     public Persona check(ProdutorMinDTO prd) {
-        log.info("Produtor {}", prd);
             if(this.personaExists(prd.getCpf())){
                 //Se existe no banco de dados, somente retorna as informações deste produtor
                 return this.personaService.findByCpf(prd.getCpf());

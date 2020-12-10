@@ -1,5 +1,6 @@
 package com.jp.dark.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class CallDTOPost {
     @NotNull(message = "Você deve informar o valor do Serviço")
     private BigDecimal valor;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String servicoQuitadoEm;
 
     private String status;

@@ -1,5 +1,6 @@
 package com.jp.dark.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,5 +36,7 @@ public class VisitaDTO {
 
     @NotNull(message = "Você deve informar a data da visita.")
     private String dataDaVisita;
+
+    private boolean createFolder;
 
 }
