@@ -3,6 +3,7 @@ package com.jp.dark.services;
 import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.dtos.UserDTO;
 import com.jp.dark.models.entities.Persona;
 
 import java.util.List;
@@ -35,4 +36,10 @@ public interface PersonaService {
     Persona save(ProdutorMinDTO produtor);
 
     Persona findByCpf(String cpfReponsavel);
+
+    UserDTO save(UserDTO dto);
+
+    UserDTO toUserDTO(Persona user);
+
+    Persona toPersona(UserDTO dto);
 }

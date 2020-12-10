@@ -4,4 +4,8 @@ public class PersonaAlreadyExistsException extends RuntimeException {
     public PersonaAlreadyExistsException() {
         super("Persona already exists and cannot be overwritten");
     }
+
+    public PersonaAlreadyExistsException(String errormessage) {
+        super(errormessage);
+    }
 }

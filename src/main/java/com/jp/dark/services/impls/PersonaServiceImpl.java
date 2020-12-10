@@ -3,6 +3,7 @@ package com.jp.dark.services.impls;
 import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.dtos.UserDTO;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.PersonaNotFoundException;
 import com.jp.dark.models.entities.Persona;
@@ -161,7 +162,42 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public Persona findByCpf(String cpfReponsavel) {
-        log.info("Pesquisando CPF: {}", cpfReponsavel);
         return repository.findByCpf(cpfReponsavel).orElseThrow(()->new PersonaNotFoundException());
+    }
+
+    @Override
+    public UserDTO save(UserDTO dto) {
+        if(this.personaExists(dto.getLogin())){
+            throw new PersonaAlreadyExistsException("Este usuário já existe!");
+        }
+
+        Persona usuario = toPersona(dto);
+        usuario = this.repository.save(usuario);
+        return toUserDTO(usuario);
+    }
+
+    @Override
+    public UserDTO toUserDTO(Persona user) {
+        return UserDTO.builder()
+                .login(user.getCpf())
+                .name(user.getNome())
+                .contato(user.getTelefone())
+                .password(user.getSenha())
+                .role(user.getPermissao().toString())
+                .municipio(user.getCidade())
+                .build();
+    }
+
+    @Override
+    public Persona toPersona(UserDTO dto) {
+
+        return Persona.builder()
+                .cpf(dto.getLogin())
+                .nome(dto.getName())
+                .cidade(dto.getMunicipio())
+                .telefone(dto.getContato())
+                .permissao(EnumPermissao.valueOf(dto.getRole()))
+                .senha(dto.getPassword())
+                .build();
     }
 }
