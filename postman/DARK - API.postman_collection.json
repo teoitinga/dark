@@ -1,0 +1,177 @@
+{
+	"info": {
+		"_postman_id": "90450d85-6be0-4d61-9d1e-aea2ee5d8e57",
+		"name": "DARK - API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Details about a user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user?id=<integer>",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "<integer>",
+							"description": "(Required) ID of the user"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "unexpected error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?id=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+				},
+				{
+					"name": "Details about a user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?id=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-next",
+							"value": "tempor nulla",
+							"description": "A link to the next page of responses"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+				}
+			]
+		},
+		{
+			"name": "User POST create new User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cpf\": \"64238171624\",\r\n  \"foneContato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"nome\": \"Diogo Otávio Caleb Brito\",\r\n  \"password\": \"123\",\r\n  \"role\": \"TECNICO\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}users",
+					"host": [
+						"{{api}}users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Visita POST create new visita",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"***\",\r\n      \"serviceProvidedCode\": \"LM\",\r\n      \"servicoPrestado\": \"Elaboração de limite de crédito\",\r\n      \"valor\": 150\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-12-08\",\r\n  \"localDoAtendimeno\": \"Faz. Alto Caparaó\",\r\n  \"orientacao\": \"Coletar amostra de solo\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"27827129005\",\r\n      \"nome\": \"Alessandra Fabiana Sophia Martins\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"adubar com 600 kg de superefosfato simples\",\r\n  \"situacaoAtual\": \"Produção baixa\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}visitas",
+					"host": [
+						"{{api}}visitas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User GET findUserByCpf",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api}}users/64238171624",
+					"host": [
+						"{{api}}users"
+					],
+					"path": [
+						"64238171624"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "baseUrl",
+			"key": "baseUrl",
+			"value": "http://petstore.swagger.io/v1",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
