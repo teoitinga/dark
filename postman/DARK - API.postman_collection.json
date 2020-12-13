@@ -103,12 +103,33 @@
 		},
 		{
 			"name": "User POST create new User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a0992916-6868-4907-9992-f1a99bcf0d23",
+						"exec": [
+							"pm.test(\"Check the create any User\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
+							"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
+							"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
+							"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
+							"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"cpf\": \"64238171624\",\r\n  \"foneContato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"nome\": \"Diogo Otávio Caleb Brito\",\r\n  \"password\": \"123\",\r\n  \"role\": \"TECNICO\"\r\n}",
+					"raw": "{\r\n  \"login\": \"64238171624\",\r\n  \"contato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"name\": \"Diogo Otávio Caleb Brito\",\r\n  \"password\": \"123\",\r\n  \"role\": \"TECNICO\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -125,13 +146,83 @@
 			"response": []
 		},
 		{
-			"name": "Visita POST create new visita",
+			"name": "User POST create Info Price",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "243c8a91-9ddd-4244-842e-e26f2c15c2b0",
+						"exec": [
+							"pm.test(\"Check the create any User\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.valorUnitario).to.equal(1.34);\r",
+							"  pm.expect(jsonData.qtdPorUnid).to.equal(5000);\r",
+							"  pm.expect(jsonData.especificacaoCod).to.equal(\"Leite tipo C\");\r",
+							"  pm.expect(jsonData.produtorInformante.cpf).to.equal(\"98370916651\");\r",
+							"pm.expect(jsonData.dataDoLevantamento).not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"***\",\r\n      \"serviceProvidedCode\": \"LM\",\r\n      \"servicoPrestado\": \"Elaboração de limite de crédito\",\r\n      \"valor\": 150\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-12-08\",\r\n  \"localDoAtendimeno\": \"Faz. Alto Caparaó\",\r\n  \"orientacao\": \"Coletar amostra de solo\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"27827129005\",\r\n      \"nome\": \"Alessandra Fabiana Sophia Martins\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"adubar com 600 kg de superefosfato simples\",\r\n  \"situacaoAtual\": \"Produção baixa\"\r\n}",
+					"raw": "{\r\n  \"produtorInformante\": {\r\n    \"cpf\": \"98370916651\",\r\n    \"nome\": \"Bryan Lorenzo da Luz\"\r\n  },\r\n  \"especificacaoCod\": \"LTC\",\r\n  \"qtdPorUnid\": 5000,\r\n  \"valorUnitario\": 1.34\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}infoprice",
+					"host": [
+						"{{api}}infoprice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Visita POST create new visita",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a916bb32-4e24-4a68-b4b5-0927f7ab2a7d",
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+							"  \r",
+							"    //analisando chamdas\r",
+							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+							"    //analisando produtores\r",
+							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"***\",\r\n      \"serviceProvidedCode\": \"LM\",\r\n      \"servicoPrestado\": \"Elaboração de limite de crédito\",\r\n      \"valor\": 150\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-12-08\",\r\n  \"localDoAtendimeno\": \"Faz. Alto Caparaó\",\r\n  \"orientacao\": \"Coletar amostra de solo\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"27827129005\",\r\n      \"nome\": \"Alessandra Fabiana Sophia Martins\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"adubar com 600 kg de superefosfato simples\",\r\n  \"situacaoAtual\": \"Produção baixa\",\r\n  \"createFolder\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -142,6 +233,55 @@
 					"raw": "{{api}}visitas",
 					"host": [
 						"{{api}}visitas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InfoRenda POST create new information on renda",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "46ca190a-1980-4c98-8dcc-e42a11b980db",
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+							"  \r",
+							"    //analisando chamdas\r",
+							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+							"    //analisando produtores\r",
+							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createFolder\": false,\r\n  \"dataDaVisita\": \"10/12/2020\",\r\n  \"localDoAtendimeno\": \"Fazenda Barão Vermelho\",\r\n  \"orientacao\": \"Providenciar documentação comprobatoria\",\r\n  \"producao\": [\r\n    {\r\n      \"codItemProducao\": \"1\",\r\n      \"dataProducao\": \"25/12/2019\",\r\n      \"quantidade\": 70,\r\n      \"valorUnitario\": 260\r\n    },\r\n    {\r\n      \"codItemProducao\": \"2\",\r\n      \"dataProducao\": \"08/05/2019\",\r\n      \"quantidade\": 700,\r\n      \"valorUnitario\": 1.26\r\n    }\r\n  ],\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"98370916651\",\r\n      \"nome\": \"Bryan Lorenzo da Luz\"\r\n    },\r\n    {\r\n      \"cpf\": \"22987550600\",\r\n      \"nome\": \"Lucas João Almeida\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"Realizar o ajuste anual de imposto de renda\",\r\n  \"situacaoAtual\": \"Precisa atualizar o cadastro junto a agencia financeira\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}inforenda",
+					"host": [
+						"{{api}}inforenda"
 					]
 				}
 			},
