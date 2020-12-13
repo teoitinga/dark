@@ -3,6 +3,7 @@ package com.jp.dark.services;
 import com.jp.dark.dtos.PricesDTO;
 import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.PricesFactory;
+import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.models.entities.InfoPrice;
 import com.jp.dark.models.repository.InfoPriceRepository;
 import com.jp.dark.services.impls.InfoPriceServiceImpl;
@@ -30,6 +31,7 @@ public class InfoPriceServiceTest {
 
     @MockBean
     PersonaService personaService;
+
     @MockBean
     PricesItemService pricesItemService;
 
@@ -42,9 +44,13 @@ public class InfoPriceServiceTest {
     @DisplayName("Deve registrar uma informação de preço com a data atual")
     public void saveTest(){
         PricesDTO dto = PricesFactory.createPriceBoiGordo();
+
+        Mockito.when(personaService.cpfIsValid(Mockito.anyString())).thenReturn(true);
+        Mockito.when(repository.save(Mockito.any(InfoPrice.class))).thenReturn(PricesFactory.createValidInfoPrice());
+
         PricesDTO pricesDTO = this.service.save(dto);
 
-        assertThat(pricesDTO.getEspecificacaoCod()).isEqualTo("4");
+        assertThat(pricesDTO.getEspecificacaoCod()).isEqualTo("Boi Magro");
     }
     @Test
     @DisplayName("Deve testar a conversão de PricesDTO dto para InfoPrice.")
@@ -56,6 +62,7 @@ public class InfoPriceServiceTest {
 
         Mockito.when(this.pricesItemService.findById(Mockito.anyString()))
                 .thenReturn(PricesFactory.createPriceItem());
+        Mockito.when(personaService.cpfIsValid(Mockito.anyString())).thenReturn(true);
 
         //Execução
         InfoPrice prices = this.service.toInfoPrice(dto);

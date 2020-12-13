@@ -86,4 +86,17 @@ public class VisitaFactory {
                 .situacao("Pastagem degradada.")
                 .build();
     }
+
+    public static VisitaDTO createVisitaInfoRenda() {
+        return VisitaDTO.builder()
+                .codigoVisita("20201220")
+                .situacaoAtual("Pretende fazer o levantamento de renda para credito rural")
+                .orientacao("Providenciar documentação comprobatoria")
+                .dataDaVisita(LocalDate.of(2020,12,10).toString())
+                .recomendacao("Emitir a declaração de ajuste anual de imposto de renda")
+                .produtores(ProdutorFactory.createList5ValidProdutors())
+                .chamadas(CallFactory.createListWith3CallDTO())
+                .localDoAtendimeno("Faz Bom sucesso")
+                .build();
+    }
 }

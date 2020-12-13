@@ -1,30 +1,32 @@
 package com.jp.dark.models.entities;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+import java.math.BigDecimal;
 @Data
 @Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-public class PricesItem {
+public class ItemProducao {
+
     @Id
-    private String id;
+    private String codigo;
 
-    private String especificação;
+    private String descricao;
 
-    private String unidade;
+    private String referencia;
 
-    private String unidadeDescricao;
+    private String textoMDA;
 
-    private String detalhes;
+    private BigDecimal fatorConvParaAnual;
 
     @ManyToOne
-    private ItemProducao itemDeProducao;
+    private OrigemRenda origem;
 }

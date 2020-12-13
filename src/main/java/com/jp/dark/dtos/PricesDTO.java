@@ -28,6 +28,8 @@ public class PricesDTO {
     @NotEmpty(message = "Você deve descrever o item informado.")
     private String especificacaoCod;
 
-    @NotEmpty(message = "Você deve informar o produtor consultado")
-    private String cpfProdutorInformante;
+    private String dataDoLevantamento;
+
+    @NotNull(message = "Você deve informar o produtor consultado")
+    private ProdutorMinDTO produtorInformante;
 }

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class PricesFactory {
     public static PricesDTO createPriceBoiMagro() {
         return PricesDTO.builder()
-                .cpfProdutorInformante("04459471604")
+                .produtorInformante(ProdutorFactory.createBryan())
                 .especificacaoCod("1")
                 .valorUnitario(BigDecimal.valueOf(350.00))
                 .qtdPorUnid(6)
@@ -19,7 +19,7 @@ public class PricesFactory {
 
     public static PricesDTO createPriceVacaMagra() {
         return PricesDTO.builder()
-                .cpfProdutorInformante("04459471604")
+                .produtorInformante(ProdutorFactory.createBryan())
                 .especificacaoCod("2")
                 .valorUnitario(BigDecimal.valueOf(210.25))
                 .qtdPorUnid(13)
@@ -28,7 +28,7 @@ public class PricesFactory {
 
     public static PricesDTO createPriceLitroDeLeite() {
         return PricesDTO.builder()
-                .cpfProdutorInformante("04459471604")
+                .produtorInformante(ProdutorFactory.createBryan())
                 .especificacaoCod("3")
                 .valorUnitario(BigDecimal.valueOf(1.58))
                 .qtdPorUnid(1)
@@ -38,8 +38,8 @@ public class PricesFactory {
 
     public static PricesDTO createPriceBoiGordo() {
         return PricesDTO.builder()
-                .cpfProdutorInformante("04459471604")
-                .especificacaoCod("4")
+                .produtorInformante(ProdutorFactory.createBryan())
+                .especificacaoCod("LT")
                 .valorUnitario(BigDecimal.valueOf(210.22))
                 .qtdPorUnid(16)
                 .build();
@@ -52,7 +52,7 @@ public class PricesFactory {
 
     public static PricesDTO createPriceNoQtdPorUnid() {
         return PricesDTO.builder()
-                .cpfProdutorInformante("04459471604")
+                .produtorInformante(ProdutorFactory.createBryan())
                 .especificacaoCod("4")
                 .valorUnitario(BigDecimal.valueOf(210.22))
                 .build();
@@ -63,7 +63,7 @@ public class PricesFactory {
                 .detalhes("Boi de 5-8 arrobas")
                 .especificação("Boi Magro")
                 .unidade("@")
-                .id(1)
+                .id("1")
                 .build();
 
     }

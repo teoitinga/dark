@@ -6,5 +6,7 @@ import com.jp.dark.models.entities.InfoPrice;
 public interface InfoPriceService {
     PricesDTO save(PricesDTO dto);
 
+    PricesDTO toInfoPriceDTO(InfoPrice infoPrice);
+
     InfoPrice toInfoPrice(PricesDTO dto);
 }
