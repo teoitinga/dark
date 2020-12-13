@@ -42,4 +42,6 @@ public interface PersonaService {
     UserDTO toUserDTO(Persona user);
 
     Persona toPersona(UserDTO dto);
+
+    UserDTO getDetailsUser(String login);
 }

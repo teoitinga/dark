@@ -200,4 +200,10 @@ public class PersonaServiceImpl implements PersonaService {
                 .senha(dto.getPassword())
                 .build();
     }
+
+    @Override
+    public UserDTO getDetailsUser(String login) {
+        Persona usuario = this.findByCpf(login);
+        return toUserDTO(usuario);
+    }
 }

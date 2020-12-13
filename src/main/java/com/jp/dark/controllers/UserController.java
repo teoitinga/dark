@@ -30,4 +30,11 @@ public class UserController {
 
         return service.save(dto);
     }
+    @GetMapping("{login}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("CREATE a valid User")
+    public UserDTO details(@PathVariable String login){
+
+        return service.getDetailsUser(login);
+    }
 }
