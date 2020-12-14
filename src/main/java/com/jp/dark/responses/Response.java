@@ -1,4 +1,4 @@
-package com.jp.dark.response;
+package com.jp.dark.responses;
 
 import java.util.ArrayList;
 import java.util.List;
