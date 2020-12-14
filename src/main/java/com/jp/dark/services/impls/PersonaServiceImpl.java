@@ -13,6 +13,8 @@ import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
@@ -23,9 +25,11 @@ import java.util.stream.Collectors;
 public class PersonaServiceImpl implements PersonaService {
 
     private final PersonaRepository repository;
+    private PasswordEncoder encoder;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository) {
+    public PersonaServiceImpl(PersonaRepository personaRepository, PasswordEncoder passwordEncoder) {
         this.repository = personaRepository;
+        this.encoder = passwordEncoder;
     }
 
     @Override
@@ -90,9 +94,9 @@ public class PersonaServiceImpl implements PersonaService {
 
         Persona produtor = this.toPersona(dto);
 
+        produtor.setEnabled(true);
 
         Persona saved = this.repository.save(produtor);
-
         return toProdutorDTO(saved);
     }
 
@@ -171,7 +175,11 @@ public class PersonaServiceImpl implements PersonaService {
             throw new PersonaAlreadyExistsException("Este usuário já existe!");
         }
 
+        //criptografa a senha para registro no banco de dados
+        dto.setPassword(encoder.encode(dto.getPassword()));
+
         Persona usuario = toPersona(dto);
+        usuario.setEnabled(true);
         usuario = this.repository.save(usuario);
         return toUserDTO(usuario);
     }

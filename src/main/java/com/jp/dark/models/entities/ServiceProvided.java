@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-public class ServiceProvided extends Auditable{
+public class ServiceProvided{
     @Id
     @Column(nullable = false, unique = true)
     private String codigo;

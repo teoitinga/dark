@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,11 +52,12 @@ public class VisitaServiceImpl implements VisitaService {
                              CallRepository callRepository,
                              PersonaRepository personaRepository,
                              ServiceProvidedRepository serviceProvidedRepository,
-                             Config config) {
+                             Config config,
+                             PasswordEncoder passwordEncoder) {
 
         this.repository = visitaRepository;
-        this.callService = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, repository);
-        this.personaService = new PersonaServiceImpl(personaRepository);
+        this.callService = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, repository, passwordEncoder);
+        this.personaService = new PersonaServiceImpl(personaRepository, passwordEncoder);
         this.serviceProvidedService = new ServiceProvidedServiceImpl(serviceProvidedRepository);
         this.config = config;
     }
