@@ -6,6 +6,7 @@ import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -21,13 +22,17 @@ public class DataLoader {
     private OrigemRendaRepository origemRepository;
     private PricesItemRepository pricesItemRepository;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     public DataLoader(ServiceProvidedRepository serviceRepository,
                       PersonaRepository personaRepository,
                       ItemProducaoRepository itemProducaoRepository,
                       OrigemRendaRepository origemRepository,
-                      PricesItemRepository pricesItemRepository
+                      PricesItemRepository pricesItemRepository,
+                      PasswordEncoder passwordEncoder
     ) {
+        this.passwordEncoder = passwordEncoder;
         this.serviceRepository = serviceRepository;
         this.personaRepository = personaRepository;
         this.itemProducaoRepository = itemProducaoRepository;
@@ -41,7 +46,7 @@ public class DataLoader {
 
     private void LoadUsers() {
         this.personaRepository.save(new Persona("04459471604", "João Paulo Santana Gusmão", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
-                "35140000","Tarumirim","jacare", EnumCategoria.UNDEFINED, EnumPermissao.ADMINISTRADOR));
+                "35140000","Tarumirim",this.passwordEncoder.encode("jacare"), EnumCategoria.UNDEFINED, EnumPermissao.TECNICO, true));
     }
 
     private void LoadServicesProvided() {

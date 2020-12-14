@@ -7,23 +7,258 @@
 	"item": [
 		{
 			"name": "Details about a user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f01a4603-3ad5-42c7-821b-f044096168f2",
+						"exec": [
+							"pm.test(\"Check the create any User\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(200);\r",
+							"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
+							"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
+							"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
+							"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
+							"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/user?id=<integer>",
+					"raw": "{{api}}users/64238171624",
 					"host": [
-						"{{baseUrl}}"
+						"{{api}}users"
 					],
 					"path": [
-						"user"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "<integer>",
-							"description": "(Required) ID of the user"
+						"64238171624"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "unexpected error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?id=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "<integer>"
+								}
+							]
 						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+				},
+				{
+					"name": "Details about a user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?id=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-next",
+							"value": "tempor nulla",
+							"description": "A link to the next page of responses"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+				}
+			]
+		},
+		{
+			"name": "test GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e91569b7-3fb5-42c5-accf-e744e23fdc13",
+						"exec": [
+							"pm.test(\"Check the test security\", () => {\r",
+							"\r",
+							"  pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "joao"
+				},
+				"url": {
+					"raw": "{{api}}test",
+					"host": [
+						"{{api}}test"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Details about a user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?id=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-next",
+							"value": "tempor nulla",
+							"description": "A link to the next page of responses"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+				},
+				{
+					"name": "unexpected error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?id=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+				}
+			]
+		},
+		{
+			"name": "test POST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f0bd044a-be9b-4ee2-8c77-c3d17eee4fe4",
+						"exec": [
+							"pm.test(\"Check the test security\", () => {\r",
+							"\r",
+							"  pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "joao"
+				},
+				"url": {
+					"raw": "{{api}}test",
+					"host": [
+						"{{api}}test"
 					]
 				}
 			},

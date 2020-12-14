@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -51,10 +52,13 @@ public class CallServiceTest {
 
     Config config;
 
+    @MockBean
+    PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void setup(){
         this.config = new Config();
-        this.service = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, visitaRepository);
+        this.service = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, visitaRepository, passwordEncoder);
     }
     @Test
     @DisplayName("Deve registrar uma chamada válida.")
