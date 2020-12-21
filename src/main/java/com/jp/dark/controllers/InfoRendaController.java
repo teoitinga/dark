@@ -1,5 +1,6 @@
 package com.jp.dark.controllers;
 
+import com.jp.dark.config.Config;
 import com.jp.dark.dtos.InfoRendaDTO;
 import com.jp.dark.services.InfoRendaService;
 import com.jp.dark.services.impls.InfoRendaServiceImpl;
@@ -19,9 +20,12 @@ public class InfoRendaController {
 
 
     private InfoRendaService service;
+    private Config config;
 
-    public InfoRendaController() {
-        this.service = new InfoRendaServiceImpl();
+    public InfoRendaController(Config config,
+                               InfoRendaService service) {
+        this.config = config;
+        this.service = service;
     }
 
     @PostMapping

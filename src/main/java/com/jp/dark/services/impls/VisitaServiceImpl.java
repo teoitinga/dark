@@ -155,6 +155,9 @@ public class VisitaServiceImpl implements VisitaService {
         List<Call> calls = verifyCalls(visitaDto.getChamadas(), visitaSaved);
         calls = this.callService.save(calls);
         visitaSaved.setChamadas(calls);
+        //atualizando Visita
+        visitaSaved = this.repository.save(visitaSaved);
+
         /*
         Fim do bloco que trata as chamdas
          */
@@ -204,10 +207,10 @@ public class VisitaServiceImpl implements VisitaService {
         Visita vs = visitaSaved;
 
         List<Call> response = chamadas.stream()
-                .filter(call->this.serviceProvidedService.serviceExists(call.getServiceProvidedCode()))
-                .map(call->this.callService.toCall(call))
-                .map(call->this.callService.toCall(call, vs))
-                .map(call->this.callService.toCallDTO(call))
+                //.filter(call->this.serviceProvidedService.serviceExists(call.getServiceProvidedCode()))
+                //.map(call->this.callService.toCall(call))
+                //.map(call->this.callService.toCall(call, vs))
+                //.map(call->this.callService.toCallDTO(call))
                 .map(call->this.callService.toCall(call, vs))
                 .collect(Collectors.toList());
 
@@ -331,5 +334,10 @@ public class VisitaServiceImpl implements VisitaService {
     public void delete(Visita visita) {
         Visita vs = this.repository.findByCodigo(visita.getCodigo()).orElseThrow(()->new VisitaNotFoundException());
         this.repository.delete(vs);
+    }
+
+    @Override
+    public Visita save(Visita visita) {
+        return this.repository.save(visita);
     }
 }

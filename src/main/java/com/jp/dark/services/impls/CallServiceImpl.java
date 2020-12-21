@@ -213,10 +213,11 @@ public class CallServiceImpl implements CallService {
 
     @Override
     public List<Call> save(List<Call> call) {
-        return call.stream().map(c-> Save(c)).collect(Collectors.toList());
+        return call.stream().map(c-> save(c)).collect(Collectors.toList());
     }
     @Override
-    public Call Save(Call call) {
+    public Call save(Call call) {
+        log.info("Salvando registro de chamdas: {}", call);
         call.setCodigo(Generates.keyCodeWithDate(Generates.createNumber(), LocalDateTime.now()));
         return this.repository.save(call);
     }
@@ -298,13 +299,47 @@ public class CallServiceImpl implements CallService {
         Persona responsavel = this.personaService.findByCpf(nome);
 
         Page<Call> result = this.repository.findByResponsavel(responsavel, pageRequest);
-        log.info("Total de : {}", result.getTotalElements());
 
         List<CallDTOPost> list =result.getContent().stream()
                 .map(entity->toCallDTOPost(entity))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(list, pageRequest, result.getTotalElements());
+    }
+
+    @Override
+    public Call toCall(CallDTOPost call, Visita vs) {
+        Call c = new Call();
+        c.setVisita(vs);
+        c.setOcorrencia(call.getOcorrencia());
+        c.setResponsavel(personaService.findByCpf(call.getCpfReponsavel()));
+
+        ServiceProvided servico = this.serviceProvidedService.findByCodigoService(call.getServiceProvidedCode());
+        c.setServiceProvided(servico);
+
+        c.setServico(call.getServicoPrestado());
+        c.setValor(call.getValor());
+
+        LocalDate previsao = vs.getDataDaVisita().plusDays(servico.getTimeRemaining());
+        c.setPrevisaoDeConclusao(previsao);
+
+        EnumStatus status;
+        try{
+            status = EnumStatus.valueOf(call.getStatus());
+        }catch (NullPointerException ex){
+            status = EnumStatus.INICIADA;
+        }
+        c.setStatus(status);
+
+        LocalDate quitadoEm;
+        try {
+            quitadoEm = LocalDate.parse(call.getServicoQuitadoEm(), config.formater());
+            c.setServicoQuitadoEm(quitadoEm);
+        }catch (NullPointerException exc){
+            c.setServicoQuitadoEm(null);
+        }
+
+        return c;
     }
 
 }

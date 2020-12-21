@@ -33,4 +33,6 @@ public interface VisitaService {
     Page<VisitaDTO> find(VisitaDTO dto, Pageable pageRequest);
 
     void delete(Visita visita);
+
+    Visita save(Visita visita);
 }

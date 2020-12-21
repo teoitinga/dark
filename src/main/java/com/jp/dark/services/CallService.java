@@ -27,7 +27,7 @@ public interface CallService {
 
     List<Call> save(List<Call> call);
 
-    Call Save(Call call);
+    Call save(Call call);
 
     Call toCall(Call call, Visita vs);
 
@@ -44,4 +44,6 @@ public interface CallService {
     CallDTOPost updateValue(String id, BigDecimal valur);
 
     Page<CallDTOPost> getCalls(Pageable pageRequest);
+
+    Call toCall(CallDTOPost call, Visita vs);
 }

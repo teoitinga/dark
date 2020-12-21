@@ -76,6 +76,7 @@ public class DataLoader {
         serviceRepository.save(new ServiceProvided("ATERMACARRET", "Retificação de Cadastro ambiental rural", "Retificação de CAR", new BigDecimal(200), 5));
         serviceRepository.save(new ServiceProvided("ATERMACAR2V", "Segunda via de Cadastro ambiental rural", "2 via de CAR", new BigDecimal(50), 5));
         serviceRepository.save(new ServiceProvided("DAP", "Emissão de DAP", "Emissão de DAP", new BigDecimal(0), 2));
+        serviceRepository.save(new ServiceProvided("DAPLEV", "Levantamento social para Emissão de DAP", "Emissão de DAP", new BigDecimal(0), 2));
         serviceRepository.save(new ServiceProvided("DAP2V", "Emissão de 2 via de DAP", "DAP 2 via", new BigDecimal(0), 2));
     }
 

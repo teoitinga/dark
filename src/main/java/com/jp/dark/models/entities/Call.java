@@ -17,7 +17,7 @@ import java.util.List;
 @Table
 @Entity
 @EqualsAndHashCode
-public class Call extends Auditable{
+public class Call extends Auditable implements Cloneable {
 
     @Id
     @Column(nullable = false, unique = true)
@@ -48,4 +48,9 @@ public class Call extends Auditable{
     private LocalDate previsaoDeConclusao;
 
     private LocalDate servicoQuitadoEm;
+
+    @Override
+    public Call clone() throws CloneNotSupportedException {
+        return (Call) super.clone();
+    }
 }
