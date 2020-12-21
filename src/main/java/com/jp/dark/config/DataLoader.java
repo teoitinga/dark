@@ -50,9 +50,33 @@ public class DataLoader {
     }
 
     private void LoadServicesProvided() {
-        serviceRepository.save(new ServiceProvided("LAS", "Cadastro Ambiental Rural", "Cadastro", new BigDecimal(150), 3));
-        serviceRepository.save(new ServiceProvided("LM", "Limite de credito", "Elaboração de laudo", new BigDecimal(150), 5));
-        serviceRepository.save(new ServiceProvided("ATER", "Ater Bovinocultura", "Assist. Pastagem", new BigDecimal(150), 1));
+        serviceRepository.save(new ServiceProvided("LAS", "Licenciamento ambiental", "Licenciamento", new BigDecimal(200), 7));
+        serviceRepository.save(new ServiceProvided("LMBB", "BB Limite de credito", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("LMSC", "SICOOB Limite de credito", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRSC", "SICOOB projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBB", "BB PRONAF projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBCS", "BB CUSTEIO projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBPRN", "BB PRONAMP projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBPRNCS", "BB CUSTEIO projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBMDA", "BB MODERAGRO projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBMDACS", "BB CUSTEIO projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBINVAG", "BB INVESTAGRO projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("CRBBINVAGCS", "BB CUSTEIO projeto de crédito rural", "Elaboração de laudo", new BigDecimal(150), 5));
+        serviceRepository.save(new ServiceProvided("ATERBOV", "Ater Bovinocultura", "Assist. Pastagem", new BigDecimal(150), 1));
+        serviceRepository.save(new ServiceProvided("ATERBOVPAST", "Ater pastagem", "Assist. Pastagem", new BigDecimal(150), 1));
+        serviceRepository.save(new ServiceProvided("ATERBOVIRRG", "Ater irrigação", "Assist. irrigação", new BigDecimal(150), 1));
+        serviceRepository.save(new ServiceProvided("ATERCULT", "Ater cultura", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERCULTMILHO", "Ater cultura", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERCULTFEIJAO", "Ater cultura", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERCULTHORTA", "Ater cultura", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERMAFSSPT", "Ater Meio ambienta", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERMARESIDSOLID", "Tratamento de rasíduos sólidos", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERMAPRTNSC", "Proteção de nascentes", "Assist. culturas", new BigDecimal(0), 1));
+        serviceRepository.save(new ServiceProvided("ATERMACAR", "Emissão de Cadastro ambiental rural", "Elaboração de CAR", new BigDecimal(200), 5));
+        serviceRepository.save(new ServiceProvided("ATERMACARRET", "Retificação de Cadastro ambiental rural", "Retificação de CAR", new BigDecimal(200), 5));
+        serviceRepository.save(new ServiceProvided("ATERMACAR2V", "Segunda via de Cadastro ambiental rural", "2 via de CAR", new BigDecimal(50), 5));
+        serviceRepository.save(new ServiceProvided("DAP", "Emissão de DAP", "Emissão de DAP", new BigDecimal(0), 2));
+        serviceRepository.save(new ServiceProvided("DAP2V", "Emissão de 2 via de DAP", "DAP 2 via", new BigDecimal(0), 2));
     }
 
     private void LoadItensProducao(){

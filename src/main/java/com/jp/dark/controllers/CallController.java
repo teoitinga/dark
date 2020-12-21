@@ -6,7 +6,12 @@ import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/v1/chamadas")
@@ -38,6 +44,40 @@ public class CallController {
         return callService.save(dto);
     }
 
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CallDTOPost update(@PathVariable String id, @RequestBody @Valid CallDTOPost dto){
+        return callService.update(dto, id);
+    }
+    @PutMapping("initialize/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CallDTOPost callInitialize(@PathVariable String id){
+        return callService.initialize(id);
+    }
+    @PutMapping("cancel/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CallDTOPost callCancel(@PathVariable String id){
+        return callService.cancel(id);
+    }
+    @PutMapping("finalize/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CallDTOPost callFinalize(@PathVariable String id){
+        return callService.finalize(id);
+    }
+    @PutMapping("finalize/{id}/{value}")
+    @ResponseStatus(HttpStatus.OK)
+    public CallDTOPost callUpdateValue(@PathVariable String id, @PathVariable BigDecimal value){
+        return callService.updateValue(id, value);
+    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET my calls")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public Page<CallDTOPost> myCalls(Pageable pageRequest){
+        return this.callService.getCalls(pageRequest);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleValidationException(MethodArgumentNotValidException exception){

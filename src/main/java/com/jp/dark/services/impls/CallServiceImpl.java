@@ -3,7 +3,10 @@ package com.jp.dark.services.impls;
 import com.jp.dark.config.Config;
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
+import com.jp.dark.exceptions.CallNotFoundException;
+import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
+import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.enums.EnumStatus;
@@ -16,9 +19,15 @@ import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.utils.Generates;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,12 +44,14 @@ public class CallServiceImpl implements CallService {
     private VisitaRepository visitaRepository;
     private PasswordEncoder passwordEncoder;
 
+
     public CallServiceImpl(CallRepository callRepository,
                            Config config,
                            PersonaRepository personaRepository,
                            ServiceProvidedRepository serviceRepository,
                            VisitaRepository visitaRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder
+    ) {
 
         this.passwordEncoder = passwordEncoder;
         this.repository = callRepository;
@@ -101,7 +112,6 @@ public class CallServiceImpl implements CallService {
         Call chamada = this.toCall(dto, vs);
 
         chamada = this.repository.save(chamada);
-        log.info("Chamada saveed {}", chamada);
         return this.toCallDTO(chamada);
     }
 
@@ -165,20 +175,20 @@ public class CallServiceImpl implements CallService {
 
         LocalDate previsaoDeConclusao = LocalDate.now().plusDays(servico.getTimeRemaining());
 
-        LocalDate dataQuitado = null;
+        LocalDate dataQuitado;
         try{
         dataQuitado = LocalDate.
                 parse(dto.getServicoQuitadoEm(), config.formater());
         }catch (NullPointerException ex){
-
+            dataQuitado = null;
         }
 
-        EnumStatus status = EnumStatus.INICIADA;
+        EnumStatus status;
 
         try{
-        status = EnumStatus.valueOf(dto.getStatus());
+            status = EnumStatus.valueOf(dto.getStatus());
         }catch (NullPointerException ex){
-
+            status = EnumStatus.INICIADA;
         }
         Visita codigo = this.visitaRepository.findByCodigo(dto.getCodigoDaVisita()).orElse(null);
 
@@ -223,6 +233,78 @@ public class CallServiceImpl implements CallService {
         Call call = this.toCall(dto);
         Call saved = this.repository.save(call);
         return this.toCallDTOPost(saved);
+    }
+
+    @Override
+    public CallDTOPost update(CallDTOPost dto, String id) {
+        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        ServiceProvided serviceProvided = this.serviceProvidedService.findByCodigoService(dto.getServiceProvidedCode());
+        call.setServiceProvided(serviceProvided);
+        Visita visita = this.visitaRepository.findByCodigo(dto.getCodigoDaVisita()).orElseThrow(()->new VisitaNotFoundException());
+        call.setVisita(visita);
+        call.setOcorrencia(dto.getOcorrencia());
+        Persona reponsavel = this.personaService.findByCpf(dto.getCpfReponsavel());
+        call.setResponsavel(reponsavel);
+        call.setServico(dto.getServicoPrestado());
+        call.setStatus(EnumStatus.valueOf(dto.getStatus()));
+        call.setValor(dto.getValor());
+        call = this.repository.save(call);
+        return this.toCallDTOPost(call);
+    }
+
+    @Override
+    public CallDTOPost cancel(String id) {
+        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        call.setStatus(EnumStatus.CANCELADA);
+        call = this.repository.save(call);
+        return this.toCallDTOPost(call);
+    }
+    @Override
+    public CallDTOPost finalize(String id) {
+        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        call.setStatus(EnumStatus.FINALIZADA);
+        call = this.repository.save(call);
+        return this.toCallDTOPost(call);
+    }
+    @Override
+    public CallDTOPost initialize(String id) {
+        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        call.setStatus(EnumStatus.INICIADA);
+        call = this.repository.save(call);
+        return this.toCallDTOPost(call);
+    }
+    @Override
+    public CallDTOPost updateValue(String id, BigDecimal valur) {
+        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        call.setStatus(EnumStatus.INICIADA);
+        call = this.repository.save(call);
+        return this.toCallDTOPost(call);
+    }
+
+    @Override
+    public Page<CallDTOPost> getCalls(Pageable pageRequest) {
+
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails)principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona responsavel = this.personaService.findByCpf(nome);
+
+        Page<Call> result = this.repository.findByResponsavel(responsavel, pageRequest);
+        log.info("Total de : {}", result.getTotalElements());
+
+        List<CallDTOPost> list =result.getContent().stream()
+                .map(entity->toCallDTOPost(entity))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageRequest, result.getTotalElements());
     }
 
 }

@@ -21,7 +21,6 @@ public class AuditorAwareImpl implements AuditorAware<String> {
             Authentication authentication = context.getAuthentication();
             if(authentication instanceof Authentication)
             {
-                log.info("Usuario atual: {}", (((AutheticatedUser)authentication.getPrincipal())));
                 usuario = (((AutheticatedUser)authentication.getPrincipal()));
             }
         }

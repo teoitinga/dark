@@ -48,6 +48,7 @@ public class VisitaController {
     public VisitaDTO getDetails(@PathVariable String codigo){
         return service.getByCodigo(codigo);
     }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("GET a Visita")

@@ -53,7 +53,8 @@ public class VisitaServiceImpl implements VisitaService {
                              PersonaRepository personaRepository,
                              ServiceProvidedRepository serviceProvidedRepository,
                              Config config,
-                             PasswordEncoder passwordEncoder) {
+                             PasswordEncoder passwordEncoder
+                             ) {
 
         this.repository = visitaRepository;
         this.callService = new CallServiceImpl(callRepository, config, personaRepository, serviceProvidedRepository, repository, passwordEncoder);

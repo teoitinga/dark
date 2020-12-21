@@ -22,10 +22,10 @@ public class ServiceProvided{
     @Column(nullable = false, unique = true)
     private String codigo;
 
-    @Column(nullable = false, unique = true, length = 155)
+    @Column(nullable = false, unique = false, length = 155)
     private String descricao;
 
-    @Column(nullable = false, unique = true, length = 155)
+    @Column(nullable = false, unique = false, length = 155)
     private String referency;
 
     @Column

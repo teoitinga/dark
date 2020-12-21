@@ -4,7 +4,10 @@ import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CallService {
@@ -29,4 +32,16 @@ public interface CallService {
     Call toCall(Call call, Visita vs);
 
     CallDTOPost save(CallDTOPost dto);
+
+    CallDTOPost update(CallDTOPost dto, String id);
+
+    CallDTOPost cancel(String id);
+
+    CallDTOPost finalize(String id);
+
+    CallDTOPost initialize(String id);
+
+    CallDTOPost updateValue(String id, BigDecimal valur);
+
+    Page<CallDTOPost> getCalls(Pageable pageRequest);
 }

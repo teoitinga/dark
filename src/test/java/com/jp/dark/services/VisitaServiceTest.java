@@ -3,9 +3,7 @@ package com.jp.dark.services;
 import com.jp.dark.config.Config;
 import com.jp.dark.dtos.ProdutorMinDTO;
 import com.jp.dark.dtos.VisitaDTO;
-import com.jp.dark.exceptions.BusinessException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
-import com.jp.dark.factory.CallFactory;
 import com.jp.dark.factory.PersonaFactory;
 import com.jp.dark.factory.ProdutorFactory;
 import com.jp.dark.factory.VisitaFactory;
@@ -20,12 +18,10 @@ import com.jp.dark.services.impls.PersonaServiceImpl;
 import com.jp.dark.services.impls.ServiceProvidedServiceImpl;
 import com.jp.dark.services.impls.VisitaServiceImpl;
 import com.jp.dark.utils.GeraCpfCnpj;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,6 +64,7 @@ public class VisitaServiceTest {
 
     @MockBean
     PasswordEncoder passwordEncoder;
+
 
     @MockBean
     private ServiceProvidedService serviceProvidedService;
