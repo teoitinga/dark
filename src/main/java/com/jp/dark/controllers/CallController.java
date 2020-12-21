@@ -64,7 +64,7 @@ public class CallController {
     public CallDTOPost callFinalize(@PathVariable String id){
         return callService.finalize(id);
     }
-    @PutMapping("finalize/{id}/{value}")
+    @PutMapping("update/{id}/{value}")
     @ResponseStatus(HttpStatus.OK)
     public CallDTOPost callUpdateValue(@PathVariable String id, @PathVariable BigDecimal value){
         return callService.updateValue(id, value);
