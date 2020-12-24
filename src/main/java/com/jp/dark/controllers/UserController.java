@@ -1,14 +1,18 @@
 package com.jp.dark.controllers;
 
+import com.jp.dark.dtos.ProdutorDTO;
 import com.jp.dark.dtos.UserDTO;
 import com.jp.dark.services.PersonaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -35,5 +39,12 @@ public class UserController {
     public UserDTO details(@PathVariable String login){
 
         return service.getDetailsUser(login);
+    }
+    @GetMapping("/name/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("Find produtor by name containing")
+    @ApiResponses({@ApiResponse(code = 200, message = "OK")})
+    public List<UserDTO> findByName(@PathVariable String name){
+        return this.service.findUserByNameContaining(name);
     }
 }

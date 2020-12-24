@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/produtores")
@@ -43,6 +44,14 @@ public class ProdutorController {
     })
     public ProdutorDTO save(@RequestBody @Valid ProdutorDTO dto){
         return service.save(dto);
+    }
+
+    @GetMapping("{name}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("Find produtor by name containing")
+    @ApiResponses({@ApiResponse(code = 200, message = "OK")})
+    public List<ProdutorDTO> findByName(@PathVariable String name){
+        return this.service.findProdutorByNameContaining(name);
     }
 
     @PutMapping("{cpf}")

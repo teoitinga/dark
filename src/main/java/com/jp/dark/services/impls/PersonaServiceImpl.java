@@ -214,4 +214,20 @@ public class PersonaServiceImpl implements PersonaService {
         Persona usuario = this.findByCpf(login);
         return toUserDTO(usuario);
     }
+
+    @Override
+    public List<ProdutorDTO> findProdutorByNameContaining(String name) {
+        EnumPermissao permissao = EnumPermissao.CLIENTES;
+        List<Persona> result = this.repository.findByNomeContainingIgnoreCaseAndPermissao(name, permissao);
+        List<ProdutorDTO> list = result.stream().map(entity->toProdutorDTO(entity)).collect(Collectors.toList());
+        return list;
+    }
+
+    @Override
+    public List<UserDTO> findUserByNameContaining(String name) {
+        EnumPermissao permissao = EnumPermissao.CLIENTES;
+        List<Persona> result = this.repository.findByNomeContainingIgnoreCaseAndPermissaoNot(name, permissao);
+        List<UserDTO> list = result.stream().map(entity->toUserDTO(entity)).collect(Collectors.toList());
+        return list;
+    }
 }

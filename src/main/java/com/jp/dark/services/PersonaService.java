@@ -44,4 +44,8 @@ public interface PersonaService {
     Persona toPersona(UserDTO dto);
 
     UserDTO getDetailsUser(String login);
+
+    List<ProdutorDTO> findProdutorByNameContaining(String name);
+
+    List<UserDTO> findUserByNameContaining(String name);
 }
