@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class BeneficiarioDTO {
 
-    private Integer id;
+    private String id;
 
     @NotNull(message = "Você deve informar o beneficiario.")
     private ProdutorMinDTO beneficiario;
@@ -22,7 +22,7 @@ public class BeneficiarioDTO {
     private Integer quantidade;
 
     @NotNull(message = "Você deve informar o código do programa.")
-    private Integer codigoDoPrograma;
+    private String codigoDoPrograma;
 
     private String observacoes;
 

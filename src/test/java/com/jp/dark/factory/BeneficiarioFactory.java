@@ -11,28 +11,28 @@ public class BeneficiarioFactory {
     public static BeneficiarioDTO createValidBeneficiario() {
         return BeneficiarioDTO.builder()
                 .beneficiario(ProdutorFactory.createLucas())
-                .codigoDoPrograma(1)
+                .codigoDoPrograma("1")
                 .quantidade(5)
                 .build();
     }
     public static BeneficiarioDTO createValidLaraBeneficiario() {
         return BeneficiarioDTO.builder()
                 .beneficiario(ProdutorFactory.createLara())
-                .codigoDoPrograma(1)
+                .codigoDoPrograma("1")
                 .quantidade(2)
                 .build();
     }
     public static BeneficiarioDTO createValidLaraBeneficiarioNoProgram() {
         return BeneficiarioDTO.builder()
                 .beneficiario(ProdutorFactory.createLara())
-                .codigoDoPrograma(1)
+                .codigoDoPrograma("1")
                 .quantidade(2)
                 .build();
     }
     public static BeneficiarioDTO createValidBryanBeneficiario() {
         return BeneficiarioDTO.builder()
                 .beneficiario(ProdutorFactory.createBryan())
-                .codigoDoPrograma(1)
+                .codigoDoPrograma("1")
                 .quantidade(1)
                 .build();
     }
@@ -50,7 +50,7 @@ public class BeneficiarioFactory {
 
         return MultiplosBeneficiariosDTO.builder()
                 .beneficiarios(benef)
-                .codigoDoPrograma(2)
+                .codigoDoPrograma("2")
                 .build();
     }
     public static MultiplosBeneficiariosDTO createValidBeneficiariosMultiplosNoProgram() {

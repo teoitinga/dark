@@ -1,9 +1,7 @@
 package com.jp.dark.services.impls;
 
 import com.jp.dark.config.Config;
-import com.jp.dark.dtos.InfoRendaDTO;
-import com.jp.dark.dtos.ProducaoDTO;
-import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.dtos.*;
 import com.jp.dark.models.entities.*;
 import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.InfoRendaRepository;
@@ -35,6 +33,7 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
     private CallService callService;
     private ItemProducaoService itemService;
     private InfoRendaRepository infoRendaRepository;
+    private OrigemRendaService origemRendaService;
 
     public InfoRendaServiceImpl(
             Config config,
@@ -43,7 +42,8 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
             PersonaService personaService,
             CallService callService,
             ItemProducaoService itemService,
-            InfoRendaRepository infoRendaRepository
+            InfoRendaRepository infoRendaRepository,
+            OrigemRendaService origemRendaService
             ) {
         this.config = config;
         this.visitaService = visitaService;
@@ -52,6 +52,7 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
         this.callService = callService;
         this.itemService = itemService;
         this.infoRendaRepository = infoRendaRepository;
+        this.origemRendaService = origemRendaService;
 
     }
 
@@ -218,5 +219,16 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
     @Override
     public InfoRenda register(ProducaoDTO prd, Visita vs) {
         return null;
+    }
+
+    @Override
+    public List<ItemProducaoDTO> findByDescricaoContaining(String descricao) {
+        return itemService.findByDescricaoContainingIgnoreCase(descricao);
+    }
+
+    @Override
+    public List<OrigemRendaDTO> findOrigemByDescricaoContaining(String org) {
+        return this.origemRendaService.findByDescricaoContaining(org);
+
     }
 }

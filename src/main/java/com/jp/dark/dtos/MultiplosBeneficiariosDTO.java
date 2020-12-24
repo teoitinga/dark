@@ -26,7 +26,7 @@ public class MultiplosBeneficiariosDTO {
     private List<BeneficiarioDTO> beneficiarios;
 
     @NotNull(message = "Você deve informar o Programa executado.")
-    private Integer codigoDoPrograma;
+    private String codigoDoPrograma;
 
 
 }

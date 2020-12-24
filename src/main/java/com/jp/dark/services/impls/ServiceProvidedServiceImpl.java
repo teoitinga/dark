@@ -8,6 +8,9 @@ import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.ServiceProvidedService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ServiceProvidedServiceImpl implements ServiceProvidedService {
 
@@ -60,5 +63,15 @@ public class ServiceProvidedServiceImpl implements ServiceProvidedService {
     @Override
     public boolean serviceExists(String serviceProvidedCode) {
         return this.repository.existsByCodigo(serviceProvidedCode);
+    }
+
+    @Override
+    public List<ServiceProvidedDTO> findByServiceContaining(String srv) {
+
+        List<ServiceProvided> result = this.repository.findByReferencyContainingIgnoreCase(srv);
+        List<ServiceProvidedDTO> dto = result.stream()
+                                        .map(service->toServiceProvidedDTO(service))
+                                            .collect(Collectors.toList());
+        return dto;
     }
 }

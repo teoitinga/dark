@@ -3,6 +3,7 @@ package com.jp.dark.services.impls;
 import com.jp.dark.dtos.BeneficiarioDTO;
 import com.jp.dark.dtos.MultiplosBeneficiariosDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
+import com.jp.dark.dtos.ProgramaDTO;
 import com.jp.dark.exceptions.CpfIsNotValidException;
 import com.jp.dark.exceptions.ProgramaNotFoundException;
 import com.jp.dark.models.entities.Beneficiario;
@@ -12,6 +13,7 @@ import com.jp.dark.models.repository.BeneficiarioRepository;
 import com.jp.dark.models.repository.ProgramaRepository;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ProgramaService;
+import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class ProgramaServiceImpl implements ProgramaService {
     }
 
     @Override
-    public Programa findByCodigo(Integer codigoDoPrograma) {
+    public Programa findByCodigo(String codigoDoPrograma) {
         return this.repository.findByCodigo(codigoDoPrograma).orElseThrow(()->new ProgramaNotFoundException());
     }
 
@@ -80,7 +82,7 @@ public class ProgramaServiceImpl implements ProgramaService {
              beneficiario = null;
         }
 
-        Integer codigoDoPrograma;
+        String codigoDoPrograma;
 
         try{
             codigoDoPrograma = prd.getPrograma().getCodigo();
@@ -126,6 +128,12 @@ public class ProgramaServiceImpl implements ProgramaService {
                     .programa(programa)
                     .quantidade(prd.getQuantidade())
                     .build();
+
+            if(beneficiario.getId() == null){
+                String keyCode = Generates.keyCode(Generates.createNumber());
+
+                beneficiario.setId(keyCode);
+            }
             beneficiario = this.beneficiarioRepository.save(beneficiario);
             return beneficiario;
         }else{
@@ -158,6 +166,64 @@ public class ProgramaServiceImpl implements ProgramaService {
     public ProdutorMinDTO toProdutorMinDTO(BeneficiarioDTO beneficiario) {
         ProdutorMinDTO produtor = beneficiario.getBeneficiario();
         return produtor;
+    }
+
+    @Override
+    public List<ProgramaDTO> findByReferenciaContaining(String prg) {
+
+        List<Programa> result = this.repository.findByReferenciaContainingIgnoreCase(prg);
+        List<ProgramaDTO> list = result.stream().map(entity->toProgramaDTO(entity)).collect(Collectors.toList());
+        return list;
+    }
+
+    @Override
+    public ProgramaDTO createProgram(ProgramaDTO dto) {
+
+        Programa programa = toPrograma(dto);
+        programa = this.repository.save(programa);
+        ProgramaDTO saved = toProgramaDTO(programa);
+        return saved;
+    }
+
+    private ProgramaDTO toProgramaDTO(Programa programa) {
+
+        String codigo;
+        try{
+            codigo = programa.getCodigo();
+        }catch (NullPointerException exc){
+            codigo = null;
+        }
+        return ProgramaDTO.builder()
+                .nome(programa.getNome())
+                .referencia(programa.getReferencia())
+                .descricao(programa.getDescricao())
+                .DataInicio(programa.getDataInicio())
+                .DataFim(programa.getDataFim())
+                .codigo(codigo)
+                .build();
+    }
+
+    private Programa toPrograma(ProgramaDTO dto) {
+
+        String codigo;
+        try{
+            codigo = dto.getCodigo();
+        }catch (NullPointerException exc){
+            codigo = Generates.keyCode(Generates.createNumber());
+        }
+
+        if(dto.getCodigo() == null){
+            codigo = Generates.keyCode(Generates.createNumber());
+        }
+
+        return Programa.builder()
+                .nome(dto.getNome())
+                .referencia(dto.getReferencia())
+                .descricao(dto.getDescricao())
+                .DataInicio(dto.getDataInicio())
+                .DataFim(dto.getDataFim())
+                .codigo(codigo)
+                .build();
     }
 
 }

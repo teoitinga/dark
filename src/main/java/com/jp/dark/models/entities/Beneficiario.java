@@ -19,7 +19,7 @@ public class Beneficiario extends Auditable{
 
     @Id
     @Column(nullable = false, unique = true)
-    private Integer id;
+    private String id;
 
     @NotNull(message = "Você deve informar o beneficiario.")
     @ManyToOne

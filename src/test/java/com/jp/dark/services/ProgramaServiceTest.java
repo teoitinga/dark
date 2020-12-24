@@ -49,7 +49,7 @@ public class ProgramaServiceTest {
     public void saveTest(){
         MultiplosBeneficiariosDTO dto = BeneficiarioFactory.createValidBeneficiariosMultiplos();
 
-        BDDMockito.when(this.repository.findByCodigo(Mockito.anyInt())).thenReturn(ProgramaFactory.createNewProgram());
+        BDDMockito.when(this.repository.findByCodigo(Mockito.anyString())).thenReturn(ProgramaFactory.createNewProgram());
         BDDMockito.when(this.beneficiarioRepository.save(Mockito.any(Beneficiario.class))).thenReturn(BeneficiarioFactory.createBeneficiario());
 
         //Execução
@@ -65,7 +65,7 @@ public class ProgramaServiceTest {
     public void verifyPrcodutoresTest(){
         MultiplosBeneficiariosDTO beneficiarios = BeneficiarioFactory.createValidBeneficiariosMultiplos();
 
-        BDDMockito.when(this.repository.findByCodigo(Mockito.anyInt())).thenReturn(ProgramaFactory.createNewProgram());
+        BDDMockito.when(this.repository.findByCodigo(Mockito.anyString())).thenReturn(ProgramaFactory.createNewProgram());
         BDDMockito.when(this.beneficiarioRepository.save(Mockito.any(Beneficiario.class))).thenReturn(BeneficiarioFactory.createBeneficiario());
 
         MultiplosBeneficiariosDTO multiplosBeneficiariosDTO = this.service.verifyPrcodutores(beneficiarios);

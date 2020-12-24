@@ -11,7 +11,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f01a4603-3ad5-42c7-821b-f044096168f2",
 						"exec": [
 							"pm.test(\"Check the create any User\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -121,7 +120,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e91569b7-3fb5-42c5-accf-e744e23fdc13",
 						"exec": [
 							"pm.test(\"Check the test security\", () => {\r",
 							"\r",
@@ -245,7 +243,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "87868438-4f0a-4b3b-a721-f82b03ab0a26",
 						"exec": [
 							"pm.test(\"Check the test security\", () => {\r",
 							"\r",
@@ -369,7 +366,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f0bd044a-be9b-4ee2-8c77-c3d17eee4fe4",
 						"exec": [
 							"pm.test(\"Check the test security\", () => {\r",
 							"\r",
@@ -490,7 +486,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7d9530e1-a111-4e95-9f7c-02ff162f09e5",
 						"exec": [
 							"pm.test(\"Check the test security\", () => {\r",
 							"\r",
@@ -611,7 +606,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a0992916-6868-4907-9992-f1a99bcf0d23",
 						"exec": [
 							"pm.test(\"Check the create any User\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -670,7 +664,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "be0e9bae-d38b-4d95-a2f3-3a4ce51f57f2",
 						"exec": [
 							"pm.test(\"Check the create any User\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -729,7 +722,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "243c8a91-9ddd-4244-842e-e26f2c15c2b0",
 						"exec": [
 							"pm.test(\"Check the create any User\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -773,7 +765,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a916bb32-4e24-4a68-b4b5-0927f7ab2a7d",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -837,7 +828,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7dbc5940-3982-4e32-ae63-fa4440e3f10b",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -901,7 +891,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "89a0a22d-5515-4f09-a77a-b9525e4b5d59",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -969,7 +958,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f26e5d67-e1b4-4ce6-98d4-bf5e22639d41",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -1037,7 +1025,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8887d1ac-2de9-4709-8f9b-46a0830b0f91",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -1105,7 +1092,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "cdcfde03-bd54-459f-9d24-c47a5b3ba4ba",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -1159,12 +1145,313 @@
 			"response": []
 		},
 		{
+			"name": "ServiceProvided GET service by reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "jacare",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "04459471604",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}services/irrig",
+					"host": [
+						"{{api}}services"
+					],
+					"path": [
+						"irrig"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Programa GET programa by reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "jacare",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "04459471604",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}programas/search/emenda",
+					"host": [
+						"{{api}}programas"
+					],
+					"path": [
+						"search",
+						"emenda"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item de produção GET itensby reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(200);\r",
+							"  pm.expect(jsonData.totalElements).to.equal(2);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "jacare",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "04459471604",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}inforenda/search-producao/a",
+					"host": [
+						"{{api}}inforenda"
+					],
+					"path": [
+						"search-producao",
+						"a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Programa GET programa by reference Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"\r",
+							"  pm.response.to.have.status(201);\r",
+							"\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "jacare",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "04459471604",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}programas/programa",
+					"host": [
+						"{{api}}programas"
+					],
+					"path": [
+						"programa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "origem da renda GET by reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(200);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "jacare",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "04459471604",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}inforenda/search-origem/a",
+					"host": [
+						"{{api}}inforenda"
+					],
+					"path": [
+						"search-origem",
+						"a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "InfoRenda POST create new information on renda",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "46ca190a-1980-4c98-8dcc-e42a11b980db",
 						"exec": [
 							"pm.test(\"Check the create any visita\", () => {\r",
 							"  var jsonData = pm.response.json();\r",
@@ -1223,6 +1510,69 @@
 			"response": []
 		},
 		{
+			"name": "Programa POST insert data beneficiarios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+							"  \r",
+							"    //analisando chamdas\r",
+							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+							"    //analisando produtores\r",
+							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "jacare",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "04459471604",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"beneficiarios\": [\r\n    {\r\n      \"beneficiario\": {\r\n        \"cpf\": \"98370916651\",\r\n        \"nome\": \"Bryan Lorenzo da Luz\"\r\n      },\r\n      \"observacoes\": \"***\",\r\n      \"quantidade\": 4\r\n    },\r\n    {\r\n      \"beneficiario\": {\r\n        \"cpf\": \"01668021668\",\r\n        \"nome\": \"Elisa Emily Corte Real\"\r\n      },\r\n      \"observacoes\": \"Telefone (33) 99628-4768\",\r\n      \"quantidade\": 1\r\n    }\r\n  ],\r\n  \"codigoDoPrograma\": \"20201224003646-191\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}programas",
+					"host": [
+						"{{api}}programas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "User GET findUserByCpf",
 			"request": {
 				"method": "GET",
@@ -1259,11 +1609,9 @@
 	],
 	"variable": [
 		{
-			"id": "baseUrl",
 			"key": "baseUrl",
 			"value": "http://petstore.swagger.io/v1",
 			"type": "string"
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

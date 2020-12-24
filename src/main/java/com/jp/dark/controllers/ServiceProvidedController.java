@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/services")
@@ -36,6 +37,15 @@ public class ServiceProvidedController {
     })
     public ServiceProvidedDTO save(@RequestBody @Valid ServiceProvidedDTO dto){
         return service.save(dto);
+    }
+    @GetMapping("{srv}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("Return a list of finding service")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public List<ServiceProvidedDTO> findByServiceContaining(@PathVariable String srv){
+        return service.findByServiceContaining(srv);
     }
     @ExceptionHandler(ServiceProvidedAlreadyException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
