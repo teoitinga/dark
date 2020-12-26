@@ -35,7 +35,6 @@ public class AuthenticationService implements UserDetailsService {
     public Persona loadUserByUsername(String cpf) throws UsernameNotFoundException {
         Persona usuario = this.repository.findByCpf(cpf)
                 .orElseThrow(()->new UsernameNotFoundException(String.format("User not found with name is %s", cpf)));
-        log.info("Usuário a registrar: {}", usuario);
         return usuario;
     }
 
@@ -45,6 +44,7 @@ public class AuthenticationService implements UserDetailsService {
         String token = jwtService.geraToken(usuario);
         return TokenDTO.builder()
                 .login(usuario.getUsername())
+                .role(usuario.getPermissao().toString())
                 .token(token)
                 .build();
 
