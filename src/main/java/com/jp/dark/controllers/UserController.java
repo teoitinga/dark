@@ -1,7 +1,10 @@
 package com.jp.dark.controllers;
 
+import com.jp.dark.dtos.CredenciaisDTO;
 import com.jp.dark.dtos.ProdutorDTO;
+import com.jp.dark.dtos.TokenDTO;
 import com.jp.dark.dtos.UserDTO;
+import com.jp.dark.security.AuthenticationService;
 import com.jp.dark.services.PersonaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,9 +24,13 @@ import java.util.List;
 public class UserController {
 
     private PersonaService service;
+    private AuthenticationService authenticationService;
 
-    public UserController(PersonaService service) {
+    public UserController(PersonaService service,
+                          AuthenticationService authenticationService
+    ) {
         this.service = service;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping
@@ -46,5 +53,14 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "OK")})
     public List<UserDTO> findByName(@PathVariable String name){
         return this.service.findUserByNameContaining(name);
+    }
+
+    @PostMapping("/auth")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("Do login by user")
+    @ApiResponses({@ApiResponse(code = 200, message = "OK")})
+    public TokenDTO autenticar(@RequestBody @Valid CredenciaisDTO credenciais){
+        TokenDTO token = this.authenticationService.autenticar(credenciais);
+        return token;
     }
 }

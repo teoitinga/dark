@@ -1,9 +1,6 @@
 package com.jp.dark.services;
 
-import com.jp.dark.dtos.PersonaDTO;
-import com.jp.dark.dtos.ProdutorDTO;
-import com.jp.dark.dtos.ProdutorMinDTO;
-import com.jp.dark.dtos.UserDTO;
+import com.jp.dark.dtos.*;
 import com.jp.dark.models.entities.Persona;
 
 import java.util.List;
@@ -16,6 +13,8 @@ public interface PersonaService {
     List<Persona> toListPersona(List<ProdutorMinDTO> produtores);
 
     Persona toPersona(ProdutorMinDTO dto);
+
+    String getMunicpioDoUsuario();
 
     ProdutorDTO save(ProdutorDTO dto);
 
@@ -48,4 +47,5 @@ public interface PersonaService {
     List<ProdutorDTO> findProdutorByNameContaining(String name);
 
     List<UserDTO> findUserByNameContaining(String name);
+
 }

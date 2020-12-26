@@ -46,7 +46,10 @@ public class DataLoader {
 
     private void LoadUsers() {
         this.personaRepository.save(new Persona("04459471604", "João Paulo Santana Gusmão", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
-                "35140000","Tarumirim",this.passwordEncoder.encode("jacare"), EnumCategoria.UNDEFINED, EnumPermissao.TECNICO, true));
+                "35140000","Itinga",this.passwordEncoder.encode("jacare"), EnumCategoria.UNDEFINED, EnumPermissao.TECNICO, true));
+
+            this.personaRepository.save(new Persona("47767541002", "Sirlene Ferreira", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
+                "35140000","Tarumirim",this.passwordEncoder.encode("123"), EnumCategoria.UNDEFINED, EnumPermissao.CEDIDO, true));
     }
 
     private void LoadServicesProvided() {

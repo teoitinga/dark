@@ -17,6 +17,7 @@ public class AutheticatedUser implements UserDetails {
     private static final String ROLE_PREFIX = "ROLE_";
 
     private String username;
+    private String user;
     private String password;
     private String role;
 
@@ -25,6 +26,9 @@ public class AutheticatedUser implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority(ROLE_PREFIX + role));
     }
 
+    public String getUser(){
+        return this.user;
+    }
     @Override
     public String getPassword() {
         return password;

@@ -16,6 +16,10 @@ import com.jp.dark.services.ProgramaService;
 import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -171,7 +175,8 @@ public class ProgramaServiceImpl implements ProgramaService {
     @Override
     public List<ProgramaDTO> findByReferenciaContaining(String prg) {
 
-        List<Programa> result = this.repository.findByReferenciaContainingIgnoreCase(prg);
+        String municipio = this.personaService.getMunicpioDoUsuario();
+        List<Programa> result = this.repository.findActiveProgramsByReferenciaContainingIgnoreCase(prg, municipio);
         List<ProgramaDTO> list = result.stream().map(entity->toProgramaDTO(entity)).collect(Collectors.toList());
         return list;
     }
@@ -179,6 +184,8 @@ public class ProgramaServiceImpl implements ProgramaService {
     @Override
     public ProgramaDTO createProgram(ProgramaDTO dto) {
 
+        String municipio = this.personaService.getMunicpioDoUsuario();
+        dto.setMunicipio(municipio);
         Programa programa = toPrograma(dto);
         programa = this.repository.save(programa);
         ProgramaDTO saved = toProgramaDTO(programa);
@@ -199,6 +206,7 @@ public class ProgramaServiceImpl implements ProgramaService {
                 .descricao(programa.getDescricao())
                 .DataInicio(programa.getDataInicio())
                 .DataFim(programa.getDataFim())
+                .municipio(programa.getMunicipio())
                 .codigo(codigo)
                 .build();
     }
@@ -222,6 +230,7 @@ public class ProgramaServiceImpl implements ProgramaService {
                 .descricao(dto.getDescricao())
                 .DataInicio(dto.getDataInicio())
                 .DataFim(dto.getDataFim())
+                .municipio(dto.getMunicipio())
                 .codigo(codigo)
                 .build();
     }

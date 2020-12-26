@@ -6,6 +6,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 @Slf4j
@@ -13,15 +14,17 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        AutheticatedUser usuario = new AutheticatedUser();
+        UserDetails usuario = new AutheticatedUser();
 
         SecurityContext context = SecurityContextHolder.getContext();
         if(context instanceof SecurityContext)
         {
             Authentication authentication = context.getAuthentication();
+                log.info("Authentication class: {}", authentication.getClass());
+                log.info("Authentication: {}", authentication.getName());
             if(authentication instanceof Authentication)
             {
-                usuario = (((AutheticatedUser)authentication.getPrincipal()));
+                usuario = (((UserDetails)authentication.getPrincipal()));
             }
         }
         String username;

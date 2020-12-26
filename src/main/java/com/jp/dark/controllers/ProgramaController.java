@@ -35,17 +35,17 @@ public class ProgramaController {
     }
     @PostMapping("/programa")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("CREATE a valid program")
+    @ApiOperation("Retorna a lista de programas ativos no município")
     public ProgramaDTO create(@RequestBody @Valid ProgramaDTO dto){
         return this.service.createProgram(dto);
     }
     @GetMapping("/search/{prg}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation("Return a list of finding programa municipal")
     @ApiResponses({
             @ApiResponse(code = 200, message = "")
     })
-    public List<ProgramaDTO> findByServiceContaining(@PathVariable String prg){
+    public List<ProgramaDTO> findByProgramaContaining(@PathVariable String prg){
         return service.findByReferenciaContaining(prg);
     }
 }

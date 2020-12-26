@@ -27,6 +27,8 @@ public class Programa {
 
     private String referencia;
 
+    private String municipio;
+
     private String descricao;
 
     private LocalDate DataInicio;

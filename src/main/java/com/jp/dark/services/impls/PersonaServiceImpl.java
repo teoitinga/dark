@@ -1,9 +1,6 @@
 package com.jp.dark.services.impls;
 
-import com.jp.dark.dtos.PersonaDTO;
-import com.jp.dark.dtos.ProdutorDTO;
-import com.jp.dark.dtos.ProdutorMinDTO;
-import com.jp.dark.dtos.UserDTO;
+import com.jp.dark.dtos.*;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.PersonaNotFoundException;
 import com.jp.dark.models.entities.Persona;
@@ -14,6 +11,9 @@ import com.jp.dark.services.PersonaService;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +72,18 @@ public class PersonaServiceImpl implements PersonaService {
                 .categoria(EnumCategoria.OUTROS)
                 .build();
     }
+    @Override
+    public String getMunicpioDoUsuario() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Persona usr = (Persona) authentication.getPrincipal();
 
+        String login =  usr.getCpf();
+
+        Persona usuario = this.findByCpf(login);
+
+        return usuario.getCidade();
+    }
     @Override
     public ProdutorDTO save(ProdutorDTO dto) {
         /*
@@ -230,4 +241,6 @@ public class PersonaServiceImpl implements PersonaService {
         List<UserDTO> list = result.stream().map(entity->toUserDTO(entity)).collect(Collectors.toList());
         return list;
     }
+
+
 }

@@ -32,4 +32,6 @@ public class PricesDTO {
 
     @NotNull(message = "Você deve informar o produtor consultado")
     private ProdutorMinDTO produtorInformante;
+
+    private String municipio;
 }

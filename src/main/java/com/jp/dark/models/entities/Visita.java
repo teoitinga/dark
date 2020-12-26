@@ -39,6 +39,9 @@ public class Visita extends Auditable{
     @Column
     private  String orientacao;
 
+    @Column
+    private  String municipio;
+
     @ManyToMany
     private List<Persona> produtores;
 

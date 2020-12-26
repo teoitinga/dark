@@ -23,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,6 +146,11 @@ public class VisitaServiceImpl implements VisitaService {
         visitaToSave.setDataDaVisita(LocalDate.parse(dataDaVisita, config.formater()));
         visitaToSave.setRecomendacao(recomendacao);
 
+        /*
+        9- Configurando o municipio da visita
+         */
+        String municipio = this.personaService.getMunicpioDoUsuario();
+        visitaToSave.setMunicipio(municipio);
         //Salva o registro da visita
         Visita visitaSaved = this.repository.save(visitaToSave);
 
@@ -194,6 +202,7 @@ public class VisitaServiceImpl implements VisitaService {
         }
         return null;
     }
+
     @Override
     public VisitaDTO getByCodigo(String codigo) {
         Visita vs = this.repository.findByCodigo(codigo).orElseThrow(()->new VisitaNotFoundException());
@@ -207,10 +216,6 @@ public class VisitaServiceImpl implements VisitaService {
         Visita vs = visitaSaved;
 
         List<Call> response = chamadas.stream()
-                //.filter(call->this.serviceProvidedService.serviceExists(call.getServiceProvidedCode()))
-                //.map(call->this.callService.toCall(call))
-                //.map(call->this.callService.toCall(call, vs))
-                //.map(call->this.callService.toCallDTO(call))
                 .map(call->this.callService.toCall(call, vs))
                 .collect(Collectors.toList());
 

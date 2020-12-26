@@ -29,6 +29,8 @@ public class InfoPrice extends Auditable{
     @Column(columnDefinition = "integer default 1")
     private Integer qtdPorUnid;
 
+    private String municipio;
+
     @ManyToOne
     private PricesItem especificacao;
 

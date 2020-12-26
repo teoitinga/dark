@@ -8,17 +8,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+
 @Data
 @Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-public class Persona{
+public class Persona implements UserDetails, Serializable {
     public Persona(Persona persona) {
 
         this.cpf = persona.getCpf();
@@ -66,5 +73,40 @@ public class Persona{
     public Persona(String cpf, String nome) {
         this.cpf = cpf;
         this.nome = nome;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority(this.getPermissao().toString()));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return cpf;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

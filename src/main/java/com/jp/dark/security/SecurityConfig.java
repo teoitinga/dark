@@ -2,10 +2,13 @@ package com.jp.dark.security;
 
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.security.config.JwtAuthenticationEntryPoint;
+import com.jp.dark.security.jwt.JwtAuthFilter;
+import com.jp.dark.security.jwt.JwtService;
+import com.jp.dark.services.PersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,24 +17,32 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private PasswordEncoder passwordEncoder;
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private PasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    @Qualifier("userDetailsServiceImpl")
     private AuthenticationService userDetailsService;
 
-    private static final String VISITAS_URL = "api/v1/visitas/**";
-    private static final String CALL_URL = "api/v1/chamadas/**";
-    private static final String PRODUTORES_URL = "api/v1/produtores/**";
-    private static final String INFO_RENDA_URL = "api/v1/inforenda/**";
-    private static final String INFO_PRICE_URL = "api/v1/infoprice/**";
-    private static final String PROGRAMAS_URL = "api/v1/programas/**";
-    private static final String SERVICES_PROVIDED_URL = "api/v1/services/**";
-    private static final String USERS_URL = "api/v1/users/**";
+    @Autowired
+    private JwtService jwtService;
+
+    private static final String VISITAS_URL = "/api/v1/visitas/**";
+    private static final String CALL_URL = "/api/v1/chamadas/**";
+    private static final String PRODUTORES_URL = "/api/v1/produtores/**";
+    private static final String INFO_RENDA_URL = "/api/v1/inforenda/**";
+    private static final String INFO_PRICE_URL = "/api/v1/infoprice/**";
+    private static final String PROGRAMAS_URL = "/api/v1/programas/**";
+    private static final String SERVICES_PROVIDED_URL = "/api/v1/services/**";
+    private static final String USERS_URL = "/api/v1/users/**";
+    private static final String LOGIN_URL = "/api/v1/users/auth/**";
 
     private static final String TECNICO_TEST_URL = "api/v1/tecnico/**";
 
@@ -45,21 +56,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             //SWAGGER-UI
             "/v2/api-docs/**",
             "/swagger-resources/**",
-            "/swagger-resources/**",
             "/configuration/ui",
             "/configuration/security",
             "/swagger-ui.html",
             "/webjars/**"
     };
 
-    @Autowired
-    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                          AuthenticationService userDetailsService,
-                          PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(PasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable().authorizeRequests()
+                .antMatchers(PROGRAMAS_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO)
+                .antMatchers(VISITAS_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(SERVICES_PROVIDED_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(CALL_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(PRODUTORES_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(INFO_RENDA_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(INFO_PRICE_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(USERS_URL).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        ;
+    }
+
+    @Bean
+    public OncePerRequestFilter jwtFilter() {
+        return new JwtAuthFilter(this.jwtService, this.userDetailsService);
+    }
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -67,41 +97,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(H2_CONSOLE_URL)
                 .antMatchers(SWAGGER_URL)
                 .antMatchers(SWAGGER_RESOURCES)
-                ;
+        ;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-    }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(PROGRAMAS_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO)
-                .antMatchers(SERVICES_PROVIDED_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO)
-                .antMatchers(USERS_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO)
-                .antMatchers(VISITAS_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_CEDIDO, ROLE_CEDIDO)
-                .antMatchers(CALL_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_CEDIDO, ROLE_CEDIDO)
-                .antMatchers(PRODUTORES_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(INFO_RENDA_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(INFO_PRICE_URL).hasAnyRole(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(TECNICO_TEST_URL).hasRole(ROLE_TECNICO)
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ;
-        http.headers().frameOptions().disable();
     }
 }

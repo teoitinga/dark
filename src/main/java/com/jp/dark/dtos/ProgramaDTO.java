@@ -20,6 +20,8 @@ public class ProgramaDTO {
 
     private String nome;
 
+    private String municipio;
+
     private String referencia;
 
     private String descricao;

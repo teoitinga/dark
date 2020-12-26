@@ -33,6 +33,9 @@ public class InfoPriceServiceImpl implements InfoPriceService {
 
     @Override
     public PricesDTO save(PricesDTO dto) {
+
+        dto.setMunicipio(this.personaService.getMunicpioDoUsuario());
+
         InfoPrice info = toInfoPrice(dto);
 
         InfoPrice infoPrice = this.repository.save(info);
@@ -60,6 +63,7 @@ public class InfoPriceServiceImpl implements InfoPriceService {
                 .produtorInformante(produtor)
                 .valorUnitario(inf.getValor())
                 .dataDoLevantamento(dataDoLevantamento)
+                .municipio(inf.getMunicipio())
                 .build();
     }
 
@@ -91,6 +95,8 @@ public class InfoPriceServiceImpl implements InfoPriceService {
 
         BigDecimal valor = dto.getValorUnitario();
         response.setValor(valor);
+
+        response.setMunicipio(dto.getMunicipio());
 
         return response;
     }
