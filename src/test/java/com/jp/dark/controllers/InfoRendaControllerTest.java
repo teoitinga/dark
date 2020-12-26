@@ -1,9 +1,12 @@
 package com.jp.dark.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jp.dark.config.Config;
 import com.jp.dark.dtos.InfoRendaDTO;
 import com.jp.dark.factory.InfoRendaFactory;
 import com.jp.dark.models.entities.InfoRenda;
+import com.jp.dark.security.AuthenticationService;
+import com.jp.dark.security.jwt.JwtService;
 import com.jp.dark.services.InfoRendaService;
 import com.jp.dark.services.impls.InfoRendaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +16,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +47,22 @@ public class InfoRendaControllerTest {
     @MockBean
     InfoRendaService service;
 
+    @MockBean
+    PasswordEncoder encoder;
+
+    @MockBean
+    AuthenticationService authenticationService;
+
+    @MockBean
+    Config config;
+
+    @Qualifier("userDetailsServiceImpl")
+    @MockBean
+    AuthenticationService userDetailsService;
+
+    @MockBean
+    JwtService jwtService;
+
     @BeforeEach
     void setUp() {
 
@@ -48,6 +70,7 @@ public class InfoRendaControllerTest {
 
     @Test
     @DisplayName("Deve criar uma visita com informações de renda com sucesso.")
+    @WithMockUser (username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createVisitaInfoRendaTest() throws Exception{
 
         InfoRendaDTO dto = InfoRendaFactory.createValidInfoRenda();

@@ -3,6 +3,8 @@ package com.jp.dark.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jp.dark.dtos.PricesDTO;
 import com.jp.dark.factory.PricesFactory;
+import com.jp.dark.security.AuthenticationService;
+import com.jp.dark.security.jwt.JwtService;
 import com.jp.dark.services.InfoPriceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,10 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,8 +42,19 @@ public class InfoPriceControllerTest {
     @MockBean
     InfoPriceService service;
 
+    @Qualifier("userDetailsServiceImpl")
+    @MockBean
+    AuthenticationService userDetailsService;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    PasswordEncoder encoder;
+
     @Test
     @DisplayName("Deve criar registrar um preco de Boi Gordo com sucesso.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInfoBoiMagroPriceTest() throws Exception{
 
         PricesDTO dto = PricesFactory.createPriceBoiMagro();
@@ -59,6 +75,7 @@ public class InfoPriceControllerTest {
     }
     @Test
     @DisplayName("Deve criar registrar um preco de vaca magra com sucesso.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInfoVacaMagraPriceTest() throws Exception{
 
         PricesDTO dto = PricesFactory.createPriceVacaMagra();
@@ -79,6 +96,7 @@ public class InfoPriceControllerTest {
     }
     @Test
     @DisplayName("Deve criar registrar um preco do litro de leite com sucesso.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInfoLitroDeLeitePriceTest() throws Exception{
 
         PricesDTO dto = PricesFactory.createPriceLitroDeLeite();
@@ -99,6 +117,7 @@ public class InfoPriceControllerTest {
     }
     @Test
     @DisplayName("Deve criar registrar um preco do Boi Gordo com sucesso.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInfoBoiGordoPriceTest() throws Exception{
 
         PricesDTO dto = PricesFactory.createPriceBoiGordo();
@@ -119,6 +138,7 @@ public class InfoPriceControllerTest {
     }
     @Test
     @DisplayName("Deve retornar erro ao tentar registrar um preço sem informações.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInfoPriceNaDataTest() throws Exception{
 
         PricesDTO dto = PricesFactory.createPriceNoInfo();
@@ -138,6 +158,7 @@ public class InfoPriceControllerTest {
     }
     @Test
     @DisplayName("Deve retornar erro ao tentar registrar um preço sem informação de quantidade por unidade.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInfoPriceNoQtdPorUnidTest() throws Exception{
 
         PricesDTO dto = PricesFactory.createPriceNoQtdPorUnid();

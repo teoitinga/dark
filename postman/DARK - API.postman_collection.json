@@ -788,16 +788,11 @@
 			],
 			"request": {
 				"auth": {
-					"type": "basic",
-					"basic": [
+					"type": "bearer",
+					"bearer": [
 						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNDQ1OTQ3MTYwNCIsInJvbGUiOiJURUNOSUNPIiwiY3JlYXRlZCI6MTYwODk0NzEwMTE1NSwibmFtZSI6Ikpvw6NvIFBhdWxvIFNhbnRhbmEgR3VzbcOjbyIsImV4cGlyYXRpb24iOjE2MDg5NTQzMDExNTV9.tswv-6xeYfncw321jJW2jLFu7VwtmC6uHnFQPR3ng8I4B3xGSCGPU5YJiM0CgPBBgAxJnCwjYRln81wq3gt9pw",
 							"type": "string"
 						}
 					]
@@ -880,6 +875,114 @@
 					"raw": "{{api}}chamadas",
 					"host": [
 						"{{api}}chamadas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User POST autheticate create CEDIDO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+							"  \r",
+							"    //analisando chamdas\r",
+							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+							"    //analisando produtores\r",
+							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"senha\": \"123\",\r\n  \"login\": \"47767541002\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}users/auth",
+					"host": [
+						"{{api}}users"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User POST autheticate create TECNICO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check the create any visita\", () => {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  //analisando o cabecalho da visita\r",
+							"  pm.response.to.have.status(201);\r",
+							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+							"  \r",
+							"    //analisando chamdas\r",
+							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+							"    //analisando produtores\r",
+							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"senha\": \"jacare\",\r\n  \"login\": \"04459471604\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}users/auth",
+					"host": [
+						"{{api}}users"
+					],
+					"path": [
+						"auth"
 					]
 				}
 			},
@@ -1227,16 +1330,11 @@
 			},
 			"request": {
 				"auth": {
-					"type": "basic",
-					"basic": [
+					"type": "bearer",
+					"bearer": [
 						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNDQ1OTQ3MTYwNCIsInJvbGUiOiJURUNOSUNPIiwiY3JlYXRlZCI6MTYwODk0NzEwMTE1NSwibmFtZSI6Ikpvw6NvIFBhdWxvIFNhbnRhbmEgR3VzbcOjbyIsImV4cGlyYXRpb24iOjE2MDg5NTQzMDExNTV9.tswv-6xeYfncw321jJW2jLFu7VwtmC6uHnFQPR3ng8I4B3xGSCGPU5YJiM0CgPBBgAxJnCwjYRln81wq3gt9pw",
 							"type": "string"
 						}
 					]
@@ -1253,13 +1351,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{api}}programas/search/emenda",
+					"raw": "{{api}}programas/search/a",
 					"host": [
 						"{{api}}programas"
 					],
 					"path": [
 						"search",
-						"emenda"
+						"a"
 					]
 				}
 			},
@@ -1328,7 +1426,7 @@
 			"response": []
 		},
 		{
-			"name": "Programa GET programa by reference Copy",
+			"name": "Programa CREATE a new program",
 			"event": [
 				{
 					"listen": "test",
@@ -1348,16 +1446,11 @@
 			],
 			"request": {
 				"auth": {
-					"type": "basic",
-					"basic": [
+					"type": "bearer",
+					"bearer": [
 						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0Nzc2NzU0MTAwMiIsInJvbGUiOiJDRURJRE8iLCJjcmVhdGVkIjoxNjA4OTQ2NjY5NjY4LCJuYW1lIjoiU2lybGVuZSBGZXJyZWlyYSIsImV4cGlyYXRpb24iOjE2MDg5NTM4Njk2Njh9.CAAIzKU-DhIEFxNWIA-UtK0Q_c_nJ3ua-yQxN-J00eFITyzJPtjGm46ewz6yg1dQ9Ko2v9gLTCN84l8w3YRqNg",
 							"type": "string"
 						}
 					]
@@ -1366,7 +1459,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
+					"raw": "{\r\n  \"dataFim\": \"2021-08-21\",\r\n  \"dataInicio\": \"2020-12-10\",\r\n  \"descricao\": \"Programa municipal de mecanização agricola\",\r\n  \"nome\": \"Mecanização agricola\",\r\n  \"referencia\": \"Programa da prefeitura 2020\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -11,6 +11,8 @@ import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.models.repository.ServiceProvidedRepository;
+import com.jp.dark.security.AuthenticationService;
+import com.jp.dark.security.jwt.JwtService;
 import com.jp.dark.services.VisitaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,6 +29,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -67,12 +72,23 @@ public class VisitaControllerTest {
     @MockBean
     private Config config;
 
+    @Qualifier("userDetailsServiceImpl")
+    @MockBean
+    AuthenticationService userDetailsService;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    PasswordEncoder encoder;
+
     @BeforeEach
     public void setUp(){
         //this.service = new VisitaServiceImpl(visitaRepository, callRepository, personaRepository, serviceProvidedRepository, config);
     }
     @Test
     @DisplayName("Deve criar uma visita com sucesso.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createVisitaTest() throws Exception{
 
         VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();
@@ -101,6 +117,7 @@ public class VisitaControllerTest {
 
     @Test
     @DisplayName("Deve filtrar as visitas")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void findVisitaTest() throws Exception {
         String codigo = "20201104";
 
@@ -125,6 +142,7 @@ public class VisitaControllerTest {
 
     @Test
     @DisplayName("Deve lançar erro de validação ao criar uma visita.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createInvalidVisitaTest() throws Exception {
 
         VisitaDTO dto = VisitaDTO.builder()
@@ -146,6 +164,7 @@ public class VisitaControllerTest {
 
     @Test
     @DisplayName("Deve obter informações da visita")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void getDetailsVisitaTest() throws Exception {
         String codigo = "20201104";
 
@@ -168,6 +187,7 @@ public class VisitaControllerTest {
     }
     @Test
     @DisplayName("Deve retornar VisitaNotFoundException ao obter informações da visita que não existe.")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void getDetailsVisitaNotFoundTest() throws Exception {
         String codigo = "20201104";
 
@@ -188,6 +208,7 @@ public class VisitaControllerTest {
     }
     @Test
     @DisplayName("Deve lançar erro se o coidigo for duplicado - exemplo de regra de negoicio")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void createVisitaWithDuplicatedId() throws Exception {
 
         VisitaDTO dto =  VisitaFactory.createNewValidVisitaDto();

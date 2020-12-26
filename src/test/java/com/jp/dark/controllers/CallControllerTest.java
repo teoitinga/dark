@@ -8,6 +8,8 @@ import com.jp.dark.factory.VisitaFactory;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.repository.CallRepository;
+import com.jp.dark.security.AuthenticationService;
+import com.jp.dark.security.jwt.JwtService;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
 import org.junit.jupiter.api.DisplayName;
@@ -16,10 +18,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -52,8 +57,19 @@ public class CallControllerTest {
     @MockBean
     CallRepository repository;
 
+    @Qualifier("userDetailsServiceImpl")
+    @MockBean
+    AuthenticationService userDetailsService;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    PasswordEncoder encoder;
+
     @Test
     @DisplayName("Deve realizar uma chamada de serviço")
+    @WithMockUser(username = "04459471604", roles = {"CEDIDO", "TECNICO"})
     public void saveTest() throws Exception {
 
         CallDTOPost dto = CallFactory.createOtherCallDTOPost();
