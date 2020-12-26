@@ -6,1826 +6,1937 @@
 	},
 	"item": [
 		{
-			"name": "Details about a user",
-			"event": [
+			"name": "Visita",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any User\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
-							"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
-							"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
-							"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
-							"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api}}users/64238171624",
-					"host": [
-						"{{api}}users"
+					"name": "Visita POST create new visita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"64238171624"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "unexpected error",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user"
-							],
-							"query": [
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "id",
-									"value": "<integer>"
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
 								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"***\",\r\n      \"serviceProvidedCode\": \"LMBB\",\r\n      \"servicoPrestado\": \"Elaboração de limite de crédito\",\r\n      \"valor\": 150\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-12-08\",\r\n  \"localDoAtendimeno\": \"Faz. Alto Caparaó\",\r\n  \"orientacao\": \"Coletar amostra de solo\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"27827129005\",\r\n      \"nome\": \"Alessandra Fabiana Sophia Martins\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"adubar com 600 kg de superefosfato simples\",\r\n  \"situacaoAtual\": \"Produção baixa\",\r\n  \"createFolder\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}visitas",
+							"host": [
+								"{{api}}visitas"
 							]
 						}
 					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": []
+				},
+				{
+					"name": "Visita GET details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}users/64238171624",
+							"host": [
+								"{{api}}users"
+							],
+							"path": [
+								"64238171624"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Visita controller",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "Calls",
+			"item": [
+				{
+					"name": "call POST create new call",
+					"event": [
 						{
-							"key": "Content-Type",
-							"value": "application/json"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
-					"cookie": [],
-					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208222959-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"ATERBOV\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas",
+							"host": [
+								"{{api}}chamadas"
+							]
+						}
+					},
+					"response": []
 				},
+				{
+					"name": "call PUT finalize",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas/finalize/20201220162857-562",
+							"host": [
+								"{{api}}chamadas"
+							],
+							"path": [
+								"finalize",
+								"20201220162857-562"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "call PUT cancel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas/finalize/20201220162857-562",
+							"host": [
+								"{{api}}chamadas"
+							],
+							"path": [
+								"finalize",
+								"20201220162857-562"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "call PUT initialize",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas/finalize/20201220162857-562",
+							"host": [
+								"{{api}}chamadas"
+							],
+							"path": [
+								"finalize",
+								"20201220162857-562"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "call GET calls by user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.totalElements).to.equal(2);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas",
+							"host": [
+								"{{api}}chamadas"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Chamadas de Serviços",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "Users",
+			"item": [
 				{
 					"name": "Details about a user",
-					"originalRequest": {
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any User\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
+									"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
+									"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
+									"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
+									"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}users/64238171624",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}users"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"64238171624"
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": [
 						{
-							"key": "x-next",
-							"value": "tempor nulla",
-							"description": "A link to the next page of responses"
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
 						},
 						{
-							"key": "Content-Type",
-							"value": "application/json"
+							"name": "Details about a user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-next",
+									"value": "tempor nulla",
+									"description": "A link to the next page of responses"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+						}
+					]
+				},
+				{
+					"name": "test user CEDIDO GET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the test security\", () => {\r",
+									"\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
-					"cookie": [],
-					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
-				}
-			]
-		},
-		{
-			"name": "test user CEDIDO GET",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the test security\", () => {\r",
-							"\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "JPSG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "joao"
+						},
+						"url": {
+							"raw": "{{api}}cedido",
+							"host": [
+								"{{api}}cedido"
+							]
+						}
+					},
+					"response": [
 						{
-							"key": "password",
-							"value": "123",
-							"type": "string"
+							"name": "Details about a user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-next",
+									"value": "tempor nulla",
+									"description": "A link to the next page of responses"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
 						},
 						{
-							"key": "username",
-							"value": "JPSG",
-							"type": "string"
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
 						}
 					]
 				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "joao"
-				},
-				"url": {
-					"raw": "{{api}}cedido",
-					"host": [
-						"{{api}}cedido"
-					]
-				}
-			},
-			"response": [
 				{
-					"name": "Details about a user",
-					"originalRequest": {
+					"name": "test user TECNICO GET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the test security\", () => {\r",
+									"\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "JPSG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "joao"
+						},
+						"url": {
+							"raw": "{{api}}tecnico",
+							"host": [
+								"{{api}}tecnico"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Details about a user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-next",
+									"value": "tempor nulla",
+									"description": "A link to the next page of responses"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+						}
+					]
+				},
+				{
+					"name": "test user CEDIDO POST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the test security\", () => {\r",
+									"\r",
+									"  pm.response.to.have.status(201);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "JPSG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "joao"
+						},
+						"url": {
+							"raw": "{{api}}cedido",
+							"host": [
+								"{{api}}cedido"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+						},
+						{
+							"name": "Details about a user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-next",
+									"value": "tempor nulla",
+									"description": "A link to the next page of responses"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+						}
+					]
+				},
+				{
+					"name": "test user TECNICO POST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the test security\", () => {\r",
+									"\r",
+									"  pm.response.to.have.status(201);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "11819454614",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "joao"
+						},
+						"url": {
+							"raw": "{{api}}tecnico",
+							"host": [
+								"{{api}}tecnico"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+						},
+						{
+							"name": "Details about a user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?id=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-next",
+									"value": "tempor nulla",
+									"description": "A link to the next page of responses"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+						}
+					]
+				},
+				{
+					"name": "User TECNICO POST create new User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any User\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
+									"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
+									"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
+									"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
+									"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "04459471604",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "jacare",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"50445123621\",\r\n  \"contato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"name\": \"Antonio Renan Costa\",\r\n  \"password\": \"123\",\r\n  \"role\": \"TECNICO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}users",
+							"host": [
+								"{{api}}users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User CEDIDO POST create new User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any User\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
+									"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
+									"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
+									"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
+									"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "04459471604",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "jacare",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"11819454614\",\r\n  \"contato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"name\": \"Juliana Evelyn Viana\",\r\n  \"password\": \"123\",\r\n  \"role\": \"CEDIDO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}users",
+							"host": [
+								"{{api}}users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User POST create Info Price",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any User\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.valorUnitario).to.equal(1.34);\r",
+									"  pm.expect(jsonData.qtdPorUnid).to.equal(5000);\r",
+									"  pm.expect(jsonData.especificacaoCod).to.equal(\"Leite tipo C\");\r",
+									"  pm.expect(jsonData.produtorInformante.cpf).to.equal(\"98370916651\");\r",
+									"pm.expect(jsonData.dataDoLevantamento).not.null;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"produtorInformante\": {\r\n    \"cpf\": \"98370916651\",\r\n    \"nome\": \"Bryan Lorenzo da Luz\"\r\n  },\r\n  \"especificacaoCod\": \"LTC\",\r\n  \"qtdPorUnid\": 5000,\r\n  \"valorUnitario\": 1.34\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}infoprice",
+							"host": [
+								"{{api}}infoprice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User POST autheticate create CEDIDO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"senha\": \"123\",\r\n  \"login\": \"47767541002\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}auth",
+							"host": [
+								"{{api}}auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User POST autheticate create TECNICO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"senha\": \"jacare\",\r\n  \"login\": \"04459471604\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}auth",
+							"host": [
+								"{{api}}auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User GET findUserByCpf",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}users/64238171624",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}users"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"64238171624"
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "x-next",
-							"value": "tempor nulla",
-							"description": "A link to the next page of responses"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
+					"response": []
 				},
 				{
-					"name": "unexpected error",
-					"originalRequest": {
+					"name": "User GET by name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}users/name/a",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}users"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"name",
+								"a"
 							]
 						}
 					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
-				}
-			]
-		},
-		{
-			"name": "test user TECNICO GET",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the test security\", () => {\r",
-							"\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+					"response": []
 				}
 			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "123",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "JPSG",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "joao"
-				},
-				"url": {
-					"raw": "{{api}}tecnico",
-					"host": [
-						"{{api}}tecnico"
-					]
-				}
-			},
-			"response": [
+			"description": "Usuario do sistema"
+		},
+		{
+			"name": "Services",
+			"item": [
 				{
-					"name": "Details about a user",
-					"originalRequest": {
+					"name": "ServiceProvided GET service by reference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}services/irrig",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}services"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"irrig"
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "Programas",
+			"item": [
+				{
+					"name": "Programa GET programa by reference",
+					"event": [
 						{
-							"key": "x-next",
-							"value": "tempor nulla",
-							"description": "A link to the next page of responses"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
-					"cookie": [],
-					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
-				},
-				{
-					"name": "unexpected error",
-					"originalRequest": {
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}programas/search/a",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}programas"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"search",
+								"a"
 							]
 						}
 					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": []
+				},
+				{
+					"name": "Programa CREATE a new program",
+					"event": [
 						{
-							"key": "Content-Type",
-							"value": "application/json"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"\r",
+									"  pm.response.to.have.status(201);\r",
+									"\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
-					"cookie": [],
-					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
-				}
-			]
-		},
-		{
-			"name": "test user CEDIDO POST",
-			"event": [
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataFim\": \"2021-08-21\",\r\n  \"dataInicio\": \"2020-12-10\",\r\n  \"descricao\": \"Programa municipal de mecanização agricola\",\r\n  \"nome\": \"Mecanização agricola\",\r\n  \"referencia\": \"Programa da prefeitura 2020\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}programas/programa",
+							"host": [
+								"{{api}}programas"
+							],
+							"path": [
+								"programa"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the test security\", () => {\r",
-							"\r",
-							"  pm.response.to.have.status(201);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+					"name": "Programa POST insert data beneficiarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"beneficiarios\": [\r\n    {\r\n      \"beneficiario\": {\r\n        \"cpf\": \"98370916651\",\r\n        \"nome\": \"Bryan Lorenzo da Luz\"\r\n      },\r\n      \"observacoes\": \"***\",\r\n      \"quantidade\": 4\r\n    },\r\n    {\r\n      \"beneficiario\": {\r\n        \"cpf\": \"01668021668\",\r\n        \"nome\": \"Elisa Emily Corte Real\"\r\n      },\r\n      \"observacoes\": \"Telefone (33) 99628-4768\",\r\n      \"quantidade\": 1\r\n    }\r\n  ],\r\n  \"codigoDoPrograma\": \"20201224003646-191\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}programas",
+							"host": [
+								"{{api}}programas"
+							]
+						}
+					},
+					"response": []
 				}
 			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "123",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "JPSG",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "joao"
-				},
-				"url": {
-					"raw": "{{api}}cedido",
-					"host": [
-						"{{api}}cedido"
-					]
-				}
-			},
-			"response": [
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "Item de produção",
+			"item": [
 				{
-					"name": "unexpected error",
-					"originalRequest": {
+					"name": "Item de produção GET itensby reference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.totalElements).to.equal(2);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}inforenda/search-producao/a",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}inforenda"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"search-producao",
+								"a"
 							]
 						}
 					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
+					"response": []
 				},
 				{
-					"name": "Details about a user",
-					"originalRequest": {
+					"name": "origem da renda GET by reference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}inforenda/search-origem/a",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}inforenda"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"search-origem",
+								"a"
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "x-next",
-							"value": "tempor nulla",
-							"description": "A link to the next page of responses"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
-				}
-			]
-		},
-		{
-			"name": "test user TECNICO POST",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the test security\", () => {\r",
-							"\r",
-							"  pm.response.to.have.status(201);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+					"response": []
 				}
 			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "username",
-							"value": "11819454614",
-							"type": "string"
-						},
-						{
-							"key": "password",
-							"value": "123",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "joao"
-				},
-				"url": {
-					"raw": "{{api}}tecnico",
-					"host": [
-						"{{api}}tecnico"
-					]
-				}
-			},
-			"response": [
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "Produtor",
+			"item": [
 				{
-					"name": "unexpected error",
-					"originalRequest": {
+					"name": "Produtor GET by name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
+							"raw": "{{api}}produtores/a",
 							"host": [
-								"{{baseUrl}}"
+								"{{api}}produtores"
 							],
 							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
-								}
+								"a"
 							]
 						}
 					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "Informaçoes de Renda",
+			"item": [
+				{
+					"name": "InfoRenda POST create new information on renda",
+					"event": [
 						{
-							"key": "Content-Type",
-							"value": "application/json"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(201);\r",
+									"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
+									"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
+									"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
+									"  \r",
+									"    //analisando chamdas\r",
+									"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
+									"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
+									"    //analisando produtores\r",
+									"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
+									"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
-					"cookie": [],
-					"body": "{\n \"code\": -54414782,\n \"message\": \"ad enim nulla aliqua amet\"\n}"
-				},
-				{
-					"name": "Details about a user",
-					"originalRequest": {
-						"method": "GET",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
 						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/user?id=<integer>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "<integer>"
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"createFolder\": false,\r\n  \"dataDaVisita\": \"2020-12-10\",\r\n  \"localDoAtendimeno\": \"Fazenda Barão Vermelho\",\r\n  \"orientacao\": \"Providenciar documentação comprobatoria\",\r\n  \"producao\": [\r\n    {\r\n      \"codItemProducao\": \"BZMGR\",\r\n      \"dataProducao\": \"2020-12-25\",\r\n      \"quantidade\": 70,\r\n      \"valorUnitario\": 260\r\n    },\r\n    {\r\n      \"codItemProducao\": \"LEITE\",\r\n      \"dataProducao\": \"2020-05-08\",\r\n      \"quantidade\": 700,\r\n      \"valorUnitario\": 1.26\r\n    }\r\n  ],\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"98370916651\",\r\n      \"nome\": \"Bryan Lorenzo da Luz\"\r\n    },\r\n    {\r\n      \"cpf\": \"22987550600\",\r\n      \"nome\": \"Lucas João Almeida\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"Realizar o ajuste anual de imposto de renda\",\r\n  \"situacaoAtual\": \"Precisa atualizar o cadastro junto a agencia financeira\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}inforenda",
+							"host": [
+								"{{api}}inforenda"
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "x-next",
-							"value": "tempor nulla",
-							"description": "A link to the next page of responses"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"id\": -34241833,\n \"name\": \"in cillum veniam officia\",\n \"tag\": \"esse dolor est\"\n}"
-				}
-			]
-		},
-		{
-			"name": "User TECNICO POST create new User",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any User\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
-							"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
-							"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
-							"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
-							"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+					"response": []
 				}
 			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						},
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"login\": \"50445123621\",\r\n  \"contato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"name\": \"Antonio Renan Costa\",\r\n  \"password\": \"123\",\r\n  \"role\": \"TECNICO\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth-tecnico}}",
+						"type": "string"
 					}
-				},
-				"url": {
-					"raw": "{{api}}users",
-					"host": [
-						"{{api}}users"
-					]
-				}
-			},
-			"response": []
+				]
+			}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.sendRequest({",
+					"    url: pm.environment.get(\"api\") + 'auth',",
+					"    method: 'POST',",
+					"    header: {",
+					"        'content-type': 'application/json'",
+					"    },",
+					"    body: {",
+					"        mode: 'raw',",
+					"        raw: JSON.stringify({ ",
+					"            login: pm.environment.get(\"login-tecnico\"), ",
+					"            senha: pm.environment.get(\"password-tecnico\") })",
+					"    }",
+					"}, function (err, res) {",
+					"    pm.environment.set(\"auth-tecnico\", res.json().token);",
+					"    console.log(\"Token de acesso: \" + res.json().token.token)",
+					"});"
+				]
+			}
 		},
 		{
-			"name": "User CEDIDO POST create new User",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any User\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.login).to.equal(\"64238171624\");\r",
-							"  pm.expect(jsonData.contato).to.equal(\"3332331530\");\r",
-							"  pm.expect(jsonData.municipio).to.equal(\"Tarumirim\");\r",
-							"  pm.expect(jsonData.name).to.equal(\"Diogo Otávio Caleb Brito\");\r",
-							"pm.expect(jsonData.role).to.equal(\"TECNICO\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						},
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"login\": \"11819454614\",\r\n  \"contato\": \"3332331530\",\r\n  \"municipio\": \"Tarumirim\",\r\n  \"name\": \"Juliana Evelyn Viana\",\r\n  \"password\": \"123\",\r\n  \"role\": \"CEDIDO\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}users",
-					"host": [
-						"{{api}}users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "User POST create Info Price",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any User\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.valorUnitario).to.equal(1.34);\r",
-							"  pm.expect(jsonData.qtdPorUnid).to.equal(5000);\r",
-							"  pm.expect(jsonData.especificacaoCod).to.equal(\"Leite tipo C\");\r",
-							"  pm.expect(jsonData.produtorInformante.cpf).to.equal(\"98370916651\");\r",
-							"pm.expect(jsonData.dataDoLevantamento).not.null;\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"produtorInformante\": {\r\n    \"cpf\": \"98370916651\",\r\n    \"nome\": \"Bryan Lorenzo da Luz\"\r\n  },\r\n  \"especificacaoCod\": \"LTC\",\r\n  \"qtdPorUnid\": 5000,\r\n  \"valorUnitario\": 1.34\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}infoprice",
-					"host": [
-						"{{api}}infoprice"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Visita POST create new visita",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNDQ1OTQ3MTYwNCIsInJvbGUiOiJURUNOSUNPIiwiY3JlYXRlZCI6MTYwODk0NzEwMTE1NSwibmFtZSI6Ikpvw6NvIFBhdWxvIFNhbnRhbmEgR3VzbcOjbyIsImV4cGlyYXRpb24iOjE2MDg5NTQzMDExNTV9.tswv-6xeYfncw321jJW2jLFu7VwtmC6uHnFQPR3ng8I4B3xGSCGPU5YJiM0CgPBBgAxJnCwjYRln81wq3gt9pw",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"***\",\r\n      \"serviceProvidedCode\": \"LMBB\",\r\n      \"servicoPrestado\": \"Elaboração de limite de crédito\",\r\n      \"valor\": 150\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-12-08\",\r\n  \"localDoAtendimeno\": \"Faz. Alto Caparaó\",\r\n  \"orientacao\": \"Coletar amostra de solo\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"27827129005\",\r\n      \"nome\": \"Alessandra Fabiana Sophia Martins\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"adubar com 600 kg de superefosfato simples\",\r\n  \"situacaoAtual\": \"Produção baixa\",\r\n  \"createFolder\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}visitas",
-					"host": [
-						"{{api}}visitas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "call POST create new call",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208222959-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"ATERBOV\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}chamadas",
-					"host": [
-						"{{api}}chamadas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "User POST autheticate create CEDIDO",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"senha\": \"123\",\r\n  \"login\": \"47767541002\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}users/auth",
-					"host": [
-						"{{api}}users"
-					],
-					"path": [
-						"auth"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "User POST autheticate create TECNICO",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"senha\": \"jacare\",\r\n  \"login\": \"04459471604\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}users/auth",
-					"host": [
-						"{{api}}users"
-					],
-					"path": [
-						"auth"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "call PUT finalize",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}chamadas/finalize/20201220162857-562",
-					"host": [
-						"{{api}}chamadas"
-					],
-					"path": [
-						"finalize",
-						"20201220162857-562"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "call PUT cancel",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}chamadas/finalize/20201220162857-562",
-					"host": [
-						"{{api}}chamadas"
-					],
-					"path": [
-						"finalize",
-						"20201220162857-562"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "call PUT initialize",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}chamadas/finalize/20201220162857-562",
-					"host": [
-						"{{api}}chamadas"
-					],
-					"path": [
-						"finalize",
-						"20201220162857-562"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "call GET calls by user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"  pm.expect(jsonData.totalElements).to.equal(2);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}chamadas",
-					"host": [
-						"{{api}}chamadas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ServiceProvided GET service by reference",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}services/irrig",
-					"host": [
-						"{{api}}services"
-					],
-					"path": [
-						"irrig"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Programa GET programa by reference",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNDQ1OTQ3MTYwNCIsInJvbGUiOiJURUNOSUNPIiwiY3JlYXRlZCI6MTYwODk0NzEwMTE1NSwibmFtZSI6Ikpvw6NvIFBhdWxvIFNhbnRhbmEgR3VzbcOjbyIsImV4cGlyYXRpb24iOjE2MDg5NTQzMDExNTV9.tswv-6xeYfncw321jJW2jLFu7VwtmC6uHnFQPR3ng8I4B3xGSCGPU5YJiM0CgPBBgAxJnCwjYRln81wq3gt9pw",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}programas/search/a",
-					"host": [
-						"{{api}}programas"
-					],
-					"path": [
-						"search",
-						"a"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Item de produção GET itensby reference",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"  pm.expect(jsonData.totalElements).to.equal(2);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"codigoDaVisita\": \"20201208160005-27827129005\",\r\n  \"cpfReponsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"lançamento dos dados\",\r\n  \"serviceProvidedCode\": \"LM\",\r\n  \"servicoPrestado\": \"Cadastrar no bolsa familia\",\r\n  \"valor\": 0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}inforenda/search-producao/a",
-					"host": [
-						"{{api}}inforenda"
-					],
-					"path": [
-						"search-producao",
-						"a"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Programa CREATE a new program",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"\r",
-							"  pm.response.to.have.status(201);\r",
-							"\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0Nzc2NzU0MTAwMiIsInJvbGUiOiJDRURJRE8iLCJjcmVhdGVkIjoxNjA4OTQ2NjY5NjY4LCJuYW1lIjoiU2lybGVuZSBGZXJyZWlyYSIsImV4cGlyYXRpb24iOjE2MDg5NTM4Njk2Njh9.CAAIzKU-DhIEFxNWIA-UtK0Q_c_nJ3ua-yQxN-J00eFITyzJPtjGm46ewz6yg1dQ9Ko2v9gLTCN84l8w3YRqNg",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"dataFim\": \"2021-08-21\",\r\n  \"dataInicio\": \"2020-12-10\",\r\n  \"descricao\": \"Programa municipal de mecanização agricola\",\r\n  \"nome\": \"Mecanização agricola\",\r\n  \"referencia\": \"Programa da prefeitura 2020\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}programas/programa",
-					"host": [
-						"{{api}}programas"
-					],
-					"path": [
-						"programa"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "origem da renda GET by reference",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}inforenda/search-origem/a",
-					"host": [
-						"{{api}}inforenda"
-					],
-					"path": [
-						"search-origem",
-						"a"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Produtor GET by name",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}produtores/a",
-					"host": [
-						"{{api}}produtores"
-					],
-					"path": [
-						"a"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "User GET by name",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(200);\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"dataFim\": \"2021-04-21\",\r\n  \"dataInicio\": \"2020-12-24\",\r\n  \"descricao\": \"Programa municipal de distribuição de sementes de nilho\",\r\n  \"nome\": \"Programa milho\",\r\n  \"referencia\": \"Emenda parlamentar milho 2020\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}users/name/a",
-					"host": [
-						"{{api}}users"
-					],
-					"path": [
-						"name",
-						"a"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "InfoRenda POST create new information on renda",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"createFolder\": false,\r\n  \"dataDaVisita\": \"2020-12-10\",\r\n  \"localDoAtendimeno\": \"Fazenda Barão Vermelho\",\r\n  \"orientacao\": \"Providenciar documentação comprobatoria\",\r\n  \"producao\": [\r\n    {\r\n      \"codItemProducao\": \"BZMGR\",\r\n      \"dataProducao\": \"2020-12-25\",\r\n      \"quantidade\": 70,\r\n      \"valorUnitario\": 260\r\n    },\r\n    {\r\n      \"codItemProducao\": \"LEITE\",\r\n      \"dataProducao\": \"2020-05-08\",\r\n      \"quantidade\": 700,\r\n      \"valorUnitario\": 1.26\r\n    }\r\n  ],\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"98370916651\",\r\n      \"nome\": \"Bryan Lorenzo da Luz\"\r\n    },\r\n    {\r\n      \"cpf\": \"22987550600\",\r\n      \"nome\": \"Lucas João Almeida\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"Realizar o ajuste anual de imposto de renda\",\r\n  \"situacaoAtual\": \"Precisa atualizar o cadastro junto a agencia financeira\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}inforenda",
-					"host": [
-						"{{api}}inforenda"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Programa POST insert data beneficiarios",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check the create any visita\", () => {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  //analisando o cabecalho da visita\r",
-							"  pm.response.to.have.status(201);\r",
-							"  pm.expect(jsonData.dataDaVisita).to.equal(\"2020-12-08\");\r",
-							"  pm.expect(jsonData.localDoAtendimeno).to.equal(\"Faz. Alto Caparaó\");\r",
-							"  pm.expect(jsonData.orientacao).to.equal(\"Coletar amostra de solo\");\r",
-							"  \r",
-							"    //analisando chamdas\r",
-							"    pm.expect(jsonData.chamadas[0].cpfReponsavel).to.equal(\"04459471604\");\r",
-							"    pm.expect(jsonData.chamadas[0].serviceProvidedCode).to.equal(\"LM\");\r",
-							"    //analisando produtores\r",
-							"    pm.expect(jsonData.produtores[0].cpf).to.equal(\"27827129005\");\r",
-							"    pm.expect(jsonData.produtores[0].nome).to.equal(\"Alessandra Fabiana Sophia Martins\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "jacare",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "04459471604",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"beneficiarios\": [\r\n    {\r\n      \"beneficiario\": {\r\n        \"cpf\": \"98370916651\",\r\n        \"nome\": \"Bryan Lorenzo da Luz\"\r\n      },\r\n      \"observacoes\": \"***\",\r\n      \"quantidade\": 4\r\n    },\r\n    {\r\n      \"beneficiario\": {\r\n        \"cpf\": \"01668021668\",\r\n        \"nome\": \"Elisa Emily Corte Real\"\r\n      },\r\n      \"observacoes\": \"Telefone (33) 99628-4768\",\r\n      \"quantidade\": 1\r\n    }\r\n  ],\r\n  \"codigoDoPrograma\": \"20201224003646-191\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}programas",
-					"host": [
-						"{{api}}programas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "User GET findUserByCpf",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api}}users/64238171624",
-					"host": [
-						"{{api}}users"
-					],
-					"path": [
-						"64238171624"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Visita GET details",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api}}users/64238171624",
-					"host": [
-						"{{api}}users"
-					],
-					"path": [
-						"64238171624"
-					]
-				}
-			},
-			"response": []
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://petstore.swagger.io/v1",
-			"type": "string"
+			"value": "http://petstore.swagger.io/v1"
 		}
 	]
 }

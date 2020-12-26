@@ -24,13 +24,11 @@ import java.util.List;
 public class UserController {
 
     private PersonaService service;
-    private AuthenticationService authenticationService;
 
-    public UserController(PersonaService service,
-                          AuthenticationService authenticationService
+
+    public UserController(PersonaService service
     ) {
         this.service = service;
-        this.authenticationService = authenticationService;
     }
 
     @PostMapping
@@ -55,12 +53,5 @@ public class UserController {
         return this.service.findUserByNameContaining(name);
     }
 
-    @PostMapping("/auth")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("Do login by user")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK")})
-    public TokenDTO autenticar(@RequestBody @Valid CredenciaisDTO credenciais){
-        TokenDTO token = this.authenticationService.autenticar(credenciais);
-        return token;
-    }
+
 }
