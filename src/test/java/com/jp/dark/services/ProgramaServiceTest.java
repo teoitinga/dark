@@ -10,6 +10,7 @@ import com.jp.dark.models.entities.Beneficiario;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.repository.BeneficiarioRepository;
 import com.jp.dark.models.repository.ProgramaRepository;
+import com.jp.dark.services.impls.CallServiceImpl;
 import com.jp.dark.services.impls.ProgramaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,9 +40,24 @@ public class ProgramaServiceTest {
     @MockBean
     BeneficiarioRepository beneficiarioRepository;
 
+    @MockBean
+    ServiceProvidedService serviceProvided;
+
+    @MockBean
+    CallServiceImpl callService;
+
+    @MockBean
+    VisitaService visitaService;
+
     @BeforeEach
     public void setup(){
-        this.service = new ProgramaServiceImpl(repository, personaService, beneficiarioRepository);
+        this.service = new ProgramaServiceImpl(repository,
+                personaService,
+                beneficiarioRepository,
+                serviceProvided,
+                callService,
+                visitaService
+                );
     }
 
     @Test

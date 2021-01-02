@@ -25,6 +25,9 @@ public class VisitaDTO {
 
     private String recomendacao;
 
+    @NotEmpty
+    private String municipio;
+
     @NotEmpty(message = "Você deve registrar pelo menos uma chamada!")
     private List<CallDTOPost> chamadas;
 

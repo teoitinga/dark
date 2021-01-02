@@ -29,7 +29,7 @@ public class Visita extends Auditable{
     @Column
     private String recomendacao;
 
-    @OneToMany(mappedBy = "visita", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "visita")
     private List<Call> chamadas;
 
     @NotEmpty(message = "Você deve informar a propriedade ou local do atendimento.")

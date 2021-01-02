@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table
+@Table(name = "chamadas")
 @Entity
 @EqualsAndHashCode
 public class Call extends Auditable implements Cloneable {
@@ -28,12 +28,14 @@ public class Call extends Auditable implements Cloneable {
     private String servico;
 
     @ManyToOne
+    @JoinColumn(name="serviceProvided_id", referencedColumnName="codigo",nullable=false)
     private ServiceProvided serviceProvided;
 
     @Column
     private String ocorrencia;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="call_id", referencedColumnName="codigo",nullable=false)
     private Visita visita;
 
     @Enumerated(EnumType.STRING)

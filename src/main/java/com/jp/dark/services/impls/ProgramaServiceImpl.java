@@ -1,27 +1,24 @@
 package com.jp.dark.services.impls;
 
-import com.jp.dark.dtos.BeneficiarioDTO;
-import com.jp.dark.dtos.MultiplosBeneficiariosDTO;
-import com.jp.dark.dtos.ProdutorMinDTO;
-import com.jp.dark.dtos.ProgramaDTO;
+import com.jp.dark.dtos.*;
 import com.jp.dark.exceptions.CpfIsNotValidException;
 import com.jp.dark.exceptions.ProgramaNotFoundException;
-import com.jp.dark.models.entities.Beneficiario;
-import com.jp.dark.models.entities.Persona;
-import com.jp.dark.models.entities.Programa;
+import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
+import com.jp.dark.models.entities.*;
+import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.BeneficiarioRepository;
 import com.jp.dark.models.repository.ProgramaRepository;
-import com.jp.dark.services.PersonaService;
-import com.jp.dark.services.ProgramaService;
+import com.jp.dark.services.*;
 import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -31,13 +28,22 @@ public class ProgramaServiceImpl implements ProgramaService {
     private ProgramaRepository repository;
     private PersonaService personaService;
     private BeneficiarioRepository beneficiarioRepository;
+    private ServiceProvidedService serviceProvided;
+    private CallServiceImpl callService;
+    private VisitaService visitaService;
 
     public ProgramaServiceImpl(ProgramaRepository repository, PersonaService personaService,
-                               BeneficiarioRepository beneficiarioRepository) {
+                               BeneficiarioRepository beneficiarioRepository,
+                               ServiceProvidedService serviceProvided,
+                               CallServiceImpl callService,
+                               VisitaService visitaService) {
 
         this.repository = repository;
         this.personaService = personaService;
         this.beneficiarioRepository = beneficiarioRepository;
+        this.serviceProvided = serviceProvided;
+        this.callService = callService;
+        this.visitaService = visitaService;
     }
 
     @Override
@@ -61,6 +67,23 @@ public class ProgramaServiceImpl implements ProgramaService {
 
         Programa programa = this.findByCodigo(beneficiarios.getCodigoDoPrograma());
 
+        //Obtem a lista de serviços prestados a este programa
+        List<ServiceProvided> prestedServices = extractCalls(programa.getCodigo());
+
+        //Configurando as chamadas de servico a serem registradas
+        List<CallDTOPost> callDTOPosts = prestedServices.stream().map(srv -> {
+            return CallDTOPost.builder()
+                    .serviceProvidedCode(srv.getCodigo())
+                    .valor(BigDecimal.ZERO)
+                    .status(EnumStatus.FINALIZADA.toString())
+                    .servicoPrestado(srv.getReferency())
+                    .ocorrencia(programa.getNome())
+                    .servicoQuitadoEm(LocalDate.now().toString())
+                    .CpfReponsavel(this.personaService.getCpfDoUsuario())
+                    .build();
+        }).collect(Collectors.toList());
+
+        //Obtendo a lista de beneficiario
         List<Beneficiario> benef = beneficiarios.getBeneficiarios().stream()
                 .map(prd->toBeneficiario(prd, programa))
                 .collect(Collectors.toList());
@@ -72,7 +95,37 @@ public class ProgramaServiceImpl implements ProgramaService {
         MultiplosBeneficiariosDTO response = new MultiplosBeneficiariosDTO();
         response.setBeneficiarios(benefDto);
 
+
+        //Salvando registros de beneficiarios
+
+        //Registrando a visita
+        Visita vs = Visita.builder()
+                .municipio(programa.getMunicipio())
+                .situacao(programa.getDescricao())
+                .localDoAtendimento(programa.getMunicipio())
+                .dataDaVisita(LocalDate.now())
+                .produtores(this.personaService.toListPersona(benefDto.stream()
+                        .map(bnf->bnf.getBeneficiario())
+                        .collect(Collectors.toList())))
+                .chamadas(this.callService.toCall(callDTOPosts))
+                .build();
+        VisitaDTO visitaDTO = this.visitaService.toVisitaDTO(vs);
+        visitaDTO = this.visitaService.save(visitaDTO);
+
         return response;
+    }
+
+    private List<ServiceProvided> extractCalls(String codigo) {
+        String[] callsCode = codigo.split("-");
+        List<ServiceProvided> callsResponse = new ArrayList<>();
+        for (String call: callsCode
+             ) {
+            try{
+            callsResponse.add(this.serviceProvided.findByCodigoService(call));
+            }catch (ServiceProvidedNotFoundException ex){
+            }
+        }
+        return callsResponse;
     }
 
     @Override
@@ -184,8 +237,17 @@ public class ProgramaServiceImpl implements ProgramaService {
     @Override
     public ProgramaDTO createProgram(ProgramaDTO dto) {
 
-        String municipio = this.personaService.getMunicpioDoUsuario();
+        String municipio = dto.getMunicipio();
         dto.setMunicipio(municipio);
+
+        StringBuilder codigo = new StringBuilder();
+        dto.getCodServicos().forEach(srv->{
+            codigo.append(srv);
+            codigo.append("-");
+        });
+
+        dto.setCodigo(Generates.keyCode(codigo.toString().substring(0, codigo.length() - 1)));
+
         Programa programa = toPrograma(dto);
         programa = this.repository.save(programa);
         ProgramaDTO saved = toProgramaDTO(programa);
@@ -200,6 +262,18 @@ public class ProgramaServiceImpl implements ProgramaService {
         }catch (NullPointerException exc){
             codigo = null;
         }
+
+        List<String> servicosCode = new ArrayList<>();
+        for (String cod : programa.getCodigo().split("-")) {
+            try{
+            ServiceProvided codigoServicos = this.serviceProvided.findByCodigoService(cod);
+            servicosCode.add(codigoServicos.getCodigo());
+
+            }catch (ServiceProvidedNotFoundException exc){
+
+            }
+        }
+
         return ProgramaDTO.builder()
                 .nome(programa.getNome())
                 .referencia(programa.getReferencia())
@@ -207,6 +281,7 @@ public class ProgramaServiceImpl implements ProgramaService {
                 .DataInicio(programa.getDataInicio())
                 .DataFim(programa.getDataFim())
                 .municipio(programa.getMunicipio())
+                .codServicos(servicosCode)
                 .codigo(codigo)
                 .build();
     }
@@ -217,11 +292,7 @@ public class ProgramaServiceImpl implements ProgramaService {
         try{
             codigo = dto.getCodigo();
         }catch (NullPointerException exc){
-            codigo = Generates.keyCode(Generates.createNumber());
-        }
-
-        if(dto.getCodigo() == null){
-            codigo = Generates.keyCode(Generates.createNumber());
+            codigo = null;//Generates.keyCode(Generates.createNumber());
         }
 
         return Programa.builder()

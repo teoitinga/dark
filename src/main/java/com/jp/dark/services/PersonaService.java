@@ -16,6 +16,8 @@ public interface PersonaService {
 
     String getMunicpioDoUsuario();
 
+    String getCpfDoUsuario();
+
     ProdutorDTO save(ProdutorDTO dto);
 
     ProdutorDTO toProdutorDTO(Persona dto);

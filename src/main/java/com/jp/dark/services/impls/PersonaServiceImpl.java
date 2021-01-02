@@ -85,6 +85,18 @@ public class PersonaServiceImpl implements PersonaService {
         return usuario.getCidade();
     }
     @Override
+    public String getCpfDoUsuario() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Persona usr = (Persona) authentication.getPrincipal();
+
+        String login =  usr.getCpf();
+
+        Persona usuario = this.findByCpf(login);
+
+        return usuario.getCpf();
+    }
+    @Override
     public ProdutorDTO save(ProdutorDTO dto) {
         /*
         1- Verifica se o produtor já está registrado
@@ -241,6 +253,5 @@ public class PersonaServiceImpl implements PersonaService {
         List<UserDTO> list = result.stream().map(entity->toUserDTO(entity)).collect(Collectors.toList());
         return list;
     }
-
 
 }
