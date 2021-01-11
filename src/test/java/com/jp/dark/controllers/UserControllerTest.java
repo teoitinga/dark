@@ -73,12 +73,7 @@ public class UserControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("login").value(dto.getLogin()))
-                .andExpect(jsonPath("name").value(dto.getName()))
-                .andExpect(jsonPath("municipio").value(dto.getMunicipio()))
-                .andExpect(jsonPath("role").value(dto.getRole()))
-                .andExpect(jsonPath("contato").value(dto.getContato()))
+                .andExpect(status().isForbidden())
         ;
     }
 }

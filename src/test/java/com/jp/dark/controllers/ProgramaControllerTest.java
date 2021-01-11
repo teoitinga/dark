@@ -85,8 +85,7 @@ public class ProgramaControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("beneficiarios", hasSize(2)))
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -105,7 +104,7 @@ public class ProgramaControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isForbidden())
         ;
     }
 }

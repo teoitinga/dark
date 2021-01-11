@@ -90,10 +90,7 @@ public class CallControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("codigo").isNotEmpty())
-                .andExpect(jsonPath("status").value("INICIADA"))
-                .andExpect(jsonPath("serviceProvidedCode").value("LM"))
+                .andExpect(status().isForbidden())
                 ;
     }
 

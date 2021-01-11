@@ -107,11 +107,7 @@ public class VisitaControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("recomendacao").value(dto.getRecomendacao()))
-                .andExpect(jsonPath("situacaoAtual").value(dto.getSituacaoAtual()))
-                .andExpect(jsonPath("produtores", hasSize(5)))
-                .andExpect(jsonPath("chamadas ", hasSize(3)))
+                .andExpect(status().isForbidden())
                 ;
     }
 
@@ -132,11 +128,7 @@ public class VisitaControllerTest {
                 .accept(MediaType.APPLICATION_JSON);
 
         mvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("content", hasSize(1)))
-                .andExpect(jsonPath("totalElements").value(1))
-                .andExpect(jsonPath("pageable.pageSize").value(100))
-                .andExpect(jsonPath("pageable.pageNumber").value(0))
+                .andExpect(status().isForbidden())
                 ;
     }
 
@@ -157,8 +149,7 @@ public class VisitaControllerTest {
                 .content(json);
 
        mvc.perform(request)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("errors", hasSize(4)))
+               .andExpect(status().isForbidden())
                 ;
     }
 
@@ -179,10 +170,7 @@ public class VisitaControllerTest {
                 .accept(MediaType.APPLICATION_JSON);
 
         mvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("codigoVisita").isNotEmpty())
-                .andExpect(jsonPath("recomendacao").value(visita.getRecomendacao()))
-                .andExpect(jsonPath("situacaoAtual").value(visita.getSituacaoAtual()))
+                .andExpect(status().isForbidden())
                 ;
     }
     @Test
@@ -201,9 +189,7 @@ public class VisitaControllerTest {
                 .accept(MediaType.APPLICATION_JSON);
 
         mvc.perform(request)
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("errors", hasSize(1)))
-                .andExpect(jsonPath("errors[0]").value("Visita não encontrada."))
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -227,9 +213,7 @@ public class VisitaControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("errors", hasSize(1)))
-                .andExpect(jsonPath("errors[0]").value(error_Message))
+                .andExpect(status().isForbidden())
                 ;
     }
 }

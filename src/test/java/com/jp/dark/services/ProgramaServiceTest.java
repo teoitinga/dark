@@ -2,12 +2,10 @@ package com.jp.dark.services;
 
 import com.jp.dark.dtos.MultiplosBeneficiariosDTO;
 import com.jp.dark.dtos.ProdutorMinDTO;
-import com.jp.dark.factory.BeneficiarioFactory;
-import com.jp.dark.factory.PersonaFactory;
-import com.jp.dark.factory.ProdutorFactory;
-import com.jp.dark.factory.ProgramaFactory;
+import com.jp.dark.factory.*;
 import com.jp.dark.models.entities.Beneficiario;
 import com.jp.dark.models.entities.Persona;
+import com.jp.dark.models.entities.ServiceProvided;
 import com.jp.dark.models.repository.BeneficiarioRepository;
 import com.jp.dark.models.repository.ProgramaRepository;
 import com.jp.dark.services.impls.CallServiceImpl;
@@ -22,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,6 +49,9 @@ public class ProgramaServiceTest {
     @MockBean
     VisitaService visitaService;
 
+    @MockBean
+    ProgramaService programaService;
+
     @BeforeEach
     public void setup(){
         this.service = new ProgramaServiceImpl(repository,
@@ -58,36 +61,6 @@ public class ProgramaServiceTest {
                 callService,
                 visitaService
                 );
-    }
-
-    @Test
-    @DisplayName("Deve salvar o registro ´valido.")
-    public void saveTest(){
-        MultiplosBeneficiariosDTO dto = BeneficiarioFactory.createValidBeneficiariosMultiplos();
-
-        BDDMockito.when(this.repository.findByCodigo(Mockito.anyString())).thenReturn(ProgramaFactory.createNewProgram());
-        BDDMockito.when(this.beneficiarioRepository.save(Mockito.any(Beneficiario.class))).thenReturn(BeneficiarioFactory.createBeneficiario());
-
-        //Execução
-        MultiplosBeneficiariosDTO saved = this.service.save(dto);
-
-        //verificação
-        assertThat(saved.getBeneficiarios()).isNotEmpty();
-        assertThat(saved.getBeneficiarios()).hasSize(2);
-    }
-
-    @Test
-    @DisplayName("Deve verificar a consistencia dos daods e salvar o registro,")
-    public void verifyPrcodutoresTest(){
-        MultiplosBeneficiariosDTO beneficiarios = BeneficiarioFactory.createValidBeneficiariosMultiplos();
-
-        BDDMockito.when(this.repository.findByCodigo(Mockito.anyString())).thenReturn(ProgramaFactory.createNewProgram());
-        BDDMockito.when(this.beneficiarioRepository.save(Mockito.any(Beneficiario.class))).thenReturn(BeneficiarioFactory.createBeneficiario());
-
-        MultiplosBeneficiariosDTO multiplosBeneficiariosDTO = this.service.verifyPrcodutores(beneficiarios);
-
-        //verificação
-        assertThat(multiplosBeneficiariosDTO).isNotNull();
     }
 
     @Test

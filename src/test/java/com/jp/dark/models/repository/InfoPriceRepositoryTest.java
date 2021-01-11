@@ -39,23 +39,4 @@ public class InfoPriceRepositoryTest {
     PriceItemRepository pricesItemRepository;
 
 
-    @Test
-    @DisplayName("Deve salvar um registro de preco de Boi Gordo")
-    public void saveTest(){
-        InfoPrice price = PricesFactory.createValidInfoPrice();
-
-        PricesItem priceItem = PricesFactory.createPriceItem();
-        Persona persona = PersonaFactory.createValidPersona();
-
-        persona = this.personaRepository.save(persona);
-        priceItem = this.pricesItemRepository.save(priceItem);
-
-        InfoPrice savedPrice = repository.save(price);
-
-        assertThat(savedPrice).isNotNull();
-        assertThat(savedPrice.getEspecificacao()).isEqualTo(price.getEspecificacao());
-        assertThat(savedPrice.getQtdPorUnid()).isEqualTo(15);
-        assertThat(savedPrice.getProdutorInformante()).isEqualTo(persona);
-        assertThat(savedPrice.getValor()).isEqualTo(BigDecimal.valueOf(320.50));
-    }
 }

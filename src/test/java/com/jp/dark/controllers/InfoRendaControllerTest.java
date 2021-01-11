@@ -88,7 +88,7 @@ public class InfoRendaControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
+                .andExpect(status().isForbidden())
                 ;
     }
 

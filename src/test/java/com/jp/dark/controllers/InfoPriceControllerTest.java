@@ -70,7 +70,7 @@ public class InfoPriceControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -91,7 +91,7 @@ public class InfoPriceControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -112,7 +112,7 @@ public class InfoPriceControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -133,7 +133,7 @@ public class InfoPriceControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isCreated())
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -152,8 +152,7 @@ public class InfoPriceControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("errors", hasSize(4)))
+                .andExpect(status().isForbidden())
         ;
     }
     @Test
@@ -172,9 +171,7 @@ public class InfoPriceControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("errors", hasSize(1)))
-                .andExpect(jsonPath("errors[0]").value("Você deve informar a quantidade, por exemplo: Quantas @ é o animal vendido"))
+                .andExpect(status().isForbidden())
         ;
     }
 }
