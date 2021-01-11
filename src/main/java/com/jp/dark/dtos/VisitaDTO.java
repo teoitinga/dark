@@ -25,7 +25,7 @@ public class VisitaDTO {
 
     private String recomendacao;
 
-    @NotEmpty
+    @NotEmpty(message = "Você deve informar um município para o atendimento")
     private String municipio;
 
     @NotEmpty(message = "Você deve registrar pelo menos uma chamada!")
