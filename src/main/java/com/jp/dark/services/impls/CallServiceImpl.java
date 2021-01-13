@@ -3,6 +3,7 @@ package com.jp.dark.services.impls;
 import com.jp.dark.config.Config;
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
+import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.exceptions.CallNotFoundException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
@@ -340,6 +341,99 @@ public class CallServiceImpl implements CallService {
         }
 
         return c;
+    }
+
+    @Override
+    public Page<CallDTOView> getCallsView(Pageable pageRequest) {
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails)principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona responsavel = this.personaService.findByCpf(nome);
+
+        Page<Call> result = this.repository.findByResponsavel(responsavel, pageRequest);
+
+        List<CallDTOView> list =result.getContent().stream()
+                .map(entity->toCallDTOPostView(entity))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageRequest, result.getTotalElements());
+    }
+
+    @Override
+    public Integer getCallsOperation() {
+
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails)principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona responsavel = this.personaService.findByCpf(nome);
+
+        Integer result = this.repository.countCalls(responsavel);
+
+        if(result == null){
+            return 0;
+        }
+
+        return result;
+    }
+
+    private CallDTOView toCallDTOPostView(Call call) {
+        String servicoQuitadoEm = null;
+        try{
+            servicoQuitadoEm = call.getServicoQuitadoEm().toString();
+        }catch (NullPointerException ex){
+
+        }
+        String cpf = null;
+        try{
+            cpf = call.getResponsavel().getCpf();
+
+        }catch (NullPointerException ex){
+
+        }
+
+        Visita codigo = call.getVisita();
+
+        String visitaCodigo;
+
+        try{
+            visitaCodigo = codigo.getCodigo();
+        }catch (NullPointerException ex){
+            visitaCodigo = null;
+        }
+
+        Visita vs = this.visitaRepository.findByCodigo(codigo.getCodigo()).get();
+
+        //Definindo dados do produtor atendido
+        String cpfProdutor = vs.getProdutores().get(0).getCpf();
+
+        Persona produtor = this.personaService.findByCpf(cpfProdutor);
+
+        return CallDTOView.builder()
+                .valor(call.getValor())
+                .status(call.getStatus().toString())
+                .codigo(call.getCodigo())
+                .dataDeConclusao(call.getPrevisaoDeConclusao())
+                .dataPgto(call.getServicoQuitadoEm())
+                .descricaoDoServico(call.getServico())
+                .propriedadeRural(vs.getLocalDoAtendimento())
+                .nomeDoProdutor(produtor.getNome())
+                .build();
     }
 
 }

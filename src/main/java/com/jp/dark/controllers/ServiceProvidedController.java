@@ -1,8 +1,6 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.ServiceProvidedDTO;
-import com.jp.dark.exceptions.ApiErrors;
-import com.jp.dark.exceptions.ServiceProvidedAlreadyException;
 import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.services.impls.ServiceProvidedServiceImpl;
@@ -38,6 +36,7 @@ public class ServiceProvidedController {
     public ServiceProvidedDTO save(@RequestBody @Valid ServiceProvidedDTO dto){
         return service.save(dto);
     }
+
     @GetMapping("{srv}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("Return a list of finding service")
@@ -47,9 +46,5 @@ public class ServiceProvidedController {
     public List<ServiceProvidedDTO> findByServiceContaining(@PathVariable String srv){
         return service.findByServiceContaining(srv);
     }
-    @ExceptionHandler(ServiceProvidedAlreadyException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handleServiceProvidedAlreadyException(ServiceProvidedAlreadyException exception){
-        return new ApiErrors(exception);
-    }
+
 }

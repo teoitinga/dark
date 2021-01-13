@@ -1,5 +1,6 @@
 package com.jp.dark.exceptions;
 
+import com.jp.dark.security.exceptions.InvaliPasswordException;
 import org.springframework.validation.BindingResult;
 
 import javax.validation.ConstraintViolationException;
@@ -39,6 +40,14 @@ public class ApiErrors {
     public ApiErrors(ServiceProvidedAlreadyException exception) {
         this.errors = Arrays.asList(exception.getMessage());
 
+    }
+
+    public ApiErrors(String message) {
+        this.errors = Arrays.asList(message);
+    }
+
+    public ApiErrors(InvaliPasswordException exception) {
+        this.errors = Arrays.asList(exception.getMessage());
     }
 
     public List<String> getErrors() {

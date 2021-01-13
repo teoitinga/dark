@@ -2,6 +2,7 @@ package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
+import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
@@ -69,6 +70,7 @@ public class CallController {
     public CallDTOPost callUpdateValue(@PathVariable String id, @PathVariable BigDecimal value){
         return callService.updateValue(id, value);
     }
+    /*
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("GET my calls")
@@ -78,23 +80,25 @@ public class CallController {
     public Page<CallDTOPost> myCalls(Pageable pageRequest){
         return this.callService.getCalls(pageRequest);
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
-        BindingResult bindingResult = exception.getBindingResult();
-        return new ApiErrors(bindingResult);
+    */
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET my calls")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public Page<CallDTOView> myCallsView(Pageable pageRequest){
+        return this.callService.getCallsView(pageRequest);
     }
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleConstraintViolationException(ConstraintViolationException exception){
 
-        return new ApiErrors(exception);
-    }
-    @ExceptionHandler(ServiceProvidedNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleConstraintViolationException(ServiceProvidedNotFoundException exception){
-
-        return new ApiErrors(exception);
+    @GetMapping("count")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET my calls in operation")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public Integer myCallsOpen(){
+        return this.callService.getCallsOperation();
     }
 
 }

@@ -1,7 +1,12 @@
 package com.jp.dark.security.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class InvaliPasswordException extends RuntimeException {
-    public InvaliPasswordException() {
-        super("A senha que você informou não está correta com a registrada!");
+
+    public InvaliPasswordException(
+    ) {
+            super("A senha que voce informou nao esta correta!");
     }
 }

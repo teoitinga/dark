@@ -2,6 +2,7 @@ package com.jp.dark.security;
 
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.security.config.JwtAuthenticationEntryPoint;
+import com.jp.dark.security.exceptions.CustomAccessDeniedHandler;
 import com.jp.dark.security.jwt.JwtAuthFilter;
 import com.jp.dark.security.jwt.JwtService;
 import com.jp.dark.services.PersonaService;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.jp.dark.security.exceptions.AcessDeniedException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -31,6 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Qualifier("userDetailsServiceImpl")
     private AuthenticationService userDetailsService;
+
+    @Autowired
+    private CustomAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     private JwtService jwtService;
@@ -64,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**"
     };
 
+
     public SecurityConfig(PasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -83,6 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(USERS_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

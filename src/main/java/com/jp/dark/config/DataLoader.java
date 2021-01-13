@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 public class DataLoader {
@@ -45,14 +46,19 @@ public class DataLoader {
     }
 
     private void LoadUsers() {
+        List<Persona> qtd = this.personaRepository.findAll();
+        if(!(qtd.size()>0)){
         this.personaRepository.save(new Persona("04459471604", "João Paulo Santana Gusmão", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
                 "35140000","Itinga",this.passwordEncoder.encode("jacare"), EnumCategoria.UNDEFINED, EnumPermissao.TECNICO, true));
 
             this.personaRepository.save(new Persona("47767541002", "Sirlene Ferreira", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
                 "35140000","Tarumirim",this.passwordEncoder.encode("123"), EnumCategoria.UNDEFINED, EnumPermissao.CEDIDO, true));
+        }
     }
 
     private void LoadServicesProvided() {
+        List<ServiceProvided> qtd = this.serviceRepository.findAll();
+        if(!(qtd.size()>0)){
         serviceRepository.save(new ServiceProvided("LAS", "Licenciamento ambiental", "Licenciamento", new BigDecimal(200), 7));
         serviceRepository.save(new ServiceProvided("LMBB", "BB Limite de credito", "Elaboração de laudo", new BigDecimal(150), 5));
         serviceRepository.save(new ServiceProvided("LMSC", "SICOOB Limite de credito", "Elaboração de laudo", new BigDecimal(150), 5));
@@ -81,9 +87,13 @@ public class DataLoader {
         serviceRepository.save(new ServiceProvided("DAP", "Emissão de DAP", "Emissão de DAP", new BigDecimal(0), 2));
         serviceRepository.save(new ServiceProvided("DAPLEV", "Levantamento social para Emissão de DAP", "Emissão de DAP", new BigDecimal(0), 2));
         serviceRepository.save(new ServiceProvided("DAP2V", "Emissão de 2 via de DAP", "DAP 2 via", new BigDecimal(0), 2));
+
+        }
     }
 
     private void LoadItensProducao(){
+        List<OrigemRenda> qtd = this.origemRepository.findAll();
+        if(!(qtd.size()>0)){
         OrigemRenda origemAgro = new OrigemRenda("AGRO", "Agricola","Produção obtida da agricultura familiar");
         OrigemRenda origemIndustria = new OrigemRenda("IND", "Agroindustria","Produção obtida da agricultura familiar");
         OrigemRenda origemPecuaria = new OrigemRenda("PEC", "Pecuaria","Produção obtida da agricultura familiar");
@@ -149,6 +159,9 @@ public class DataLoader {
         pricesItemRepository.save(new PricesItem("BZMG","venda de Bezerros 5-8 @","@","arrobas","venda de bezerros", bezerroMagro));
         pricesItemRepository.save(new PricesItem("BZMG","venda de garrotes 9-15 @","@","arrobas","venda de garrotes", boiMagro));
         pricesItemRepository.save(new PricesItem("BZMG","venda de garrotes 16-21 @","@","arrobas","venda de boi gordobezerros", boiGordo));
+
+        }
+
     }
     private void LoadOrigemProducao(){
 

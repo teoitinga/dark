@@ -2,7 +2,6 @@ package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.MultiplosBeneficiariosDTO;
 import com.jp.dark.dtos.ProgramaDTO;
-import com.jp.dark.dtos.ServiceProvidedDTO;
 import com.jp.dark.services.ProgramaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,12 +32,14 @@ public class ProgramaController {
     public MultiplosBeneficiariosDTO create(@RequestBody @Valid MultiplosBeneficiariosDTO dto){
         return this.service.save(dto);
     }
+
     @PostMapping("/programa")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Retorna a lista de programas ativos no município")
     public ProgramaDTO create(@RequestBody @Valid ProgramaDTO dto){
         return this.service.createProgram(dto);
     }
+
     @GetMapping("/search/{prg}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("Return a list of finding programa municipal")

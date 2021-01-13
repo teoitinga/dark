@@ -1,9 +1,6 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.VisitaDTO;
-import com.jp.dark.exceptions.ApiErrors;
-import com.jp.dark.exceptions.BusinessException;
-import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.services.VisitaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -60,24 +55,4 @@ public class VisitaController {
     public Page<VisitaDTO> find( VisitaDTO dto, Pageable pageRequest){
         return service.find(dto, pageRequest);
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
-        BindingResult bindingResult = exception.getBindingResult();
-        return new ApiErrors(bindingResult);
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleBusinessException(BusinessException exception){
-        return new ApiErrors(exception);
-    }
-
-    @ExceptionHandler(VisitaNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
-        return new ApiErrors(exception);
-    }
-
 }

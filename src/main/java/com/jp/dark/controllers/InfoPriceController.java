@@ -32,10 +32,4 @@ public class InfoPriceController {
         return service.save(dto);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
-        BindingResult bindingResult = exception.getBindingResult();
-        return new ApiErrors(bindingResult);
-    }
 }

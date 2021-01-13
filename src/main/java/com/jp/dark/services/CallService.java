@@ -2,6 +2,7 @@ package com.jp.dark.services;
 
 import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
+import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
 import org.springframework.data.domain.Page;
@@ -46,4 +47,8 @@ public interface CallService {
     Page<CallDTOPost> getCalls(Pageable pageRequest);
 
     Call toCall(CallDTOPost call, Visita vs);
+
+    Page<CallDTOView> getCallsView(Pageable pageRequest);
+
+    Integer getCallsOperation();
 }

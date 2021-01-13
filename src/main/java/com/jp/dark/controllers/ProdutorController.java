@@ -64,19 +64,5 @@ public class ProdutorController {
 
         return service.update(cpf, dto);
     }
-    /*
-    /* ExceptionHandlers
-    */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
-        BindingResult bindingResult = exception.getBindingResult();
-        return new ApiErrors(bindingResult);
-    }
 
-    @ExceptionHandler(PersonaAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handlePersonaAlreadyExistsException(PersonaAlreadyExistsException exception){
-        return new ApiErrors(exception);
-    }
 }

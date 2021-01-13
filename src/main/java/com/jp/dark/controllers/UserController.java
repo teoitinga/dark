@@ -1,10 +1,6 @@
 package com.jp.dark.controllers;
 
-import com.jp.dark.dtos.CredenciaisDTO;
-import com.jp.dark.dtos.ProdutorDTO;
-import com.jp.dark.dtos.TokenDTO;
 import com.jp.dark.dtos.UserDTO;
-import com.jp.dark.security.AuthenticationService;
 import com.jp.dark.services.PersonaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
