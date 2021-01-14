@@ -398,9 +398,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{api}}chamadas",
+							"raw": "{{api}}chamadas?size=4&pageNumber=1",
 							"host": [
 								"{{api}}chamadas"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "4"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -1166,6 +1176,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "jacare",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "04459471604",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
