@@ -149,7 +149,12 @@ public class VisitaServiceImpl implements VisitaService {
         /*
         9- Configurando o municipio da visita
          */
-        String municipio = visitaDto.getMunicipio();// this.personaService.getMunicpioDoUsuario();
+        String municipio;
+        try{
+            municipio = visitaDto.getMunicipio();
+        }catch (NullPointerException exc){
+            municipio = this.personaService.getMunicpioDoUsuario();
+        }
         visitaToSave.setMunicipio(municipio);
         //Salva o registro da visita
         Visita visitaSaved = this.repository.save(visitaToSave);

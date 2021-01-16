@@ -21,42 +21,51 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleBusinessException(BusinessException exception){
+    public ApiErrors handleBusinessException(BusinessException exception) {
         return new ApiErrors(exception);
     }
 
     @ExceptionHandler(VisitaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception){
+    public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception) {
         return new ApiErrors(exception);
     }
+
     @ExceptionHandler(InvaliPasswordException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ApiErrors handleInvaliPasswordException(InvaliPasswordException exception){
+    public ApiErrors handleInvaliPasswordException(InvaliPasswordException exception) {
         return new ApiErrors(exception);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleConstraintViolationException(ConstraintViolationException exception){
+    public ApiErrors handleConstraintViolationException(ConstraintViolationException exception) {
 
         return new ApiErrors(exception);
     }
+
     @ExceptionHandler(ServiceProvidedNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleConstraintViolationException(ServiceProvidedNotFoundException exception){
+    public ApiErrors handleConstraintViolationException(ServiceProvidedNotFoundException exception) {
 
         return new ApiErrors(exception);
     }
 
     @ExceptionHandler(PersonaAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handlePersonaAlreadyExistsException(PersonaAlreadyExistsException exception){
+    public ApiErrors handlePersonaAlreadyExistsException(PersonaAlreadyExistsException exception) {
         return new ApiErrors(exception);
     }
+
     @ExceptionHandler(ServiceProvidedAlreadyException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handleServiceProvidedAlreadyException(ServiceProvidedAlreadyException exception){
+    public ApiErrors handleServiceProvidedAlreadyException(ServiceProvidedAlreadyException exception) {
         return new ApiErrors(exception);
+    }
+
+    @ExceptionHandler(FailedOnCreateFolderException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleFailedOnCreateFolderException(FailedOnCreateFolderException exception) {
+        return new ApiErrors(exception.getMessage());
     }
 }

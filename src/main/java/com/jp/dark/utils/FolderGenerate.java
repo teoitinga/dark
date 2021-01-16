@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,14 +15,18 @@ import java.nio.file.Paths;
 public class FolderGenerate {
 
         public static final String PATH = "C:/jp/atendimentos/";
+        public static final String FILE_NAME = "INFO.txt";
 
         public static void createFolder(String folderName){
                 try {
 
                         Path path = Paths.get(PATH.concat(folderName));
+                        path = Paths.get(PATH.concat(folderName).concat("/").concat(FILE_NAME));
+
 
                         Files.createDirectories(path);
                         log.info("Criando pasta para pessoal: {}", folderName);
+
 
                 } catch (IOException e) {
 
