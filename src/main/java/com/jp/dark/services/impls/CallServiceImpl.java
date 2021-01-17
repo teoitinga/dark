@@ -358,7 +358,7 @@ public class CallServiceImpl implements CallService {
 
         Persona responsavel = this.personaService.findByCpf(nome);
 
-        Page<Call> result = this.repository.findByResponsavel(responsavel, pageRequest);
+        Page<Call> result = this.repository.findCallsEmAbertoPorResponsavel(responsavel, pageRequest);
 
         List<CallDTOView> list =result.getContent().stream()
                 .map(entity->toCallDTOPostView(entity))

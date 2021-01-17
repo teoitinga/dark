@@ -13,8 +13,10 @@ import java.util.List;
 
 public interface CallRepository extends JpaRepository<Call, String> {
 
-    Page<Call> findByResponsavel(Persona responsavel, Pageable pageRequest);
+    @Query("select c from Call c where (c.status = 'INICIADA') AND (c.responsavel = :responsavel)")
+    Page<Call> findCallsEmAbertoPorResponsavel(Persona responsavel, Pageable pageRequest);
 
+    Page<Call> findByResponsavel(Persona responsavel, Pageable pageRequest);
     @Query("select COUNT(c) from Call c where (c.status = 'INICIADA') AND (c.responsavel = :responsavel)")
     Integer countCalls(@Param("responsavel")Persona responsavel);
 }

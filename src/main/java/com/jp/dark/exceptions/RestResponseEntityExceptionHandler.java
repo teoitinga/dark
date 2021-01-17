@@ -68,4 +68,10 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public ApiErrors handleFailedOnCreateFolderException(FailedOnCreateFolderException exception) {
         return new ApiErrors(exception.getMessage());
     }
+
+    @ExceptionHandler(CallNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleCallNotFoundException(CallNotFoundException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
 }
