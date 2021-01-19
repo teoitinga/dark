@@ -21,10 +21,11 @@ public class FolderGenerate {
                 try {
 
                         Path path = Paths.get(PATH.concat(folderName));
-                        path = Paths.get(PATH.concat(folderName).concat("/").concat(FILE_NAME));
 
 
                         Files.createDirectories(path);
+                        path = Paths.get(PATH.concat(folderName).concat("/").concat(FILE_NAME));
+                        Files.createFile(path);
                         log.info("Criando pasta para pessoal: {}", folderName);
 
 
