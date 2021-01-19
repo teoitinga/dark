@@ -23,10 +23,10 @@ public class Visita extends Auditable{
     private String codigo;
 
     @NotEmpty(message = "Você deve informar a situação atual.")
-    @Column
+    @Column(length = 65535, columnDefinition = "TEXT")
     private String situacao;
 
-    @Column
+    @Column(length = 65535, columnDefinition = "TEXT")
     private String recomendacao;
 
     @OneToMany(mappedBy = "visita")
@@ -36,7 +36,7 @@ public class Visita extends Auditable{
     @Column
     private  String localDoAtendimento;
 
-    @Column
+    @Column(length = 65535, columnDefinition = "TEXT")
     private  String orientacao;
 
     @Column

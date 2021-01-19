@@ -44,6 +44,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return new ApiErrors(exception);
     }
 
+    @ExceptionHandler(com.mysql.cj.jdbc.exceptions.MysqlDataTruncation.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handlecomMysqlDataTruncation(com.mysql.cj.jdbc.exceptions.MysqlDataTruncation exception) {
+
+        return new ApiErrors(exception.getMessage());
+    }
+
     @ExceptionHandler(ServiceProvidedNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleConstraintViolationException(ServiceProvidedNotFoundException exception) {
