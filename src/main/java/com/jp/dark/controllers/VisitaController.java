@@ -1,7 +1,11 @@
 package com.jp.dark.controllers;
 
 import com.jp.dark.dtos.VisitaDTO;
+import com.jp.dark.models.entities.Call;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.vos.CallVO;
+import com.jp.dark.vos.VisitaListVO;
+import com.jp.dark.vos.VisitaVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -54,5 +58,34 @@ public class VisitaController {
     })
     public Page<VisitaDTO> find( VisitaDTO dto, Pageable pageRequest){
         return service.find(dto, pageRequest);
+    }
+
+    @GetMapping("/manager")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET aLL Visita")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public Page<VisitaVO> findAllVisitaManager(Pageable pageRequest){
+        return service.findAllVisitaManager(pageRequest);
+    }
+
+    @GetMapping("/user-manager")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET All Visita por usuario")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public Page<VisitaListVO> findAllVisitaManagerUser(Pageable pageRequest){
+        return service.findAllVisitaManagerUser(pageRequest);
+    }
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET aLL Visita")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public CallVO findAllVisitaManagerUser(@RequestBody CallVO vo, @PathVariable String id){
+        return service.includeCall(vo, id);
     }
 }

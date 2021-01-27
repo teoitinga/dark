@@ -5,6 +5,7 @@ import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.vos.CallVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -51,4 +52,11 @@ public interface CallService {
     Page<CallDTOView> getCallsView(Pageable pageRequest);
 
     Integer getCallsOperation();
+    Page<Call> findAllCalls(Pageable pageRequest);
+
+    List<Call> findAllCallsUser(Pageable pageRequest);
+
+    Call toCall(CallVO vo, Visita visita);
+
+    CallVO toCallVO(Call call);
 }

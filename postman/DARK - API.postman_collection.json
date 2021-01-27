@@ -50,7 +50,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"chamadas\": [\r\n    {\r\n      \"cpfReponsavel\": \"04459471604\",\r\n      \"ocorrencia\": \"***\",\r\n      \"serviceProvidedCode\": \"LMBB\",\r\n      \"servicoPrestado\": \"Elaboração de limite de crédito\",\r\n      \"valor\": 150\r\n    }\r\n  ],\r\n  \"dataDaVisita\": \"2020-12-08\",\r\n  \"localDoAtendimeno\": \"Faz. Alto Caparaó\",\r\n  \"orientacao\": \"Coletar amostra de solo\",\r\n  \"produtores\": [\r\n    {\r\n      \"cpf\": \"27827129005\",\r\n      \"nome\": \"Alessandra Fabiana Sophia Martins\"\r\n    }\r\n  ],\r\n  \"recomendacao\": \"adubar com 600 kg de superefosfato simples\",\r\n  \"situacaoAtual\": \"Produção baixa\",\r\n  \"createFolder\": true\r\n}",
+							"raw": "{\"localDoAtendimeno\":\"Faz Caparao\",\"dataDaVisita\":\"2021-01-19\",\"municipio\":\"Tarumirim\",\"situacaoAtual\":\"O beneficiário procurou apoio neste escritório pois necessita da emissão deste documento para atender a legislação vigente.\",\"orientacao\":\"Obter do órgão competente a devida autorização antes de implantar qualquer atividade em sua propriedade.\",\"recomendacao\":\"***\",\"chamadas\":[{\"ocorrencia\":\"***\",\"serviceProvidedCode\":\"ATERMACAR\",\"servicoPrestado\":\"Elaboração de Cadastro ambiental rural a produtor beneficiário\",\"cpfReponsavel\":\"\",\"valor\":0}],\"produtores\":[{\"cpf\":\"33279375169\",\"nome\":\"Osvaldo Marcos Yago Duarte\"},{\"cpf\":\"70893003905\",\"nome\":\"Benedito Levi Baptista\"}]}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,6 +88,96 @@
 							],
 							"path": [
 								"64238171624"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Visita GET Calls VO",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}visitas/manager",
+							"host": [
+								"{{api}}visitas"
+							],
+							"path": [
+								"manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Visita GET Calls VO by user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}visitas/user-manager",
+							"host": [
+								"{{api}}visitas"
+							],
+							"path": [
+								"user-manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Visita PUT add Calls in visita",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"codigo-servico\": \"ATERCULTHORTA\",\r\n  \"cpf-responsavel\": \"04459471604\",\r\n  \"ocorrencia\": \"não há o que se preocupar\",\r\n  \"servico-prestao\": \"ater de teste de xibroca\",\r\n  \"valor-servico\": 1450.24\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}visitas/20210120190536-22242461028",
+							"host": [
+								"{{api}}visitas"
+							],
+							"path": [
+								"20210120190536-22242461028"
 							]
 						}
 					},

@@ -8,6 +8,8 @@ import com.jp.dark.exceptions.VisitaNotFoundException;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.models.enums.EnumPermissao;
+import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
 import com.jp.dark.models.repository.VisitaRepository;
@@ -19,6 +21,9 @@ import com.jp.dark.services.VisitaService;
 import com.jp.dark.utils.FolderGenerate;
 import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
+import com.jp.dark.vos.CallVO;
+import com.jp.dark.vos.VisitaListVO;
+import com.jp.dark.vos.VisitaVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -351,4 +356,57 @@ public class VisitaServiceImpl implements VisitaService {
     public Visita save(Visita visita) {
         return this.repository.save(visita);
     }
+
+    @Override
+    public Page<VisitaVO> findAllVisitaManager(Pageable pageRequest) {
+
+        Page<Call> result = callService.findAllCalls(pageRequest);
+
+        List<VisitaVO> list = result.getContent().stream()
+                .map(e->new VisitaVO(
+                        e.getVisita().getCodigo(),
+                        e.getVisita().getDataDaVisita().format(config.formater()),
+                        e.getVisita().getLocalDoAtendimento(),
+                        e.getResponsavel().getNome(),
+                        e.getStatus().toString(),
+                        e.getServico()
+                ))
+                .collect(Collectors.toList());
+        //String codigo, LocalDate dataDaVisita, String localDoAtendimento, String responsavel, EnumStatus status, String servicoDsc
+        return new PageImpl<>(list, pageRequest, list.size());
+    }
+
+    @Override
+    public Page<VisitaListVO> findAllVisitaManagerUser(Pageable pageRequest) {
+        List<Call> result = callService.findAllCallsUser(pageRequest);
+
+        List<VisitaListVO> list = result.stream()
+                .map(e->new VisitaListVO(
+                        e.getVisita().getCodigo(),
+                        e.getVisita().getDataDaVisita().format(config.formater()),
+                        e.getVisita().getLocalDoAtendimento(),
+                        e.getVisita().getProdutores().get(0).getNome(),
+                        e.getServico()
+                ))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageRequest, list.size());
+    }
+
+    @Override
+    public CallVO includeCall(CallVO vo, String id) {
+        Visita visita = this.findByCodigo(id);
+
+        Call call = this.callService.toCall(vo, visita);
+        call = this.callService.save(call);
+        CallVO response = this.callService.toCallVO(call);
+        return response;
+    }
+
+    private Call toCall(CallVO vo) {
+        return Call.builder()
+
+                .build();
+    }
+
 }
