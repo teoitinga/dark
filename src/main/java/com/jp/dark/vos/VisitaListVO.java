@@ -17,19 +17,19 @@ import java.time.LocalDate;
 @JsonRootName(value = "visita")
 public class VisitaListVO  implements Serializable {
 
-    @JsonProperty("codigo-da-visita")
+    @JsonProperty("codigodavisita")
     private String codigo;
 
-    @JsonProperty("data-visita")
+    @JsonProperty("datavisita")
     private String dataAtd;
 
-    @JsonProperty("local-visita")
+    @JsonProperty("localvisita")
     private String local;
 
-    @JsonProperty("produtor-atendido")
+    @JsonProperty("produtoratendido")
     private String produtor;
 
-    @JsonProperty("servico-descricao")
+    @JsonProperty("servicodescricao")
     private String servicoDsc;
 
 

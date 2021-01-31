@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CallDTOPost {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String codigo;
 
     @NotEmpty(message = "Deve descrever o serviço prestado")
@@ -26,6 +27,7 @@ public class CallDTOPost {
     @NotNull(message =  "Deve informar o código do serviço prestado")
     private String serviceProvidedCode;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String ocorrencia;
 
     @NotNull(message =  "Deve informar o funcionario responsave")
@@ -37,8 +39,10 @@ public class CallDTOPost {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String servicoQuitadoEm;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String status;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String codigoDaVisita;
 
 }

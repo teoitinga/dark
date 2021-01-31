@@ -16,22 +16,22 @@ import java.time.LocalDate;
 @JsonRootName(value = "visita")
 public class VisitaVO implements Serializable {
 
-    @JsonProperty("cod-visita")
+    @JsonProperty("codvisita")
     private String codigo;
 
-    @JsonProperty("data-visita")
+    @JsonProperty("datavisita")
     private String dataAtd;
 
-    @JsonProperty("local-visita")
+    @JsonProperty("localvisita")
     private String local;
 
-    @JsonProperty("tecnico-resp")
+    @JsonProperty("tecnicoresp")
     private String responsavel;
 
-    @JsonProperty("servico-prestado")
+    @JsonProperty("servicoprestado")
     private String servicoDsc;
 
-    @JsonProperty("status-visita")
+    @JsonProperty("statusvisita")
     private String status;
 
     public VisitaVO(String codigo, String dataDaVisita, String localDoAtendimento, String responsavel, String status, String servicoDsc){

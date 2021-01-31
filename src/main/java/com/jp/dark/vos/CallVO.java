@@ -18,33 +18,37 @@ import java.math.BigDecimal;
 @JsonRootName(value = "chamada")
 public class CallVO implements Serializable {
 
-    @JsonProperty("servico-prestao")
+    @JsonProperty("servicoprestao")
     @NotEmpty(message = "Deve descrever o serviço prestado")
     private String servicoPrestado;
 
-    @JsonProperty("codigo-servico")
+    @JsonProperty("codigoservico")
     @NotNull(message =  "Deve informar o código do serviço prestado")
     private String serviceProvidedCode;
 
     @JsonProperty("ocorrencia")
     private String ocorrencia;
 
-    @JsonProperty("cpf-responsavel")
+    @JsonProperty("cpfresponsavel")
     @NotNull(message =  "Deve informar o funcionario responsavel")
     private String CpfReponsavel;
 
-    @JsonProperty("valor-servico")
+    @JsonProperty("valorservico")
     @NotNull(message = "Você deve informar o valor do Serviço")
     private BigDecimal valor;
 
-    @JsonProperty("servico-prestado")
+    @JsonProperty("servicoprestado")
     private String servicoDsc;
 
-    public CallVO(String servicoPrestado, String serviceProvidedCode, String ocorrencia,  String cpfReponsavel, BigDecimal valor) {
+    @JsonProperty("status")
+    private String status;
+
+    public CallVO(String servicoPrestado, String serviceProvidedCode, String ocorrencia,  String cpfReponsavel, BigDecimal valor, String status) {
         this.servicoPrestado = servicoPrestado;
         this.serviceProvidedCode = serviceProvidedCode;
         this.ocorrencia = ocorrencia;
         this.CpfReponsavel = cpfReponsavel;
         this.valor = valor;
+        this.status = status;
     }
 }

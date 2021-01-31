@@ -95,10 +95,16 @@ public class CallServiceImpl implements CallService {
             visitaCodigo = null;
         }
 
+        String status;
+        try{
+            status = c.getStatus().toString();
+        }catch (NullPointerException e){
+            status = EnumStatus.INICIADA.toString();
+        }
         return CallDTOPost.builder()
                 .valor(c.getValor())
                 .servicoPrestado(c.getServico())
-                .status(c.getStatus().toString())
+                .status(status)
                 .serviceProvidedCode(c.getServiceProvided().getCodigo())
                 .ocorrencia(c.getOcorrencia())
                 .codigo(c.getCodigo())
@@ -131,9 +137,15 @@ public class CallServiceImpl implements CallService {
         }catch (NullPointerException ex){
             dataQuitado = null;
         }
+        EnumStatus status;
+        try{
+            status = EnumStatus.valueOf(dto.getStatus());
+        }catch (NullPointerException e){
+            status = EnumStatus.INICIADA;
+        }
         return Call.builder()
                 .serviceProvided(this.serviceProvidedService.findByCodigoService(dto.getServiceProvidedCode()))
-                .status(EnumStatus.valueOf(dto.getStatus()))
+                .status(status)
                 .codigo(dto.getCodigo())
                 .servico(dto.getServico())
                 .responsavel(this.personaService.findByCpf(dto.getCpfReponsavel()))
@@ -154,9 +166,15 @@ public class CallServiceImpl implements CallService {
             servicoQuitadoEm = null;
         }
 
+        String status;
+        try{
+            status = call.getStatus().toString();
+        }catch (NullPointerException e){
+            status = EnumStatus.INICIADA.toString();
+        }
         return CallDTO.builder()
                 .valor(call.getValor())
-                .status(call.getStatus().toString())
+                .status(status)
                 .codigo(call.getCodigo())
                 .ocorrencia(call.getOcorrencia())
                 .servico(call.getServico())
@@ -429,9 +447,15 @@ public class CallServiceImpl implements CallService {
         LocalDate dataQuitado;
         dataQuitado = null;
 
+        EnumStatus status;
+        try{
+            status = EnumStatus.valueOf(EnumStatus.INICIADA.toString());
+        }catch (NullPointerException e){
+            status = EnumStatus.INICIADA;
+        }
         return Call.builder()
                 .serviceProvided(servico)
-                .status(EnumStatus.valueOf(EnumStatus.INICIADA.toString()))
+                .status(status)
                 .servico(vo.getServicoPrestado())
                 .responsavel(this.personaService.findByCpf(vo.getCpfReponsavel()))
                 .ocorrencia(vo.getOcorrencia())
@@ -449,7 +473,8 @@ public class CallServiceImpl implements CallService {
                 call.getServiceProvided().getCodigo(),
                 call.getOcorrencia(),
                 call.getResponsavel().getCpf(),
-                call.getValor()
+                call.getValor(),
+                call.getStatus().toString()
                 );
     }
 
