@@ -12,13 +12,6 @@ import javax.validation.ConstraintViolationException;
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
-//        BindingResult bindingResult = exception.getBindingResult();
-//        return new ApiErrors(bindingResult);
-//    }
-
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleBusinessException(BusinessException exception) {
@@ -29,6 +22,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception) {
         return new ApiErrors(exception);
+    }
+    @ExceptionHandler(PersonaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleVisitaNotFoundException(PersonaNotFoundException exception) {
+        return new ApiErrors(exception.getMessage());
     }
 
     @ExceptionHandler(InvaliPasswordException.class)

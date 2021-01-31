@@ -6,6 +6,9 @@ import com.jp.dark.dtos.VisitaDTO;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.entities.Visita;
+import com.jp.dark.vos.CallVO;
+import com.jp.dark.vos.VisitaListVO;
+import com.jp.dark.vos.VisitaVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -35,4 +38,10 @@ public interface VisitaService {
     void delete(Visita visita);
 
     Visita save(Visita visita);
+
+    Page<VisitaVO> findAllVisitaManager(Pageable pageRequest);
+
+    Page<VisitaListVO> findAllVisitaManagerUser(Pageable pageRequest);
+
+    CallVO includeCall(CallVO vo, String id);
 }

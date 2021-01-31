@@ -53,9 +53,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String TECNICO_TEST_URL = "api/v1/tecnico/**";
 
-    private static final String ROLE_TECNICO = EnumPermissao.TECNICO.toString();
     private static final String ROLE_CEDIDO = EnumPermissao.CEDIDO.toString();
+    private static final String ROLE_TECNICO = EnumPermissao.TECNICO.toString();
+    private static final String ROLE_COORDENADOR = EnumPermissao.COORDENADOR.toString();
+    private static final String ROLE_GERENTE_REGIONAL = EnumPermissao.GERENTE_REGIONAL.toString();
     private static final String ROLE_ADMINISTRADOR = EnumPermissao.ADMINISTRADOR.toString();
+    private static final String ROLE_PREFEITURA = EnumPermissao.PREFEITURA.toString();
 
     private static final String H2_CONSOLE_URL = "/h2-console/**";
     private static final String SWAGGER_URL = "/swagger-ui.html";
@@ -80,12 +83,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PROGRAMAS_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO)
                 .antMatchers(VISITAS_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
                 .antMatchers(HttpMethod.GET, SERVICES_PROVIDED_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(SERVICES_PROVIDED_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO)
-                .antMatchers(CALL_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(CALL_CANCEL_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO)
-                .antMatchers(PRODUTORES_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(INFO_RENDA_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
-                .antMatchers(INFO_PRICE_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(SERVICES_PROVIDED_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
+                .antMatchers(CALL_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
+                .antMatchers(CALL_CANCEL_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
+                .antMatchers(PRODUTORES_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
+                .antMatchers(INFO_RENDA_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
+                .antMatchers(INFO_PRICE_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
                 .antMatchers(USERS_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .anyRequest().authenticated()

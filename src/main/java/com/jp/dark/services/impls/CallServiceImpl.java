@@ -19,6 +19,7 @@ import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.utils.Generates;
+import com.jp.dark.vos.CallVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -390,6 +393,64 @@ public class CallServiceImpl implements CallService {
         }
 
         return result;
+    }
+
+    @Override
+    public Page<Call> findAllCalls(Pageable pageRequest) {
+        return repository.findAllCalls(pageRequest);
+    }
+
+    @Override
+    public List<Call> findAllCallsUser(Pageable pageRequest) {
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails)principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona responsavel = this.personaService.findByCpf(nome);
+
+        List<Call> result = this.repository.findAllCallsUser(responsavel, pageRequest);
+
+        return result;
+    }
+
+    @Override
+    public Call toCall(CallVO vo, Visita visita) {
+        ServiceProvided servico = this.serviceProvidedService.findByCodigoService(vo.getServiceProvidedCode());
+
+        LocalDate previsaoDeConclusao = LocalDate.now().plusDays(servico.getTimeRemaining());
+
+        LocalDate dataQuitado;
+        dataQuitado = null;
+
+        return Call.builder()
+                .serviceProvided(servico)
+                .status(EnumStatus.valueOf(EnumStatus.INICIADA.toString()))
+                .servico(vo.getServicoPrestado())
+                .responsavel(this.personaService.findByCpf(vo.getCpfReponsavel()))
+                .ocorrencia(vo.getOcorrencia())
+                .valor(vo.getValor())
+                .previsaoDeConclusao(previsaoDeConclusao)
+                .servicoQuitadoEm(dataQuitado)
+                .visita(visita)
+                .build();
+    }
+
+    @Override
+    public CallVO toCallVO(Call call) {
+        return new CallVO(
+                call.getServico(),
+                call.getServiceProvided().getCodigo(),
+                call.getOcorrencia(),
+                call.getResponsavel().getCpf(),
+                call.getValor()
+                );
     }
 
     private CallDTOView toCallDTOPostView(Call call) {
