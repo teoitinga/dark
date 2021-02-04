@@ -13,13 +13,16 @@ import com.jp.dark.models.entities.Visita;
 import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
-import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.models.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.VisitaRepository;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.utils.Generates;
+import com.jp.dark.vos.AcaoPrestadaVO;
+import com.jp.dark.vos.AtividadesPrestadasVO;
 import com.jp.dark.vos.CallVO;
+import com.jp.dark.vos.ServicosPrestadosVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,12 +32,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -478,6 +480,86 @@ public class CallServiceImpl implements CallService {
                 );
     }
 
+    @Override
+    public Page<ServicosPrestadosVO> getServicos(Pageable pageRequest) {
+
+        LocalDateTime inicio = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime fim = LocalDateTime.now();
+
+        Page<Object[]> result = this.repository.findCallsPorPeriodo(inicio, fim, pageRequest);
+        List<ServicosPrestadosVO> list = result.getContent().stream().map(data->mapServicosPrestadosVO(data)).collect(Collectors.toList());
+        log.info(list.toString());
+
+        return new PageImpl<>(list, pageRequest, result.getTotalElements());
+    }
+
+    @Override
+    public Page<AtividadesPrestadasVO> getAtividades(Pageable pageRequest) {
+        LocalDateTime inicio = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime fim = LocalDateTime.now();
+        Page<Object[]> result = this.repository.findAllCallManager(inicio, fim, pageRequest);
+
+        List<AtividadesPrestadasVO> list = result.getContent().stream()
+                .map(data->mapAtividadesPrestadasVO(data))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(list, pageRequest, result.getTotalElements());
+    }
+
+    private AtividadesPrestadasVO mapAtividadesPrestadasVO(Object[] data) {
+
+        return AtividadesPrestadasVO.builder()
+                .codigoVisita(data[0].toString())
+                .local(data[1].toString())
+                .dataDaVisita(data[2].toString())
+                .acoes(null)
+                .codigoChamada(data[3].toString())
+                .dataDaChamada(data[4].toString())
+                .servico(data[5].toString())
+                .produtor(data[6].toString())
+                .cpfProdutor(data[7].toString())
+                .municipioVisita(data[8].toString())
+                .tecnico(data[9].toString())
+                .status(data[10].toString())
+                .valor(data[11].toString())
+                .totalDeChamadas(null)
+                .build();
+    }
+
+    private AcaoPrestadaVO mapAcaoPrestadaVO(Call data) {
+        return AcaoPrestadaVO.builder()
+                .codigo(data.getCodigo())
+                .servico(data.getServico())
+                .status(data.getStatus().toString())
+                .tecnico(data.getResponsavel().getNome())
+                .valor(data.getValor().toString())
+                .build();
+    }
+
+    private ServicosPrestadosVO mapServicosPrestadosVO(Object[] data) {
+        return ServicosPrestadosVO.builder()
+                .dataServico(data[0].toString())
+                .servico(data[1].toString())
+                .cpfProdutor(data[2].toString())
+                .enderecoProdutor(data[3].toString())
+                .municipioProdutor(data[4].toString())
+                .nomeProdutor(data[5].toString())
+                .build();
+    }
+
+    private Object imprime(Call c) {
+        System.out.println("CAL: " + c.toString());
+        return null;
+    }
+
+
+    /*
+        private ServicosPrestadosVO toServicosPrestadosVO(Call call) {
+            return ServicosPrestadosVO.builder()
+                    .cpfProdutor(call.getVisita().getProdutores())
+                    .build();
+        }
+    */
     private CallDTOView toCallDTOPostView(Call call) {
         String servicoQuitadoEm = null;
         try{

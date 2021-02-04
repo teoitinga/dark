@@ -19,6 +19,4 @@ public interface VisitaRepository extends JpaRepository<Visita, String> {
 
     Page<Visita> findAll(Pageable pageRequest);
 
-//    Page<Visita> findAllVisitaManager(Pageable pageRequest);
-
 }

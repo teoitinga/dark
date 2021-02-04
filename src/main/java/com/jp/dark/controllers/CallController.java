@@ -7,6 +7,8 @@ import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.vos.AtividadesPrestadasVO;
+import com.jp.dark.vos.ServicosPrestadosVO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -101,4 +103,19 @@ public class CallController {
         return this.callService.getCallsOperation();
     }
 
+    @GetMapping("relatorio")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation("GET all servicos for report")
+    public Page<ServicosPrestadosVO> getServicos(Pageable pageRequest){
+
+        return this.callService.getServicos(pageRequest);
+    }
+
+    @GetMapping("gerenciar")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET all atividades ordered")
+    public Page<AtividadesPrestadasVO> getAtividades(Pageable pageRequest){
+        return this.callService.getAtividades(pageRequest);
+
+    }
 }

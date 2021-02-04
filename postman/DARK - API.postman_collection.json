@@ -505,6 +505,138 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "call GET calls VO MANAGER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.totalElements).to.equal(2);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas/gerenciar?size=200&pageNumber=1",
+							"host": [
+								"{{api}}chamadas"
+							],
+							"path": [
+								"gerenciar"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "200"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "call GET calls VO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the create any visita\", () => {\r",
+									"  var jsonData = pm.response.json();\r",
+									"  //analisando o cabecalho da visita\r",
+									"  pm.response.to.have.status(200);\r",
+									"  pm.expect(jsonData.totalElements).to.equal(2);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth-tecnico}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}chamadas/relatorio?size=100&pageNumber=1",
+							"host": [
+								"{{api}}chamadas"
+							],
+							"path": [
+								"relatorio"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "100"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "Chamadas de Serviços",
