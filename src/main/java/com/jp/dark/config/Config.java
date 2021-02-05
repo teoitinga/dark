@@ -12,4 +12,8 @@ public class Config {
     public DateTimeFormatter formater(){
         return DateTimeFormatter.ISO_LOCAL_DATE;
     }
+    @Bean
+    public DateTimeFormatter formaterPatternddMMyyyy(){
+        return DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    }
 }

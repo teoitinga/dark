@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.time.DateTimeException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -28,6 +29,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiErrors handleInvaliPasswordException(InvaliPasswordException exception) {
         return new ApiErrors(exception);
+    }
+    @ExceptionHandler(DateTimeException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrors handleDateTimeException(DateTimeException exception) {
+        return new ApiErrors(exception.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

@@ -13,7 +13,6 @@ import java.io.Serializable;
 @Builder
 public class AcaoPrestadaVO implements Serializable {
     private String codigo;
-    private String produtor;
     private String servico;
     private String tecnico;
     private String status;

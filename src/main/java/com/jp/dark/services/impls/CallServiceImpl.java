@@ -19,10 +19,7 @@ import com.jp.dark.services.CallService;
 import com.jp.dark.services.PersonaService;
 import com.jp.dark.services.ServiceProvidedService;
 import com.jp.dark.utils.Generates;
-import com.jp.dark.vos.AcaoPrestadaVO;
-import com.jp.dark.vos.AtividadesPrestadasVO;
-import com.jp.dark.vos.CallVO;
-import com.jp.dark.vos.ServicosPrestadosVO;
+import com.jp.dark.vos.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +33,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,38 +65,38 @@ public class CallServiceImpl implements CallService {
 
     @Override
     public List<CallDTOPost> toCallDTOPost(List<Call> chamadas) {
-        return chamadas.stream().map(c ->toCallDTOPost(c)).collect(Collectors.toList());
+        return chamadas.stream().map(c -> toCallDTOPost(c)).collect(Collectors.toList());
     }
 
     @Override
     public CallDTOPost toCallDTOPost(Call c) {
         String servicoQuitadoEm = null;
-        try{
+        try {
             servicoQuitadoEm = c.getServicoQuitadoEm().toString();
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
 
         }
         String cpf = null;
-        try{
-        cpf = c.getResponsavel().getCpf();
+        try {
+            cpf = c.getResponsavel().getCpf();
 
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
 
         }
 
         Visita codigo = c.getVisita();
 
         String visitaCodigo;
-        try{
-        visitaCodigo = codigo.getCodigo();
-        }catch (NullPointerException ex){
+        try {
+            visitaCodigo = codigo.getCodigo();
+        } catch (NullPointerException ex) {
             visitaCodigo = null;
         }
 
         String status;
-        try{
+        try {
             status = c.getStatus().toString();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             status = EnumStatus.INICIADA.toString();
         }
         return CallDTOPost.builder()
@@ -118,9 +114,9 @@ public class CallServiceImpl implements CallService {
 
     @Override
     public CallDTO save(CallDTO dto, Visita vs) {
-    if(dto.getCodigo() == null){
-        dto.setCodigo(Generates.keyCode(Generates.createNumber()));
-    }
+        if (dto.getCodigo() == null) {
+            dto.setCodigo(Generates.keyCode(Generates.createNumber()));
+        }
         Call chamada = this.toCall(dto, vs);
 
         chamada = this.repository.save(chamada);
@@ -134,15 +130,15 @@ public class CallServiceImpl implements CallService {
         LocalDate previsaoDeConclusao = LocalDate.now().plusDays(servico.getTimeRemaining());
 
         LocalDate dataQuitado;
-        try{
+        try {
             dataQuitado = LocalDate.parse(dto.getServicoQuitadoEm(), config.formater());
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             dataQuitado = null;
         }
         EnumStatus status;
-        try{
+        try {
             status = EnumStatus.valueOf(dto.getStatus());
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             status = EnumStatus.INICIADA;
         }
         return Call.builder()
@@ -162,16 +158,16 @@ public class CallServiceImpl implements CallService {
     @Override
     public CallDTO toCallDTO(Call call) {
         String servicoQuitadoEm;
-        try{
+        try {
             servicoQuitadoEm = call.getServicoQuitadoEm().toString();
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             servicoQuitadoEm = null;
         }
 
         String status;
-        try{
+        try {
             status = call.getStatus().toString();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             status = EnumStatus.INICIADA.toString();
         }
         return CallDTO.builder()
@@ -191,7 +187,7 @@ public class CallServiceImpl implements CallService {
     @Override
     public Call toCall(CallDTOPost dto) {
 
-        if(dto.getCodigo() == null){
+        if (dto.getCodigo() == null) {
             dto.setCodigo(Generates.keyCodeWithDate(Generates.createNumber(), LocalDateTime.now()));
         }
 
@@ -200,18 +196,18 @@ public class CallServiceImpl implements CallService {
         LocalDate previsaoDeConclusao = LocalDate.now().plusDays(servico.getTimeRemaining());
 
         LocalDate dataQuitado;
-        try{
-        dataQuitado = LocalDate.
-                parse(dto.getServicoQuitadoEm(), config.formater());
-        }catch (NullPointerException ex){
+        try {
+            dataQuitado = LocalDate.
+                    parse(dto.getServicoQuitadoEm(), config.formater());
+        } catch (NullPointerException ex) {
             dataQuitado = null;
         }
 
         EnumStatus status;
 
-        try{
+        try {
             status = EnumStatus.valueOf(dto.getStatus());
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             status = EnumStatus.INICIADA;
         }
         Visita codigo = this.visitaRepository.findByCodigo(dto.getCodigoDaVisita()).orElse(null);
@@ -232,13 +228,14 @@ public class CallServiceImpl implements CallService {
 
     @Override
     public List<Call> toCall(List<CallDTOPost> chamadas) {
-        return chamadas.stream().map(c ->toCall(c)).collect(Collectors.toList());
+        return chamadas.stream().map(c -> toCall(c)).collect(Collectors.toList());
     }
 
     @Override
     public List<Call> save(List<Call> call) {
-        return call.stream().map(c-> save(c)).collect(Collectors.toList());
+        return call.stream().map(c -> save(c)).collect(Collectors.toList());
     }
+
     @Override
     public Call save(Call call) {
         log.info("Salvando registro de chamdas: {}", call);
@@ -262,10 +259,10 @@ public class CallServiceImpl implements CallService {
 
     @Override
     public CallDTOPost update(CallDTOPost dto, String id) {
-        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        Call call = this.repository.findById(id).orElseThrow(() -> new CallNotFoundException("Chamada de serviço não encontrada"));
         ServiceProvided serviceProvided = this.serviceProvidedService.findByCodigoService(dto.getServiceProvidedCode());
         call.setServiceProvided(serviceProvided);
-        Visita visita = this.visitaRepository.findByCodigo(dto.getCodigoDaVisita()).orElseThrow(()->new VisitaNotFoundException());
+        Visita visita = this.visitaRepository.findByCodigo(dto.getCodigoDaVisita()).orElseThrow(() -> new VisitaNotFoundException());
         call.setVisita(visita);
         call.setOcorrencia(dto.getOcorrencia());
         Persona reponsavel = this.personaService.findByCpf(dto.getCpfReponsavel());
@@ -279,28 +276,31 @@ public class CallServiceImpl implements CallService {
 
     @Override
     public CallDTOPost cancel(String id) {
-        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        Call call = this.repository.findById(id).orElseThrow(() -> new CallNotFoundException("Chamada de serviço não encontrada"));
         call.setStatus(EnumStatus.CANCELADA);
         call = this.repository.save(call);
         return this.toCallDTOPost(call);
     }
+
     @Override
     public CallDTOPost finalize(String id) {
-        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        Call call = this.repository.findById(id).orElseThrow(() -> new CallNotFoundException("Chamada de serviço não encontrada"));
         call.setStatus(EnumStatus.FINALIZADA);
         call = this.repository.save(call);
         return this.toCallDTOPost(call);
     }
+
     @Override
     public CallDTOPost initialize(String id) {
-        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        Call call = this.repository.findById(id).orElseThrow(() -> new CallNotFoundException("Chamada de serviço não encontrada"));
         call.setStatus(EnumStatus.INICIADA);
         call = this.repository.save(call);
         return this.toCallDTOPost(call);
     }
+
     @Override
     public CallDTOPost updateValue(String id, BigDecimal valur) {
-        Call call = this.repository.findById(id).orElseThrow(()-> new CallNotFoundException("Chamada de serviço não encontrada"));
+        Call call = this.repository.findById(id).orElseThrow(() -> new CallNotFoundException("Chamada de serviço não encontrada"));
         call.setStatus(EnumStatus.INICIADA);
         call = this.repository.save(call);
         return this.toCallDTOPost(call);
@@ -315,7 +315,7 @@ public class CallServiceImpl implements CallService {
         String nome;
 
         if (principal instanceof UserDetails) {
-            nome = ((UserDetails)principal).getUsername();
+            nome = ((UserDetails) principal).getUsername();
         } else {
             nome = principal.toString();
         }
@@ -324,8 +324,8 @@ public class CallServiceImpl implements CallService {
 
         Page<Call> result = this.repository.findByResponsavel(responsavel, pageRequest);
 
-        List<CallDTOPost> list =result.getContent().stream()
-                .map(entity->toCallDTOPost(entity))
+        List<CallDTOPost> list = result.getContent().stream()
+                .map(entity -> toCallDTOPost(entity))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(list, pageRequest, result.getTotalElements());
@@ -348,9 +348,9 @@ public class CallServiceImpl implements CallService {
         c.setPrevisaoDeConclusao(previsao);
 
         EnumStatus status;
-        try{
+        try {
             status = EnumStatus.valueOf(call.getStatus());
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             status = EnumStatus.INICIADA;
         }
         c.setStatus(status);
@@ -359,7 +359,7 @@ public class CallServiceImpl implements CallService {
         try {
             quitadoEm = LocalDate.parse(call.getServicoQuitadoEm(), config.formater());
             c.setServicoQuitadoEm(quitadoEm);
-        }catch (NullPointerException exc){
+        } catch (NullPointerException exc) {
             c.setServicoQuitadoEm(null);
         }
 
@@ -374,7 +374,7 @@ public class CallServiceImpl implements CallService {
         String nome;
 
         if (principal instanceof UserDetails) {
-            nome = ((UserDetails)principal).getUsername();
+            nome = ((UserDetails) principal).getUsername();
         } else {
             nome = principal.toString();
         }
@@ -383,8 +383,8 @@ public class CallServiceImpl implements CallService {
 
         Page<Call> result = this.repository.findCallsEmAbertoPorResponsavel(responsavel, pageRequest);
 
-        List<CallDTOView> list =result.getContent().stream()
-                .map(entity->toCallDTOPostView(entity))
+        List<CallDTOView> list = result.getContent().stream()
+                .map(entity -> toCallDTOPostView(entity))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(list, pageRequest, result.getTotalElements());
@@ -399,7 +399,7 @@ public class CallServiceImpl implements CallService {
         String nome;
 
         if (principal instanceof UserDetails) {
-            nome = ((UserDetails)principal).getUsername();
+            nome = ((UserDetails) principal).getUsername();
         } else {
             nome = principal.toString();
         }
@@ -408,7 +408,7 @@ public class CallServiceImpl implements CallService {
 
         Integer result = this.repository.countCalls(responsavel);
 
-        if(result == null){
+        if (result == null) {
             return 0;
         }
 
@@ -428,7 +428,7 @@ public class CallServiceImpl implements CallService {
         String nome;
 
         if (principal instanceof UserDetails) {
-            nome = ((UserDetails)principal).getUsername();
+            nome = ((UserDetails) principal).getUsername();
         } else {
             nome = principal.toString();
         }
@@ -450,9 +450,9 @@ public class CallServiceImpl implements CallService {
         dataQuitado = null;
 
         EnumStatus status;
-        try{
+        try {
             status = EnumStatus.valueOf(EnumStatus.INICIADA.toString());
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             status = EnumStatus.INICIADA;
         }
         return Call.builder()
@@ -477,7 +477,7 @@ public class CallServiceImpl implements CallService {
                 call.getResponsavel().getCpf(),
                 call.getValor(),
                 call.getStatus().toString()
-                );
+        );
     }
 
     @Override
@@ -487,42 +487,70 @@ public class CallServiceImpl implements CallService {
         LocalDateTime fim = LocalDateTime.now();
 
         Page<Object[]> result = this.repository.findCallsPorPeriodo(inicio, fim, pageRequest);
-        List<ServicosPrestadosVO> list = result.getContent().stream().map(data->mapServicosPrestadosVO(data)).collect(Collectors.toList());
+        List<ServicosPrestadosVO> list = result.getContent().stream().map(data -> mapServicosPrestadosVO(data)).collect(Collectors.toList());
         log.info(list.toString());
 
         return new PageImpl<>(list, pageRequest, result.getTotalElements());
     }
 
     @Override
-    public Page<AtividadesPrestadasVO> getAtividades(Pageable pageRequest) {
-        LocalDateTime inicio = LocalDateTime.now().withDayOfMonth(1);
-        LocalDateTime fim = LocalDateTime.now();
-        Page<Object[]> result = this.repository.findAllCallManager(inicio, fim, pageRequest);
+    public List<AtividadesPrestadasVO> getAtividades(String from, String to) {
+        LocalDate inicio;
+        try {
+            inicio = LocalDate.parse(from, config.formaterPatternddMMyyyy());
+        } catch (NullPointerException e) {
+            inicio = LocalDate.now().withDayOfMonth(1);
+        }
+        LocalDate fim;
+        try {
+            fim = LocalDate.parse(to, config.formaterPatternddMMyyyy());
+        } catch (NullPointerException e) {
+            int ultimoDia = LocalDate.now().lengthOfMonth();
+            fim = LocalDate.now().withDayOfMonth(ultimoDia);
+        }
 
-        List<AtividadesPrestadasVO> list = result.getContent().stream()
-                .map(data->mapAtividadesPrestadasVO(data))
+        String municipio = this.personaService.getMunicpioDoUsuario();
+        log.info("Buscando Visita entre {} e {} do municipio de {}", inicio, fim, municipio);
+
+        List<Visita> allServicesManager = this.visitaRepository.findAllServicesManager(inicio.atTime(0, 0), fim.atTime(23, 59), municipio);
+
+        List<AtividadesPrestadasVO> list = allServicesManager.stream()
+                .map(data -> mapAtividadesPrestadasVO(data))
+
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(list, pageRequest, result.getTotalElements());
+        return list;
     }
 
-    private AtividadesPrestadasVO mapAtividadesPrestadasVO(Object[] data) {
+    private AtividadesPrestadasVO mapAtividadesPrestadasVO(Visita data) {
+        List<AcaoPrestadaVO> acoes = data.getChamadas().stream()
+                .map(call -> mapAcaoPrestadaVO(call))
+                .collect(Collectors.toList());
+
+        List<ProdutorVO> produtores = data.getProdutores().stream()
+                .map(prds -> mapProdutorVO(prds))
+                .collect(Collectors.toList());
+
+        Integer totalDeChamadas = acoes.size();
 
         return AtividadesPrestadasVO.builder()
-                .codigoVisita(data[0].toString())
-                .local(data[1].toString())
-                .dataDaVisita(data[2].toString())
-                .acoes(null)
-                .codigoChamada(data[3].toString())
-                .dataDaChamada(data[4].toString())
-                .servico(data[5].toString())
-                .produtor(data[6].toString())
-                .cpfProdutor(data[7].toString())
-                .municipioVisita(data[8].toString())
-                .tecnico(data[9].toString())
-                .status(data[10].toString())
-                .valor(data[11].toString())
-                .totalDeChamadas(null)
+                .codigoVisita(data.getCodigo())
+                .local(data.getLocalDoAtendimento())
+                .dataDaVisita(data.getDataDaVisita().format(config.formater()))
+                .acoes(acoes)
+                .produtores(produtores)
+                .municipioVisita(data.getMunicipio())
+                .totalDeChamadas(totalDeChamadas)
+                .build();
+
+    }
+
+    private ProdutorVO mapProdutorVO(Persona produtores) {
+        return ProdutorVO.builder()
+                .cpf(produtores.getCpf())
+                .nome(produtores.getNome())
+                .endereco(produtores.getEndereco())
+                .fone(produtores.getTelefone())
                 .build();
     }
 
@@ -533,6 +561,7 @@ public class CallServiceImpl implements CallService {
                 .status(data.getStatus().toString())
                 .tecnico(data.getResponsavel().getNome())
                 .valor(data.getValor().toString())
+                .dataDaChamada(data.getCreated().format(config.formater()))
                 .build();
     }
 
@@ -562,16 +591,16 @@ public class CallServiceImpl implements CallService {
     */
     private CallDTOView toCallDTOPostView(Call call) {
         String servicoQuitadoEm = null;
-        try{
+        try {
             servicoQuitadoEm = call.getServicoQuitadoEm().toString();
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
 
         }
         String cpf = null;
-        try{
+        try {
             cpf = call.getResponsavel().getCpf();
 
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
 
         }
 
@@ -579,9 +608,9 @@ public class CallServiceImpl implements CallService {
 
         String visitaCodigo;
 
-        try{
+        try {
             visitaCodigo = codigo.getCodigo();
-        }catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             visitaCodigo = null;
         }
 

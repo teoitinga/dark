@@ -17,14 +17,8 @@ public class AtividadesPrestadasVO implements Serializable {
     private String local;
     private String dataDaVisita;
     private List<AcaoPrestadaVO> acoes;
+    private List<ProdutorVO> produtores;
     private Integer totalDeChamadas;
-    private String codigoChamada;
-    private String dataDaChamada;
-    private String produtor;
-    private String cpfProdutor;
     private String municipioVisita;
-    private String servico;
-    private String tecnico;
-    private String status;
-    private String valor;
+
 }

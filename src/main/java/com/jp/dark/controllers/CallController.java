@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/chamadas")
@@ -72,17 +75,7 @@ public class CallController {
     public CallDTOPost callUpdateValue(@PathVariable String id, @PathVariable BigDecimal value){
         return callService.updateValue(id, value);
     }
-    /*
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("GET my calls")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "")
-    })
-    public Page<CallDTOPost> myCalls(Pageable pageRequest){
-        return this.callService.getCalls(pageRequest);
-    }
-    */
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("GET my calls")
@@ -114,8 +107,11 @@ public class CallController {
     @GetMapping("gerenciar")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("GET all atividades ordered")
-    public Page<AtividadesPrestadasVO> getAtividades(Pageable pageRequest){
-        return this.callService.getAtividades(pageRequest);
+    public List<AtividadesPrestadasVO> getAtividades(){
+
+        String from = "01-01-2021";
+        String to = null;
+        return this.callService.getAtividades(from, to);
 
     }
 }

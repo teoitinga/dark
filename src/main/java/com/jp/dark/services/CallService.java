@@ -64,5 +64,5 @@ public interface CallService {
 
     Page<ServicosPrestadosVO> getServicos(Pageable pageRequest);
 
-    Page<AtividadesPrestadasVO> getAtividades(Pageable pageRequest);
+    List<AtividadesPrestadasVO> getAtividades(String from, String to);
 }

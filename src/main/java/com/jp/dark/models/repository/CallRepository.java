@@ -35,4 +35,5 @@ public interface CallRepository extends JpaRepository<Call, String> {
 
     @Query(value = "SELECT v.codigo, v.localDoAtendimento, v.created, c.codigo, c.created, c.servico, p.nome, p.cpf, v.municipio, c.responsavel.nome, c.status, c.valor FROM Call c join c.visita v join v.produtores p where c.created BETWEEN :inicio AND :fim ORDER BY v.created DESC")
     Page<Object[]> findAllCallManager(LocalDateTime inicio, LocalDateTime fim, Pageable pageRequest);
+
 }
