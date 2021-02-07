@@ -22,5 +22,8 @@ public interface VisitaRepository extends JpaRepository<Visita, String> {
     Page<Visita> findAll(Pageable pageRequest);
 
     @Query(value = "SELECT v FROM Visita v where (v.created BETWEEN :inicio AND :fim) AND (v.municipio = :municipio)")
-    List<Visita> findAllServicesManager(LocalDateTime inicio, LocalDateTime fim, String municipio);
+    List<Visita> findAllServicesManagerInicioFimMunicipio(LocalDateTime inicio, LocalDateTime fim, String municipio);
+
+    @Query(value = "SELECT v FROM Visita v where (v.created BETWEEN :inicio AND :fim)")
+    List<Visita> findAllServicesManagerInicioFim(LocalDateTime inicio, LocalDateTime fim);
 }

@@ -512,17 +512,17 @@ public class CallServiceImpl implements CallService {
         String municipio = this.personaService.getMunicpioDoUsuario();
         log.info("Buscando Visita entre {} e {} do municipio de {}", inicio, fim, municipio);
 
-        List<Visita> allServicesManager = this.visitaRepository.findAllServicesManager(inicio.atTime(0, 0), fim.atTime(23, 59), municipio);
-
+        List<Visita> allServicesManager = this.visitaRepository.findAllServicesManagerInicioFim(inicio.atTime(0, 0), fim.atTime(23, 59));
+        log.info("Quantidade de visitas {}",allServicesManager.size());
         List<AtividadesPrestadasVO> list = allServicesManager.stream()
                 .map(data -> mapAtividadesPrestadasVO(data))
-
                 .collect(Collectors.toList());
 
         return list;
     }
 
     private AtividadesPrestadasVO mapAtividadesPrestadasVO(Visita data) {
+
         List<AcaoPrestadaVO> acoes = data.getChamadas().stream()
                 .map(call -> mapAcaoPrestadaVO(call))
                 .collect(Collectors.toList());
