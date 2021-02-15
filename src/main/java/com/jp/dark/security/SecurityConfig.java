@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String SERVICES_PROVIDED_URL = "/api/v1/services/**";
     private static final String USERS_URL = "/api/v1/users/**";
     private static final String LOGIN_URL = "/api/v1/auth/**";
+    private static final String REPORTS_URL = "/api/v1/reports/**";
 
     private static final String TECNICO_TEST_URL = "api/v1/tecnico/**";
 
@@ -90,6 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(INFO_RENDA_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
                 .antMatchers(INFO_PRICE_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO, ROLE_COORDENADOR, ROLE_GERENTE_REGIONAL, ROLE_PREFEITURA)
                 .antMatchers(USERS_URL).hasAnyAuthority(ROLE_ADMINISTRADOR, ROLE_TECNICO, ROLE_CEDIDO)
+                .antMatchers(REPORTS_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
