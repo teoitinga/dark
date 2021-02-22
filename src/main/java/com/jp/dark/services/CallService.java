@@ -6,10 +6,12 @@ import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
 import com.jp.dark.vos.AtividadesPrestadasVO;
+import com.jp.dark.vos.CallPesquisaVO;
 import com.jp.dark.vos.CallVO;
 import com.jp.dark.vos.ServicosPrestadosVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -64,5 +66,5 @@ public interface CallService {
 
     Page<ServicosPrestadosVO> getServicos(Pageable pageRequest);
 
-    List<AtividadesPrestadasVO> getAtividades(String from, String to);
+    List<AtividadesPrestadasVO> getAtividades(String dataInicial, String dataFinal);
 }

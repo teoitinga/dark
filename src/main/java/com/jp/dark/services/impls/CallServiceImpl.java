@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -488,35 +489,33 @@ public class CallServiceImpl implements CallService {
 
         Page<Object[]> result = this.repository.findCallsPorPeriodo(inicio, fim, pageRequest);
         List<ServicosPrestadosVO> list = result.getContent().stream().map(data -> mapServicosPrestadosVO(data)).collect(Collectors.toList());
-        log.info(list.toString());
 
         return new PageImpl<>(list, pageRequest, result.getTotalElements());
     }
 
     @Override
-    public List<AtividadesPrestadasVO> getAtividades(String from, String to) {
+    public List<AtividadesPrestadasVO> getAtividades(String dataInicial, String dataFinal) {
         LocalDate inicio;
         try {
-            inicio = LocalDate.parse(from, config.formaterPatternddMMyyyy());
+            inicio = LocalDate.parse(dataInicial, config.formaterPatternddMMyyyy());
         } catch (NullPointerException e) {
             inicio = LocalDate.now().withDayOfMonth(1);
         }
         LocalDate fim;
         try {
-            fim = LocalDate.parse(to, config.formaterPatternddMMyyyy());
+            fim = LocalDate.parse(dataFinal, config.formaterPatternddMMyyyy());
         } catch (NullPointerException e) {
             int ultimoDia = LocalDate.now().lengthOfMonth();
             fim = LocalDate.now().withDayOfMonth(ultimoDia);
         }
 
         String municipio = this.personaService.getMunicpioDoUsuario();
-        log.info("Buscando Visita entre {} e {} do municipio de {}", inicio, fim, municipio);
 
         List<Visita> allServicesManager = this.visitaRepository.findAllServicesManagerInicioFim(inicio.atTime(0, 0), fim.atTime(23, 59));
-        log.info("Quantidade de visitas {}",allServicesManager.size());
         List<AtividadesPrestadasVO> list = allServicesManager.stream()
                 .map(data -> mapAtividadesPrestadasVO(data))
                 .collect(Collectors.toList());
+
 
         return list;
     }
@@ -577,7 +576,7 @@ public class CallServiceImpl implements CallService {
     }
 
     private Object imprime(Call c) {
-        System.out.println("CAL: " + c.toString());
+
         return null;
     }
 

@@ -8,6 +8,7 @@ import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
 import com.jp.dark.vos.AtividadesPrestadasVO;
+import com.jp.dark.vos.CallPesquisaVO;
 import com.jp.dark.vos.ServicosPrestadosVO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -107,11 +108,7 @@ public class CallController {
     @GetMapping("gerenciar")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("GET all atividades ordered")
-    public List<AtividadesPrestadasVO> getAtividades(){
-
-        String from = "01-01-2021";
-        String to = null;
-        return this.callService.getAtividades(from, to);
-
+    public List<AtividadesPrestadasVO> getAtividades( @RequestParam String dataInicial, @RequestParam String dataFinal){
+        return this.callService.getAtividades(dataInicial, dataFinal);
     }
 }
