@@ -26,7 +26,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
     @ExceptionHandler(PersonaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors PersonaNotFoundExceptionException(PersonaNotFoundException exception) {
+    public ApiErrors handlePersonaNotFoundExceptionException(PersonaNotFoundException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
+    @ExceptionHandler(PasswordInvalidException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handlePasswordInvalidException(PasswordInvalidException exception) {
         return new ApiErrors(exception.getMessage());
     }
 

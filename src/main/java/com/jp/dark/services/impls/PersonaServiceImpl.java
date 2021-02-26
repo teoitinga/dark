@@ -1,6 +1,7 @@
 package com.jp.dark.services.impls;
 
 import com.jp.dark.dtos.*;
+import com.jp.dark.exceptions.PasswordInvalidException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.PersonaNotFoundException;
 import com.jp.dark.models.entities.Persona;
@@ -156,11 +157,6 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public PersonaDTO update(String cpf, PersonaDTO dto) {
-        return null;
-    }
-
-    @Override
     public boolean cpfIsValid(String cpf) {
         GeraCpfCnpj geraCpfCnpj = new GeraCpfCnpj();
         return geraCpfCnpj.isCPF(cpf);
@@ -252,6 +248,88 @@ public class PersonaServiceImpl implements PersonaService {
         List<Persona> result = this.repository.findByNomeContainingIgnoreCaseAndPermissaoNot(name, permissao);
         List<UserDTO> list = result.stream().map(entity->toUserDTO(entity)).collect(Collectors.toList());
         return list;
+    }
+
+    @Override
+    public ProdutorDTO findProdutorByCpf(String cpf) {
+        Persona persona = this.repository.findByCpf(cpf).orElseThrow(() -> new PersonaNotFoundException());
+        ProdutorDTO produtor = this.toProdutorDTO(persona);
+        return produtor;
+    }
+    @Override
+    public PersonaDTO update(String cpf, PersonaDTO dto) {
+
+        Persona persona;
+
+        persona = this.repository.findByCpf(cpf).orElseThrow(() -> new PersonaNotFoundException());
+
+        //Configura os dados atuais
+        persona = this.toPersona(dto);
+        persona.setCpf(cpf);
+
+        Persona saved = this.repository.save(persona);
+
+        PersonaDTO response = this.toPersonaDTO(saved);
+
+        return response;
+    }
+    @Override
+    public Persona toPersona(PersonaDTO dto) {
+        Persona response = Persona.builder()
+                .cpf(dto.getCpf())
+                .nome(dto.getNome())
+                .senha(dto.getSenha())
+                .cep(dto.getCep())
+                .permissao(EnumPermissao.valueOf(dto.getPermissao()))
+                .categoria(EnumCategoria.valueOf(dto.getCategoria().toString()))
+                .cidade(dto.getCidade())
+                .endereco(dto.getEndereco())
+                .telefone(dto.getTelefone())
+                .nascimento(dto.getNascimento())
+                .build();
+        return response;
+    }
+    @Override
+    public PersonaDTO toPersonaDTO(Persona persona) {
+        PersonaDTO response = PersonaDTO.builder()
+                .cpf(persona.getCpf())
+                .nome(persona.getNome())
+                .senha(persona.getSenha())
+                .cep(persona.getCep())
+                .permissao(persona.getPermissao().toString())
+                .categoria(persona.getCategoria().toString())
+                .cidade(persona.getCidade())
+                .endereco(persona.getEndereco())
+                .telefone(persona.getTelefone())
+                .nascimento(persona.getNascimento())
+                .build();
+        return response;
+    }
+
+    @Override
+    public UserDTO update(String login, UserDTO dto) {
+
+        //Verifica integridade da senha
+        if(dto.getPassword().equals("")){
+            throw new PasswordInvalidException("Senha com valor vazio não é permitido");
+        }
+        //criptografa a senha para registro no banco de dados
+        dto.setPassword(encoder.encode(dto.getPassword()));
+
+        Persona persona;
+        persona = this.repository.findByCpf(login).orElseThrow(() -> new PersonaNotFoundException());
+
+        //Converte LOGIN para CPF
+        String cpf = login;
+
+        persona = toPersona(dto);
+        persona.setCpf(cpf);
+
+        Persona saved = this.repository.save(persona);
+
+        UserDTO response = this.toUserDTO(saved);
+
+        return response;
     }
 
 }

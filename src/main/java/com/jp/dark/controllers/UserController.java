@@ -1,5 +1,6 @@
 package com.jp.dark.controllers;
 
+import com.jp.dark.dtos.PersonaDTO;
 import com.jp.dark.dtos.UserDTO;
 import com.jp.dark.services.PersonaService;
 import io.swagger.annotations.Api;
@@ -34,13 +35,20 @@ public class UserController {
 
         return service.save(dto);
     }
+    @PutMapping("{login}")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("UPDATE a valid User")
+    public UserDTO update(@RequestBody @Valid UserDTO dto, @PathVariable String login){
+
+        return service.update(login, dto);
+    }
     @GetMapping("{login}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("CREATE a valid User")
+    @ApiOperation("GET a User datails")
     public UserDTO details(@PathVariable String login){
-
         return service.getDetailsUser(login);
     }
+
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("Find produtor by name containing")
