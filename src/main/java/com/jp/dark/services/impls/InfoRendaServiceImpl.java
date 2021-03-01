@@ -138,8 +138,8 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
         InfoRenda renda = new InfoRenda();
         List<ProducaoDTO> producao = dto.getProducao();
 
-        Visita finalVisita = visita;
-        List<InfoRenda> objects = producao.stream().map(entity -> toInfoRenda(entity, finalVisita)).collect(Collectors.toList());
+        Visita visitaSaved = visita;
+        List<InfoRenda> objects = producao.stream().map(entity -> toInfoRenda(entity, visitaSaved)).collect(Collectors.toList());
 
         return toInfoRendaDTO(objects);
     }

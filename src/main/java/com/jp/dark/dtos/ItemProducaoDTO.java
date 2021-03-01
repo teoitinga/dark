@@ -1,6 +1,7 @@
 package com.jp.dark.dtos;
 
 import com.jp.dark.models.entities.OrigemRenda;
+import com.jp.dark.models.enums.EnumSimNao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +26,7 @@ public class ItemProducaoDTO {
     private String textoMDA;
 
     private BigDecimal fatorConvParaAnual;
+
+    private EnumSimNao producaoAgropecuaria;
 
 }
