@@ -17,7 +17,9 @@ import java.math.BigDecimal;
 public class ItemProducao {
 
     @Id
-    private String codigo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "codigo", nullable = false, unique = true)
+    private Integer codigo;
 
     private String descricao;
 
@@ -28,5 +30,6 @@ public class ItemProducao {
     private BigDecimal fatorConvParaAnual;
 
     @ManyToOne
+    @JoinColumn(name = "origem_renda_codigo")
     private OrigemRenda origem;
 }

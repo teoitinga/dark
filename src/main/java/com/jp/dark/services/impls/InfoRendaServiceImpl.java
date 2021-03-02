@@ -9,10 +9,12 @@ import com.jp.dark.models.repository.ServiceProvidedRepository;
 import com.jp.dark.services.*;
 import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaService {
+@Slf4j
+public class InfoRendaServiceImpl implements InfoRendaService {
 
     private static final String CALL_OCURRENCY = "***";
     private static final String DESCRIPTION_SERVICE = "Levantamento de informações sociais e renda para emissão de documentos";
@@ -114,7 +117,7 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
         callDAPLEV.setValor(callDAPLEV.getServiceProvided().getDefaultValue());
         calls.add(callDAPLEV);
 
-        //cRIANDO SEGUNDA CHAMADA DE SERVIÇO
+        //Criando Segunda Chamada de serviço
         Call callDAP = new Call();
         try {
             callDAP = callDAPLEV.clone();
@@ -134,17 +137,16 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
         visita.setChamadas(calls);
         visita = this.visitaService.save(visita);
 
-
         InfoRenda renda = new InfoRenda();
         List<ProducaoDTO> producao = dto.getProducao();
 
         Visita visitaSaved = visita;
-        List<InfoRenda> objects = producao.stream().map(entity -> toInfoRenda(entity, visitaSaved)).collect(Collectors.toList());
+        renda = toInfoRenda(producao, visitaSaved, dto);
 
-        return toInfoRendaDTO(objects);
+        return toInfoRendaDTO(renda);
     }
 
-    private List<Persona> verifyProdutores(List<ProdutorMinDTO> produtores) {
+     private List<Persona> verifyProdutores(List<ProdutorMinDTO> produtores) {
                 /*
         1- Verifica informações dos produtores da lista
          */
@@ -175,18 +177,23 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
         return new GeraCpfCnpj().isCPF(cpf);
     }
 
-    private InfoRendaDTO toInfoRendaDTO(List<InfoRenda> objects) {
-        InfoRendaDTO inf = new InfoRendaDTO();
-        InfoRenda renda = objects.get(0);
-        inf.setCodigoVisita(renda.getVisita().getCodigo());
-        inf.setDataDaVisita(renda.getDataProducao().toString());
-        inf.setLocalDoAtendimeno(renda.getVisita().getLocalDoAtendimento());
-        inf.setOrientacao(renda.getVisita().getOrientacao());
-        inf.setSituacaoAtual(renda.getVisita().getSituacao());
-        inf.setRecomendacao(renda.getVisita().getRecomendacao());
-        inf.setProdutores(toListPersonaMinDTO(renda.getVisita().getProdutores()));
-
-        return inf;
+    private InfoRendaDTO toInfoRendaDTO(InfoRenda rnd) {
+        List<ProducaoDTO> producao = null;
+        List<ProdutorMinDTO> produtores = null;
+        return InfoRendaDTO.builder()
+                .codigoVisita(rnd.getCodigo().toString())
+                .producao(producao)
+                .dataDaVisita(rnd.getVisita().getDataDaVisita().format(config.formaterPatternddMMyyyy()))
+                .localDoAtendimeno(rnd.getVisita().getLocalDoAtendimento())
+                .orientacao(rnd.getVisita().getOrientacao())
+                .recomendacao(rnd.getVisita().getRecomendacao())
+                .situacaoAtual(rnd.getVisita().getSituacao())
+                .produtores(produtores)
+                .areaExplorada(rnd.getAreaExplorada())
+                .areaImovelPrincipal(rnd.getAreaImovelPrincipal())
+                .membrosDaFamilia(rnd.getMembrosDaFamilia())
+                .quantidadePropriedades(rnd.getQuantidadePropriedades())
+                .build();
     }
 
     private List<ProdutorMinDTO> toListPersonaMinDTO(List<Persona> produtores) {
@@ -194,26 +201,41 @@ public class InfoRendaServiceImpl implements com.jp.dark.services.InfoRendaServi
     }
 
 
-    private InfoRenda toInfoRenda(ProducaoDTO producao, Visita vs) {
-        InfoRenda inf = new InfoRenda();
-        ItemProducao item = this.itemService.findByCodigo(producao.getCodItemProducao());
-        inf.setItemProducao(item);
+    private InfoRenda toInfoRenda(List<ProducaoDTO> producao, Visita vs, InfoRendaDTO dto) {
 
-        LocalDate dataProducao = LocalDate.parse(producao.getDataProducao(), config.formater());
-        inf.setDataProducao(dataProducao);
-        inf.setQuantidade(producao.getQuantidade());
-        inf.setValorUnitario(producao.getValorUnitario());
-        inf.setVisita(vs);
+        List<Producao> producaoAnual = producao.stream().map(prd->toProducao(prd)).collect(Collectors.toList());
 
-        inf = this.infoRendaRepository.save(inf);
-        return inf;
+        InfoRenda infoRenda = InfoRenda.builder()
+                .visita(vs)
+                .areaExplorada(dto.getAreaExplorada())
+                .areaImovelPrincipal(dto.getAreaImovelPrincipal())
+                .membrosDaFamilia(dto.getMembrosDaFamilia())
+                .quantidadePropriedades(dto.getQuantidadePropriedades())
+                .producaoAnual(producaoAnual)
+                .build();
+
+        infoRenda = this.infoRendaRepository.save(infoRenda);
+        return infoRenda;
     }
 
-    @Override
-    public ProducaoDTO toProducaoDTO(InfoRenda item) {
-        InfoRenda inf = new InfoRenda();
-        inf.setItemProducao(item.getItemProducao());
-        return null;
+    public Producao toProducao(ProducaoDTO prd) {
+
+        ItemProducao item = this.itemService.findByCodigo(prd.getCodItemProducao());
+
+        Integer codigo;
+        try{
+            codigo = prd.getCodigo();
+        }catch (NullPointerException exc){
+            codigo = null;
+        }
+        return Producao.builder()
+                .codigo(codigo)
+                .itemProducao(item)
+                .descricao(prd.getDescricao())
+                .quantidade(prd.getQuantidade())
+                .valorUnitario(prd.getValorUnitario())
+                .dataDaProducao(LocalDate.parse(prd.getDataProducao(), this.config.formaterPatternddMMyyyy()))
+                .build();
     }
 
     @Override

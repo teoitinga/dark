@@ -28,10 +28,10 @@ public class InfoRendaDTO {
     private String orientacao;
 
     private String recomendacao;
-
+/*
     @NotEmpty(message = "Você deve descrever a fonte de renda.")
     private String descricao;
-
+*/
     @NotEmpty(message = "Você deve informar a propriedade ou local do atendimento.")
     private String localDoAtendimeno;
 

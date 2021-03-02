@@ -1,6 +1,3 @@
---
--- Table structure for table `persona`
---
 CREATE TABLE `persona` (
   `cpf` varchar(255) NOT NULL,
   `categoria` varchar(255) DEFAULT NULL,
@@ -16,3 +13,4 @@ CREATE TABLE `persona` (
   PRIMARY KEY (`cpf`),
   UNIQUE KEY `UK_bs5ppfl8asydenx5pfq2m9wh7` (`nome`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

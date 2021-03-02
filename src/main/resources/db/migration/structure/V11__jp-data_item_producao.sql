@@ -1,6 +1,9 @@
+-- MySQL dump 10.13  Distrib 8.0.16, for Win64 (x86_64)
 --
--- Table structure for table `item_producao`
---
+-- Host: 192.168.15.29    Database: jp-data
+-- ------------------------------------------------------
+-- Server version	8.0.21
+
 CREATE TABLE `item_producao` (
   `codigo` varchar(255) NOT NULL,
   `descricao` varchar(255) DEFAULT NULL,
@@ -12,3 +15,4 @@ CREATE TABLE `item_producao` (
   KEY `FKe0dkmg5m83mwm1jhh3arq3o1p` (`origem_codigo`),
   CONSTRAINT `FKe0dkmg5m83mwm1jhh3arq3o1p` FOREIGN KEY (`origem_codigo`) REFERENCES `origem_renda` (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

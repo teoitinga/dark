@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,28 +20,15 @@ import java.time.LocalDate;
 public class InfoRenda extends Auditable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY )
+    @Column(name = "codigo", nullable = false, unique = true)
     private Integer codigo;
 
     @ManyToOne
     private Visita visita;
 
-    private BigDecimal valorUnitario;
-
-    private BigDecimal quantidade;
-
-    @ManyToOne
-    private ItemProducao itemProducao;
-
-    @ManyToOne
-    private Producao producaoAnual;
-
-    private LocalDate dataProducao;
-
-    @Column(name = "descricao")
-    private String descricao;
-
-    private boolean createFolder;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "infoRenda")
+    private List<Producao> producaoAnual;
 
     @Column(name = "area_explorada")
     private BigDecimal areaExplorada;

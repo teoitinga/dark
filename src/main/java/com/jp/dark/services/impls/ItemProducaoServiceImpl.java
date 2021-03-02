@@ -48,7 +48,7 @@ public class ItemProducaoServiceImpl implements ItemProducaoService {
         log.info(origemRenda.getIsAgro().toString());
         log.info(origemRenda.getDescricao());
         return ItemProducaoDTO.builder()
-                .codigo(item.getCodigo())
+                .codigo(item.getCodigo().toString())
                 .descricao(item.getDescricao())
                 .fatorConvParaAnual(item.getFatorConvParaAnual())
                 .referencia(item.getReferencia())

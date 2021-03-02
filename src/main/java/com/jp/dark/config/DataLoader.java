@@ -40,10 +40,12 @@ public class DataLoader {
         this.itemProducaoRepository = itemProducaoRepository;
         this.origemRepository = origemRepository;
         this.pricesItemRepository = pricesItemRepository;
-
+/*
         LoadServicesProvided();
         LoadUsers();
         LoadItensProducao();
+
+ */
     }
 
     private void LoadUsers() {
