@@ -32,7 +32,7 @@ public class Producao implements Serializable {
     private String descricao;
 
     @ManyToOne
-    @JoinColumn(name = "info_renda_id")
+    @JoinColumn(name = "info_renda_codigo")
     private InfoRenda infoRenda;
 
     @ManyToOne(fetch = FetchType.LAZY)

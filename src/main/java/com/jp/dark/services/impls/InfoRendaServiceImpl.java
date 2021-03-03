@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class InfoRendaServiceImpl implements InfoRendaService {
 
     private static final String CALL_OCURRENCY = "***";
-    private static final String DESCRIPTION_SERVICE = "Levantamento de informações sociais e renda para emissão de documentos";
+    private static final String DESCRIPTION_SERVICE = "Levantamento de informações sociais e renda para emissão de laudo.";
 
     private Config config;
     private VisitaService visitaService;
@@ -106,17 +106,21 @@ public class InfoRendaServiceImpl implements InfoRendaService {
         }
 
         Persona responsavel = this.personaService.findByCpf(nome);
+        /*
+        Registrando serviços relacionados
+         */
         callDAPLEV.setResponsavel(responsavel);
         callDAPLEV.setOcorrencia(CALL_OCURRENCY);
         callDAPLEV.setServico(DESCRIPTION_SERVICE);
         callDAPLEV.setValor(dto.getValorCobrado());
-        callDAPLEV.setStatus(EnumStatus.INICIADA);
+        callDAPLEV.setStatus(EnumStatus.FINALIZADA);
         LocalDate previsaoConclusao = visita.getDataDaVisita().plusDays(callDAPLEV.getServiceProvided().getTimeRemaining());
 
         callDAPLEV.setPrevisaoDeConclusao(previsaoConclusao);
-        callDAPLEV.setValor(callDAPLEV.getServiceProvided().getDefaultValue());
+        callDAPLEV.setValor(dto.getValorCobrado());
         calls.add(callDAPLEV);
 
+        /*
         //Criando Segunda Chamada de serviço
         Call callDAP = new Call();
         try {
@@ -124,21 +128,29 @@ public class InfoRendaServiceImpl implements InfoRendaService {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        callDAP.setServiceProvided(this.serviceProvidedService.findByCodigoService("DAP"));
+        ServiceProvided dap = this.serviceProvidedService.findByCodigoService("DAP");
+
+        callDAP.setServiceProvided(dap);
+        callDAP.setServico(dap.getReferency());
+        callDAP.setServicoQuitadoEm(LocalDate.now());
+        callDAP.setStatus(EnumStatus.INICIADA);
         previsaoConclusao = visita.getDataDaVisita().plusDays(callDAP.getServiceProvided().getTimeRemaining());
 
         callDAPLEV.setPrevisaoDeConclusao(previsaoConclusao);
         callDAPLEV.setValor(callDAP.getServiceProvided().getDefaultValue());
         calls.add(callDAP);
+        */
         //Salvando as chamdas no banco de dados
         calls = this.callService.save(calls);
-
+        /*
+        Fim registro de serviços relacionados
+         */
         //Atualiza a visita
         visita.setChamadas(calls);
         visita = this.visitaService.save(visita);
 
         InfoRenda renda = new InfoRenda();
-        List<ProducaoDTO> producao = dto.getProducao();
+        List<ProducaoDTO> producao = dto.getProducaoAnual();
 
         Visita visitaSaved = visita;
         renda = toInfoRenda(producao, visitaSaved, dto);
@@ -178,11 +190,19 @@ public class InfoRendaServiceImpl implements InfoRendaService {
     }
 
     private InfoRendaDTO toInfoRendaDTO(InfoRenda rnd) {
-        List<ProducaoDTO> producao = null;
-        List<ProdutorMinDTO> produtores = null;
+
+        List<ProducaoDTO> producao = rnd.getProducaoAnual().stream().
+                map(prd->toProducaoDTO(prd))
+                .collect(Collectors.toList());
+
+        List<ProdutorMinDTO> produtores = rnd.getVisita().getProdutores()
+                .stream().map(prd->this.personaService.toProdutorMinDTO(prd))
+                .collect(Collectors.toList());
+
         return InfoRendaDTO.builder()
-                .codigoVisita(rnd.getCodigo().toString())
-                .producao(producao)
+                .codigoInfo(rnd.getCodigo().toString())
+                .codigoVisita(rnd.getVisita().getCodigo().toString())
+                .producaoAnual(producao)
                 .dataDaVisita(rnd.getVisita().getDataDaVisita().format(config.formaterPatternddMMyyyy()))
                 .localDoAtendimeno(rnd.getVisita().getLocalDoAtendimento())
                 .orientacao(rnd.getVisita().getOrientacao())
@@ -193,6 +213,18 @@ public class InfoRendaServiceImpl implements InfoRendaService {
                 .areaImovelPrincipal(rnd.getAreaImovelPrincipal())
                 .membrosDaFamilia(rnd.getMembrosDaFamilia())
                 .quantidadePropriedades(rnd.getQuantidadePropriedades())
+                .valorCobrado(rnd.getVisita().getChamadas().stream().map(ent->ent.getValor()).reduce(BigDecimal.valueOf(0.0),BigDecimal::add))
+                .build();
+    }
+
+    private ProducaoDTO toProducaoDTO(Producao prd) {
+        return ProducaoDTO.builder()
+                .codItemProducao(prd.getItemProducao().getCodigo())
+                .valorUnitario(prd.getValorUnitario())
+                .quantidade(prd.getQuantidade())
+                .dataProducao(prd.getDataDaProducao().format(this.config.formater()))
+                .codigo(prd.getCodigo())
+                .descricao(prd.getDescricao())
                 .build();
     }
 
@@ -234,7 +266,7 @@ public class InfoRendaServiceImpl implements InfoRendaService {
                 .descricao(prd.getDescricao())
                 .quantidade(prd.getQuantidade())
                 .valorUnitario(prd.getValorUnitario())
-                .dataDaProducao(LocalDate.parse(prd.getDataProducao(), this.config.formaterPatternddMMyyyy()))
+                .dataDaProducao(LocalDate.parse(prd.getDataProducao(), this.config.formater()))
                 .build();
     }
 
