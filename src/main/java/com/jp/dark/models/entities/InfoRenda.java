@@ -27,7 +27,7 @@ public class InfoRenda extends Auditable{
     @ManyToOne
     private Visita visita;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "infoRenda")
+    @OneToMany(mappedBy = "infoRenda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Producao> producaoAnual;
 
     @Column(name = "area_explorada")

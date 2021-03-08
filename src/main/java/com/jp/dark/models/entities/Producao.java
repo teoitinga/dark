@@ -38,4 +38,5 @@ public class Producao implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_producao_codigo")
     private ItemProducao itemProducao;
+
 }

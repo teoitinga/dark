@@ -22,7 +22,7 @@ public class InfoRendaDTO {
 
     private String codigoVisita;
 
-    @NotEmpty
+    @NotEmpty(message = "Deve haver pelo menos um item gerador de renda.")
     private List<ProducaoDTO> producaoAnual;
 
     private String situacaoAtual;

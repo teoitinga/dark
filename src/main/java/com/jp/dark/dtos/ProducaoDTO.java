@@ -22,8 +22,10 @@ public class ProducaoDTO implements Serializable {
     @NotEmpty(message = "Você deve descrever a fonte de renda.")
     private String descricao;
 
+    @NotEmpty(message = "Você deve informar o item produzido.")
     private String codItemProducao;
 
+    @NotEmpty(message = "Você deve informar a data da geração da renda.")
     private String dataProducao;
 
 }

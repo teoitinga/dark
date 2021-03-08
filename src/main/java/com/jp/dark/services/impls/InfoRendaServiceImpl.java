@@ -5,7 +5,7 @@ import com.jp.dark.dtos.*;
 import com.jp.dark.models.entities.*;
 import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.InfoRendaRepository;
-import com.jp.dark.models.repository.ServiceProvidedRepository;
+import com.jp.dark.models.repository.ProducaoRepository;
 import com.jp.dark.services.*;
 import com.jp.dark.utils.Generates;
 import com.jp.dark.utils.GeraCpfCnpj;
@@ -14,13 +14,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotEmpty;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -33,10 +34,11 @@ public class InfoRendaServiceImpl implements InfoRendaService {
     private VisitaService visitaService;
     private ServiceProvidedService serviceProvidedService;
     private PersonaService personaService;
-    private CallService callService;
+
     private ItemProducaoService itemService;
     private InfoRendaRepository infoRendaRepository;
     private OrigemRendaService origemRendaService;
+    private ProducaoRepository producaoRepository;
 
     public InfoRendaServiceImpl(
             Config config,
@@ -46,20 +48,22 @@ public class InfoRendaServiceImpl implements InfoRendaService {
             CallService callService,
             ItemProducaoService itemService,
             InfoRendaRepository infoRendaRepository,
-            OrigemRendaService origemRendaService
+            OrigemRendaService origemRendaService,
+            ProducaoRepository producaoRepository
             ) {
         this.config = config;
         this.visitaService = visitaService;
         this.serviceProvidedService = serviceProvidedService;
         this.personaService = personaService;
-        this.callService = callService;
         this.itemService = itemService;
         this.infoRendaRepository = infoRendaRepository;
         this.origemRendaService = origemRendaService;
+        this.producaoRepository = producaoRepository;
 
     }
 
     @Override
+    @Transactional
     public InfoRendaDTO save(InfoRendaDTO dto) {
         /*
         1 - Verifica consistencia dos produtores informados
@@ -120,45 +124,39 @@ public class InfoRendaServiceImpl implements InfoRendaService {
         callDAPLEV.setValor(dto.getValorCobrado());
         calls.add(callDAPLEV);
 
-        /*
-        //Criando Segunda Chamada de serviço
-        Call callDAP = new Call();
-        try {
-            callDAP = callDAPLEV.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        ServiceProvided dap = this.serviceProvidedService.findByCodigoService("DAP");
-
-        callDAP.setServiceProvided(dap);
-        callDAP.setServico(dap.getReferency());
-        callDAP.setServicoQuitadoEm(LocalDate.now());
-        callDAP.setStatus(EnumStatus.INICIADA);
-        previsaoConclusao = visita.getDataDaVisita().plusDays(callDAP.getServiceProvided().getTimeRemaining());
-
-        callDAPLEV.setPrevisaoDeConclusao(previsaoConclusao);
-        callDAPLEV.setValor(callDAP.getServiceProvided().getDefaultValue());
-        calls.add(callDAP);
-        */
-        //Salvando as chamdas no banco de dados
-        calls = this.callService.save(calls);
-        /*
-        Fim registro de serviços relacionados
-         */
-        //Atualiza a visita
+        //Atualiza a visita com as chamadas
         visita.setChamadas(calls);
         visita = this.visitaService.save(visita);
 
-        InfoRenda renda = new InfoRenda();
+        //chamadas OK
+
+        //Tratando informações de renda
+        InfoRenda renda;
         List<ProducaoDTO> producao = dto.getProducaoAnual();
 
-        Visita visitaSaved = visita;
-        renda = toInfoRenda(producao, visitaSaved, dto);
+        renda = toInfoRenda(visita, dto);
+        visita = this.visitaService.save(visita);
 
         return toInfoRendaDTO(renda);
     }
 
-     private List<Persona> verifyProdutores(List<ProdutorMinDTO> produtores) {
+    @Override
+    public Producao toProducao(ProducaoDTO prd) {
+
+        ItemProducao item = this.itemService.findByCodigo(prd.getCodItemProducao());
+
+        return Producao.builder()
+                .codigo(prd.getCodigo())
+                .dataDaProducao(LocalDate.parse(prd.getDataProducao(), config.formater()))
+                .valorUnitario(prd.getValorUnitario())
+                .quantidade(prd.getQuantidade())
+                .descricao(prd.getDescricao())
+                .itemProducao(item)
+                .build();
+
+    }
+
+    private List<Persona> verifyProdutores(List<ProdutorMinDTO> produtores) {
                 /*
         1- Verifica informações dos produtores da lista
          */
@@ -199,6 +197,15 @@ public class InfoRendaServiceImpl implements InfoRendaService {
                 .stream().map(prd->this.personaService.toProdutorMinDTO(prd))
                 .collect(Collectors.toList());
 
+        BigDecimal valorCobrado;
+
+        try{
+            valorCobrado = rnd.getVisita().getChamadas().stream()
+                    .map(ent -> ent.getValor())
+                    .reduce(BigDecimal.valueOf(0.0), BigDecimal::add);
+        }catch (NullPointerException exc){
+            valorCobrado = null;
+        }
         return InfoRendaDTO.builder()
                 .codigoInfo(rnd.getCodigo().toString())
                 .codigoVisita(rnd.getVisita().getCodigo().toString())
@@ -213,16 +220,32 @@ public class InfoRendaServiceImpl implements InfoRendaService {
                 .areaImovelPrincipal(rnd.getAreaImovelPrincipal())
                 .membrosDaFamilia(rnd.getMembrosDaFamilia())
                 .quantidadePropriedades(rnd.getQuantidadePropriedades())
-                .valorCobrado(rnd.getVisita().getChamadas().stream().map(ent->ent.getValor()).reduce(BigDecimal.valueOf(0.0),BigDecimal::add))
+                .valorCobrado(valorCobrado)
                 .build();
     }
 
     private ProducaoDTO toProducaoDTO(Producao prd) {
+
+        String codigo;
+
+        try{
+            codigo = prd.getItemProducao().getCodigo();
+        }catch (NullPointerException exc){
+            codigo = null;
+        }
+
+        String dataProducao;
+
+        try{
+            dataProducao = prd.getDataDaProducao().format(this.config.formater());
+        }catch (NullPointerException exc){
+            dataProducao = null;
+        }
         return ProducaoDTO.builder()
-                .codItemProducao(prd.getItemProducao().getCodigo())
+                .codItemProducao(codigo)
                 .valorUnitario(prd.getValorUnitario())
                 .quantidade(prd.getQuantidade())
-                .dataProducao(prd.getDataDaProducao().format(this.config.formater()))
+                .dataProducao(dataProducao)
                 .codigo(prd.getCodigo())
                 .descricao(prd.getDescricao())
                 .build();
@@ -233,9 +256,7 @@ public class InfoRendaServiceImpl implements InfoRendaService {
     }
 
 
-    private InfoRenda toInfoRenda(List<ProducaoDTO> producao, Visita vs, InfoRendaDTO dto) {
-
-        List<Producao> producaoAnual = producao.stream().map(prd->toProducao(prd)).collect(Collectors.toList());
+    private InfoRenda toInfoRenda(Visita vs, InfoRendaDTO dto) {
 
         InfoRenda infoRenda = InfoRenda.builder()
                 .visita(vs)
@@ -243,14 +264,43 @@ public class InfoRendaServiceImpl implements InfoRendaService {
                 .areaImovelPrincipal(dto.getAreaImovelPrincipal())
                 .membrosDaFamilia(dto.getMembrosDaFamilia())
                 .quantidadePropriedades(dto.getQuantidadePropriedades())
-                .producaoAnual(producaoAnual)
                 .build();
 
         infoRenda = this.infoRendaRepository.save(infoRenda);
+
+        List<Producao> producaoAnual = dto.getProducaoAnual().stream()
+                .map(prd->toProducao(prd))
+                .collect(Collectors.toList());
+
+        infoRenda.setProducaoAnual(new ArrayList<>());
+
+        for (Producao prd : producaoAnual) {
+            prd.setInfoRenda(infoRenda);
+            infoRenda.getProducaoAnual().add(prd);
+        }
+
+
+        producaoAnual = producaoAnual.stream().map(prd -> this.saveProducaoAnual(prd))
+                .collect(Collectors.toList());
+
+        infoRenda.setProducaoAnual(producaoAnual);
+
+        infoRenda = this.infoRendaRepository.save(infoRenda);
+
         return infoRenda;
     }
 
-    public Producao toProducao(ProducaoDTO prd) {
+    private Producao configuraInfoRenda(Producao prd, InfoRenda info) {
+        Producao producao = prd;
+        producao.setInfoRenda(info);
+        return producao;
+    }
+
+    private Producao saveProducaoAnual(Producao prd) {
+        return this.producaoRepository.save(prd);
+    }
+
+    public Producao toProducao(ProducaoDTO prd, InfoRenda info) {
 
         ItemProducao item = this.itemService.findByCodigo(prd.getCodItemProducao());
 
@@ -263,6 +313,7 @@ public class InfoRendaServiceImpl implements InfoRendaService {
         return Producao.builder()
                 .codigo(codigo)
                 .itemProducao(item)
+                .infoRenda(info)
                 .descricao(prd.getDescricao())
                 .quantidade(prd.getQuantidade())
                 .valorUnitario(prd.getValorUnitario())
