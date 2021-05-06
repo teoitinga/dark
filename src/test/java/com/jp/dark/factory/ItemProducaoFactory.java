@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public class ItemProducaoFactory {
     public static ItemProducao anyItemProducao() {
         return ItemProducao.builder()
-                .codigo("QJ")
+                .codigo("LEITE")
                 .descricao("Produção diária de queijo frescal")
                 .fatorConvParaAnual(BigDecimal.valueOf(300))
                 .referencia("Produção de queijo frescal")

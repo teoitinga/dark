@@ -396,17 +396,10 @@ public class VisitaServiceImpl implements VisitaService {
     @Override
     public CallVO includeCall(CallVO vo, String id) {
         Visita visita = this.findByCodigo(id);
-
         Call call = this.callService.toCall(vo, visita);
         call = this.callService.save(call);
         CallVO response = this.callService.toCallVO(call);
         return response;
-    }
-
-    private Call toCall(CallVO vo) {
-        return Call.builder()
-
-                .build();
     }
 
 }

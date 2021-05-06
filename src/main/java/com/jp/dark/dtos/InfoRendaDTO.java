@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -17,10 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 public class InfoRendaDTO {
 
+    private String codigoInfo;
+
     private String codigoVisita;
 
-    @NotEmpty
-    private List<ProducaoDTO> producao;
+    @NotEmpty(message = "Deve haver pelo menos um item gerador de renda.")
+    private List<ProducaoDTO> producaoAnual;
 
     private String situacaoAtual;
 
@@ -40,4 +43,16 @@ public class InfoRendaDTO {
     private BigDecimal valorCobrado;
 
     private boolean createFolder;
+
+    @NotNull(message = "Você deve informar a área total explorada.")
+    private BigDecimal areaExplorada;
+
+    @NotNull(message = "Você deve informar a área do imóvel principal.")
+    private BigDecimal areaImovelPrincipal;
+
+    @NotNull(message = "Você deve informar a quantidade de imóveis explorados.")
+    private Integer quantidadePropriedades;
+
+    @NotNull(message = "Você deve informar a quantidade de membros da familia.")
+    private Integer membrosDaFamilia;
 }

@@ -7,11 +7,15 @@ import com.jp.dark.exceptions.ApiErrors;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
+import com.jp.dark.vos.AtividadesPrestadasVO;
+import com.jp.dark.vos.CallPesquisaVO;
+import com.jp.dark.vos.ServicosPrestadosVO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/chamadas")
@@ -70,17 +76,7 @@ public class CallController {
     public CallDTOPost callUpdateValue(@PathVariable String id, @PathVariable BigDecimal value){
         return callService.updateValue(id, value);
     }
-    /*
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("GET my calls")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "")
-    })
-    public Page<CallDTOPost> myCalls(Pageable pageRequest){
-        return this.callService.getCalls(pageRequest);
-    }
-    */
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("GET my calls")
@@ -101,4 +97,18 @@ public class CallController {
         return this.callService.getCallsOperation();
     }
 
+    @GetMapping("relatorio")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation("GET all servicos for report")
+    public Page<ServicosPrestadosVO> getServicos(Pageable pageRequest){
+
+        return this.callService.getServicos(pageRequest);
+    }
+
+    @GetMapping("gerenciar")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("GET all atividades ordered")
+    public List<AtividadesPrestadasVO> getAtividades( @RequestParam String dataInicial, @RequestParam String dataFinal){
+        return this.callService.getAtividades(dataInicial, dataFinal);
+    }
 }

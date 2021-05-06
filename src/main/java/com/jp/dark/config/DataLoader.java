@@ -4,6 +4,7 @@ import com.jp.dark.controllers.CallController;
 import com.jp.dark.models.entities.*;
 import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
+import com.jp.dark.models.enums.EnumSimNao;
 import com.jp.dark.models.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,10 +40,12 @@ public class DataLoader {
         this.itemProducaoRepository = itemProducaoRepository;
         this.origemRepository = origemRepository;
         this.pricesItemRepository = pricesItemRepository;
-
+/*
         LoadServicesProvided();
         LoadUsers();
         LoadItensProducao();
+
+ */
     }
 
     private void LoadUsers() {
@@ -92,18 +95,18 @@ public class DataLoader {
     }
 
     private void LoadItensProducao(){
+            /*
         List<OrigemRenda> qtd = this.origemRepository.findAll();
         if(!(qtd.size()>0)){
-        OrigemRenda origemAgro = new OrigemRenda("AGRO", "Agricola","Produção obtida da agricultura familiar");
-        OrigemRenda origemIndustria = new OrigemRenda("IND", "Agroindustria","Produção obtida da agricultura familiar");
-        OrigemRenda origemPecuaria = new OrigemRenda("PEC", "Pecuaria","Produção obtida da agricultura familiar");
-        OrigemRenda origemOutras = new OrigemRenda("OUTRND", "Outras rendas","Renda obtida fora do estabelecimento familiar");
+        OrigemRenda origemAgro = new OrigemRenda("AGRO", "Agricola","Produção obtida da agricultura familiar", EnumSimNao.SIM);
+        OrigemRenda origemIndustria = new OrigemRenda("IND", "Agroindustria","Produção obtida da agricultura familiar", EnumSimNao.SIM);
+        OrigemRenda origemPecuaria = new OrigemRenda("PEC", "Pecuaria","Produção obtida da agricultura familiar", EnumSimNao.SIM);
+        OrigemRenda origemOutras = new OrigemRenda("OUTRND", "Outras rendas","Renda obtida fora do estabelecimento familiar", EnumSimNao.NAO);
 
         origemAgro = origemRepository.save(origemAgro);
         origemIndustria = origemRepository.save(origemIndustria);
         origemPecuaria = origemRepository.save(origemPecuaria);
         origemOutras = origemRepository.save(origemOutras);
-
         ItemProducao leite;
         ItemProducao bezerroMagro;
         ItemProducao boiMagro;
@@ -161,6 +164,7 @@ public class DataLoader {
         pricesItemRepository.save(new PricesItem("BZMG","venda de garrotes 16-21 @","@","arrobas","venda de boi gordobezerros", boiGordo));
 
         }
+        */
 
     }
     private void LoadOrigemProducao(){

@@ -17,6 +17,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/auth")
 @Slf4j
 @Api("Api de autenticação de usuarios")
+@CrossOrigin(origins = "*")
 public class AuthenticationController {
 
     private AuthenticationService authenticationService;

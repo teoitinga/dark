@@ -22,7 +22,6 @@ public class Visita extends Auditable{
     @Column(nullable = false, unique = true)
     private String codigo;
 
-    @NotEmpty(message = "Você deve informar a situação atual.")
     @Column(length = 65535, columnDefinition = "TEXT")
     private String situacao;
 

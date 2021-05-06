@@ -6,6 +6,7 @@ import com.jp.dark.dtos.OrigemRendaDTO;
 import com.jp.dark.dtos.ProducaoDTO;
 import com.jp.dark.models.entities.InfoRenda;
 import com.jp.dark.models.entities.ItemProducao;
+import com.jp.dark.models.entities.Producao;
 import com.jp.dark.models.entities.Visita;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface InfoRendaService {
     InfoRendaDTO save(InfoRendaDTO dto);
 
-    ProducaoDTO toProducaoDTO(InfoRenda item);
+    Producao toProducao(ProducaoDTO prd);
 
     InfoRenda register(ProducaoDTO prd, Visita vs);
 

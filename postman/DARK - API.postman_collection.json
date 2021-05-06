@@ -551,12 +551,29 @@
 							}
 						},
 						"url": {
+<<<<<<< HEAD
 							"raw": "{{api}}chamadas/gerenciar",
+=======
+							"raw": "{{api}}chamadas/gerenciar?size=200&pageNumber=1",
+>>>>>>> 86c7294710bc284265daeaff6442b03cfae3652d
 							"host": [
 								"{{api}}chamadas"
 							],
 							"path": [
 								"gerenciar"
+<<<<<<< HEAD
+=======
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "200"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+>>>>>>> 86c7294710bc284265daeaff6442b03cfae3652d
 							]
 						}
 					},

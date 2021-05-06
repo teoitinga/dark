@@ -8,16 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.time.DateTimeException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ApiErrors handleValidationException(MethodArgumentNotValidException exception){
-//        BindingResult bindingResult = exception.getBindingResult();
-//        return new ApiErrors(bindingResult);
-//    }
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -30,11 +24,26 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public ApiErrors handleVisitaNotFoundException(VisitaNotFoundException exception) {
         return new ApiErrors(exception);
     }
+    @ExceptionHandler(PersonaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handlePersonaNotFoundExceptionException(PersonaNotFoundException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
+    @ExceptionHandler(PasswordInvalidException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handlePasswordInvalidException(PasswordInvalidException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
 
     @ExceptionHandler(InvaliPasswordException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ApiErrors handleInvaliPasswordException(InvaliPasswordException exception) {
         return new ApiErrors(exception);
+    }
+    @ExceptionHandler(DateTimeException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrors handleDateTimeException(DateTimeException exception) {
+        return new ApiErrors(exception.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

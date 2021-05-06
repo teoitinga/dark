@@ -1,10 +1,6 @@
 --
 -- Table structure for table `prices_item`
 --
-
-DROP TABLE IF EXISTS `prices_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
 CREATE TABLE `prices_item` (
   `id` varchar(255) NOT NULL,
   `detalhes` varchar(255) DEFAULT NULL,

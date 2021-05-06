@@ -50,4 +50,11 @@ public interface PersonaService {
 
     List<UserDTO> findUserByNameContaining(String name);
 
+    ProdutorDTO findProdutorByCpf(String cpf);
+
+    Persona toPersona(PersonaDTO dto);
+
+    PersonaDTO toPersonaDTO(Persona persona);
+
+    UserDTO update(String login, UserDTO dto);
 }

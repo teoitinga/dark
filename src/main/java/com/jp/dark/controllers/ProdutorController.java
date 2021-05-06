@@ -54,6 +54,14 @@ public class ProdutorController {
         return this.service.findProdutorByNameContaining(name);
     }
 
+    @GetMapping("find/{cpf}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("Find produtor by CPF")
+    @ApiResponses({@ApiResponse(code = 200, message = "OK")})
+    public ProdutorDTO findByCpf(@PathVariable String cpf){
+        return this.service.findProdutorByCpf(cpf);
+    }
+
     @PutMapping("{cpf}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("update a Produtor rural")
