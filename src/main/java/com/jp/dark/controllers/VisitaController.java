@@ -36,7 +36,7 @@ public class VisitaController {
     @ApiOperation("CREATE a valid Visita")
     public VisitaDTO create(@RequestBody @Valid VisitaDTO dto){
 
-        log.info("Registrando visita: {}", dto);
+        //log.info("Registrando visita: {}", dto);
         return service.save(dto);
     }
 

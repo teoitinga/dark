@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Slf4j
+//@Slf4j
 public class JwtService {
 
     @Value("${jwt.expiration}")
@@ -37,6 +38,8 @@ public class JwtService {
     static final String CLAIM_KEY_ROLE = "role";
     static final String CLAIM_KEY_EXPIRATION = "expiration";
     static final String CLAIM_KEY_CREATED = "created";
+    static final String CLAIM_KEY_ESLOC = "esloc";
+    static final String CLAIM_KEY_MUNICIPIO = "municipio";
     /**
      * Gera um novo token JWT a partir de dados do usuario.
      *
@@ -45,30 +48,38 @@ public class JwtService {
      */
     public String geraToken(Persona usuario){
 
-        long expiracao = Long.valueOf(EXPIRATION_TIME);
-        LocalDateTime dataHoraExpiracao = LocalDateTime.now().plusMinutes(expiracao);
-        //converte LocalDateTime para Date para configurar o token
-        Instant instant = dataHoraExpiracao.atZone(ZoneId.systemDefault()).toInstant();
-        Date data = Date.from(instant);
+        try {
+            long expiracao = Long.valueOf(EXPIRATION_TIME);
+            LocalDateTime dataHoraExpiracao = LocalDateTime.now().plusMinutes(expiracao);
+            //converte LocalDateTime para Date para configurar o token
+            Instant instant = dataHoraExpiracao.atZone(ZoneId.systemDefault()).toInstant();
+            Date data = Date.from(instant);
 
-        Date dataGeracao = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+            Date dataGeracao = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 
-        //Configurando Claims
-        HashMap<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_USERNAME, usuario.getCpf());
-        claims.put(CLAIM_KEY_USER, usuario.getNome());
-        claims.put(CLAIM_KEY_ROLE, usuario.getPermissao());
-        claims.put(CLAIM_KEY_EXPIRATION, data);
-        claims.put(CLAIM_KEY_CREATED, dataGeracao);
-        if (usuario != null) {
+            //Configurando Claims
+            HashMap<String, Object> claims = new HashMap<>();
+            claims.put(CLAIM_KEY_USERNAME, usuario.getCpf());
             claims.put(CLAIM_KEY_USER, usuario.getNome());
+            claims.put(CLAIM_KEY_ROLE, usuario.getPermissao());
+            claims.put(CLAIM_KEY_EXPIRATION, data);
+            claims.put(CLAIM_KEY_CREATED, dataGeracao);
+            claims.put(CLAIM_KEY_ESLOC, usuario.getEsloc().getCodigo());
+            claims.put(CLAIM_KEY_MUNICIPIO, usuario.getEsloc().getMunicipio());
 
+            if (usuario != null) {
+                claims.put(CLAIM_KEY_USER, usuario.getNome());
+
+            }
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                    .compact();
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Usuario não registrado!");
         }
-        return Jwts.builder()
-                .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
     }
+    /*
     public String geraToken(AutheticatedUser usuario) {
         long expiracao = Long.valueOf(EXPIRATION_TIME);
         LocalDateTime dataHoraExpiracao = LocalDateTime.now().plusMinutes(expiracao);
@@ -85,6 +96,7 @@ public class JwtService {
         claims.put(CLAIM_KEY_ROLE, usuario.getAuthorities());
         claims.put(CLAIM_KEY_EXPIRATION, data);
         claims.put(CLAIM_KEY_CREATED, dataGeracao);
+        claims.put(CLAIM_KEY_ESLOC, usuario.getEsloc().getCodigo());
         if (usuario != null) {
             claims.put(CLAIM_KEY_USER, usuario.getUsername());
 
@@ -94,6 +106,8 @@ public class JwtService {
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
     }
+
+     */
     /**
      * Gera um novo token JWT contendo os dados (claims) fornecidos.
      *
@@ -194,11 +208,9 @@ public class JwtService {
                 .permissao(EnumPermissao.ADMINISTRADOR)
                 .build();
         String token = service.geraToken(usuario);
-        log.info("Token: {}", token);
-        boolean tokenValido = service.tokenValido(token);
-        log.info("tokenValido? {}", tokenValido);
 
-        log.info("Token usuario: {}", service.getLoginUsuario(token));
+        boolean tokenValido = service.tokenValido(token);
+
     }
 
     /**
@@ -212,6 +224,8 @@ public class JwtService {
         claims.put(CLAIM_KEY_USERNAME, user.getCpf());
         claims.put(CLAIM_KEY_ROLE, user.getPermissao());
         claims.put(CLAIM_KEY_CREATED, new Date());
+        claims.put(CLAIM_KEY_ESLOC, user.getEsloc().getCodigo());
+        claims.put(CLAIM_KEY_MUNICIPIO, user.getEsloc().getMunicipio());
         if (user != null) {
             claims.put(CLAIM_KEY_USER, user.getNome());
 

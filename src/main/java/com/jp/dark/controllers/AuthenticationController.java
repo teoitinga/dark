@@ -32,6 +32,7 @@ public class AuthenticationController {
     @ApiResponses({@ApiResponse(code = 200, message = "OK")})
     public TokenDTO authentication(@RequestBody @Valid CredenciaisDTO credenciais){
         TokenDTO token = this.authenticationService.autenticar(credenciais);
+        log.info("Token {}", token);
         return token;
     }
 }

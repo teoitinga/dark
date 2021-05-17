@@ -5,10 +5,7 @@ import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.models.entities.Call;
 import com.jp.dark.models.entities.Visita;
-import com.jp.dark.vos.AtividadesPrestadasVO;
-import com.jp.dark.vos.CallPesquisaVO;
-import com.jp.dark.vos.CallVO;
-import com.jp.dark.vos.ServicosPrestadosVO;
+import com.jp.dark.vos.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,5 +63,9 @@ public interface CallService {
 
     Page<ServicosPrestadosVO> getServicos(Pageable pageRequest);
 
+    ServicosReportVO getServicosReport(int codEsloc, String mes);
+
     List<AtividadesPrestadasVO> getAtividades(String dataInicial, String dataFinal);
+
+    CallDTOPost expirate(String id);
 }

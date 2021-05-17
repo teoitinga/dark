@@ -1,9 +1,6 @@
 package com.jp.dark.models.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -28,7 +25,8 @@ public class Visita extends Auditable{
     @Column(length = 65535, columnDefinition = "TEXT")
     private String recomendacao;
 
-    @OneToMany(mappedBy = "visita")
+    @ToString.Exclude
+    @OneToMany(mappedBy = "visita", fetch = FetchType.LAZY)
     private List<Call> chamadas;
 
     @NotEmpty(message = "Você deve informar a propriedade ou local do atendimento.")
@@ -41,7 +39,8 @@ public class Visita extends Auditable{
     @Column
     private  String municipio;
 
-    @ManyToMany
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Persona> produtores;
 
     private LocalDate dataDaVisita;

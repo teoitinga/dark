@@ -4,12 +4,14 @@ import com.jp.dark.dtos.CallDTO;
 import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.exceptions.ApiErrors;
+import com.jp.dark.exceptions.ParameterInvalidException;
 import com.jp.dark.exceptions.ServiceProvidedNotFoundException;
 import com.jp.dark.services.CallService;
 import com.jp.dark.services.VisitaService;
 import com.jp.dark.vos.AtividadesPrestadasVO;
 import com.jp.dark.vos.CallPesquisaVO;
 import com.jp.dark.vos.ServicosPrestadosVO;
+import com.jp.dark.vos.ServicosReportVO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -71,6 +73,11 @@ public class CallController {
     public CallDTOPost callFinalize(@PathVariable String id){
         return callService.finalize(id);
     }
+    @PutMapping("expirated/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CallDTOPost callExpirated(@PathVariable String id){
+        return callService.expirate(id);
+    }
     @PutMapping("update/{id}/{value}")
     @ResponseStatus(HttpStatus.OK)
     public CallDTOPost callUpdateValue(@PathVariable String id, @PathVariable BigDecimal value){
@@ -103,6 +110,19 @@ public class CallController {
     public Page<ServicosPrestadosVO> getServicos(Pageable pageRequest){
 
         return this.callService.getServicos(pageRequest);
+    }
+
+    @GetMapping("relatorioReport")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation("GET all servicos for report actual month")
+    public ServicosReportVO getServicos(@RequestParam String id, @RequestParam String mes){
+        try{
+
+            return this.callService.getServicosReport(Integer.parseInt(id), mes);
+
+        }catch (NumberFormatException e){
+            throw new ParameterInvalidException("Parametros incorretos ou não esperados");
+        }
     }
 
     @GetMapping("gerenciar")

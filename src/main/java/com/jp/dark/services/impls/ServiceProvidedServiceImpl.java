@@ -74,4 +74,14 @@ public class ServiceProvidedServiceImpl implements ServiceProvidedService {
                                             .collect(Collectors.toList());
         return dto;
     }
+
+    @Override
+    public List<ServiceProvidedDTO> findByServiceEslocs(String srv, String codEsloc) {
+
+        List<ServiceProvided> result = this.repository.findServicesByReferencyEsloc(srv, Integer.parseInt(codEsloc));
+        List<ServiceProvidedDTO> dto = result.stream()
+                                        .map(service->toServiceProvidedDTO(service))
+                                            .collect(Collectors.toList());
+        return dto;
+    }
 }

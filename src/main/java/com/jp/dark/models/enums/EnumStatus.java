@@ -9,7 +9,7 @@ public enum EnumStatus {
 
     INICIADA("iniciada"),
     FINALIZADA("finalizada"),
+    EXPIRADA("expirada"),
     CANCELADA("cancelada");
-
     private String description;
 }

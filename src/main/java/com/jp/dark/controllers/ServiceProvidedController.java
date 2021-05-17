@@ -47,4 +47,14 @@ public class ServiceProvidedController {
         return service.findByServiceContaining(srv);
     }
 
+    @GetMapping("{codEsloc}/{srv}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("Return a list of finding service")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "")
+    })
+    public List<ServiceProvidedDTO> findByService(@PathVariable String srv, @PathVariable String codEsloc){
+        return service.findByServiceEslocs(srv,  codEsloc);
+    }
+
 }

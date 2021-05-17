@@ -6,10 +6,7 @@ import com.jp.dark.dtos.CallDTOPost;
 import com.jp.dark.dtos.CallDTOView;
 import com.jp.dark.exceptions.CallNotFoundException;
 import com.jp.dark.exceptions.VisitaNotFoundException;
-import com.jp.dark.models.entities.Call;
-import com.jp.dark.models.entities.Persona;
-import com.jp.dark.models.entities.ServiceProvided;
-import com.jp.dark.models.entities.Visita;
+import com.jp.dark.models.entities.*;
 import com.jp.dark.models.enums.EnumStatus;
 import com.jp.dark.models.repository.CallRepository;
 import com.jp.dark.models.repository.PersonaRepository;
@@ -481,6 +478,7 @@ public class CallServiceImpl implements CallService {
         );
     }
 
+
     @Override
     public Page<ServicosPrestadosVO> getServicos(Pageable pageRequest) {
 
@@ -491,6 +489,62 @@ public class CallServiceImpl implements CallService {
         List<ServicosPrestadosVO> list = result.getContent().stream().map(data -> mapServicosPrestadosVO(data)).collect(Collectors.toList());
 
         return new PageImpl<>(list, pageRequest, result.getTotalElements());
+    }
+
+    @Override
+    public ServicosReportVO getServicosReport(int codEsloc, String mes) {
+
+        LocalDateTime inicio = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime fim = LocalDateTime.now();
+
+        String header_report = "Relatório mensal de serviços prestados";
+
+        int mesNumber = 0;
+
+        try{
+            mesNumber= Integer.parseInt(mes);
+        }catch (Exception e){
+            mesNumber = 0;
+        }
+
+        if(mesNumber>0 && mesNumber <= 12){
+            inicio = LocalDateTime.now().withDayOfMonth(1);
+            inicio = inicio.withMonth(mesNumber);
+
+            fim = LocalDateTime.now().withMonth(mesNumber);
+        }else {
+            header_report = "Relatório anual de serviços prestados";
+            inicio = LocalDateTime.now().withDayOfYear(1);
+        }
+
+
+
+        //buscando os dados no repositório
+        List<Object[]> result = this.repository.findCallsReportPorPeriodo(inicio, fim, codEsloc);
+
+        List<ServicoDetalheVO> list = result.stream().map(data -> mapServicoDetalheVO(data)).collect(Collectors.toList());
+
+        ServicosReportVO servicoReport = ServicosReportVO.builder()
+                .dataFinal(fim.format(config.formaterPatternddMMyyyy()))
+                .dataInicial(inicio.format(config.formaterPatternddMMyyyy()))
+                .build();
+
+        servicoReport.setRelatorio(header_report);
+        servicoReport.setServico(list);
+
+        return servicoReport;
+    }
+
+    private ServicoDetalheVO mapServicoDetalheVO(Object[] data) {
+        return ServicoDetalheVO.builder()
+                .servicoPrestado(data[0].toString())
+                .dataServico(data[1].toString())
+                .esloc(data[2].toString())
+                .municipio(data[3].toString())
+                .codChamada(data[4].toString())
+                .nomeBeneficiario(data[5].toString())
+                .nomeResponsavel(data[6].toString())
+                .build();
     }
 
     @Override
@@ -509,19 +563,33 @@ public class CallServiceImpl implements CallService {
             fim = LocalDate.now().withDayOfMonth(ultimoDia);
         }
 
+        //Obtendo o município do usuario
         String municipio = this.personaService.getMunicpioDoUsuario();
 
+        //Obtendo o Escritório do usuario
+        Escritorio eslocDoUsuario = this.personaService.getEslocDoUsuario();
+
+        //Executando consulta
         List<Visita> allServicesManager = this.visitaRepository.findAllServicesManagerInicioFim(inicio.atTime(0, 0), fim.atTime(23, 59));
+
         List<AtividadesPrestadasVO> list = allServicesManager.stream()
                 .map(data -> mapAtividadesPrestadasVO(data))
                 .collect(Collectors.toList());
 
-
         return list;
+    }
+
+    @Override
+    public CallDTOPost expirate(String id) {
+        Call call = this.repository.findById(id).orElseThrow(() -> new CallNotFoundException("Chamada de serviço não encontrada"));
+        call.setStatus(EnumStatus.EXPIRADA);
+        call = this.repository.save(call);
+        return this.toCallDTOPost(call);
     }
 
     private AtividadesPrestadasVO mapAtividadesPrestadasVO(Visita data) {
 
+        log.info(data.toString());
         List<AcaoPrestadaVO> acoes = data.getChamadas().stream()
                 .map(call -> mapAcaoPrestadaVO(call))
                 .collect(Collectors.toList());

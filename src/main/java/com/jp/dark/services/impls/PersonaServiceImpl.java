@@ -4,6 +4,7 @@ import com.jp.dark.dtos.*;
 import com.jp.dark.exceptions.PasswordInvalidException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.PersonaNotFoundException;
+import com.jp.dark.models.entities.Escritorio;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
@@ -84,6 +85,18 @@ public class PersonaServiceImpl implements PersonaService {
         Persona usuario = this.findByCpf(login);
 
         return usuario.getCidade();
+    }
+    @Override
+    public Escritorio getEslocDoUsuario() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Persona usr = (Persona) authentication.getPrincipal();
+
+        String login =  usr.getCpf();
+
+        Persona usuario = this.findByCpf(login);
+
+        return usuario.getEsloc();
     }
     @Override
     public String getCpfDoUsuario() {

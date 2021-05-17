@@ -1,6 +1,7 @@
 package com.jp.dark.services;
 
 import com.jp.dark.dtos.*;
+import com.jp.dark.models.entities.Escritorio;
 import com.jp.dark.models.entities.Persona;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface PersonaService {
     Persona toPersona(ProdutorMinDTO dto);
 
     String getMunicpioDoUsuario();
+
+    Escritorio getEslocDoUsuario();
 
     String getCpfDoUsuario();
 

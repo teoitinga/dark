@@ -17,4 +17,6 @@ public interface ServiceProvidedService {
     boolean serviceExists(String serviceProvidedCode);
 
     List<ServiceProvidedDTO> findByServiceContaining(String srv);
+
+    List<ServiceProvidedDTO> findByServiceEslocs(String srv, String codEsloc);
 }

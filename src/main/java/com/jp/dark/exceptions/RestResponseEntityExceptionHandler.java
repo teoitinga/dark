@@ -90,4 +90,22 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public ApiErrors handleCallNotFoundException(CallNotFoundException exception) {
         return new ApiErrors(exception.getMessage());
     }
+
+    @ExceptionHandler(EslocNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors EslocNotFoundException(EslocNotFound exception) {
+        return new ApiErrors(exception.getMessage());
+    }
+
+    @ExceptionHandler(ServiceOnEslocAlreadyException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors ServiceOnEslocAlreadyExceptionException(ServiceOnEslocAlreadyException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
+
+    @ExceptionHandler(NumberFormatException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors NumberFormatExceptionException(NumberFormatException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
 }

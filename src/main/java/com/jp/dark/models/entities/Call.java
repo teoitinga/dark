@@ -27,6 +27,7 @@ public class Call extends Auditable implements Cloneable {
     @Column
     private String servico;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="serviceProvided_id", referencedColumnName="codigo",nullable=false)
     private ServiceProvided serviceProvided;
@@ -44,6 +45,7 @@ public class Call extends Auditable implements Cloneable {
     @Column
     private BigDecimal valor;
 
+    @ToString.Exclude
     @ManyToOne(cascade = CascadeType.ALL)
     private Persona responsavel;
 

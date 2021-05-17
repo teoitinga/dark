@@ -2,10 +2,7 @@ package com.jp.dark.models.entities;
 
 import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
@@ -70,9 +67,44 @@ public class Persona implements UserDetails, Serializable {
     @Column(name = "isenabbled", columnDefinition = "boolean default true")
     private Boolean enabled;
 
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinTable(name="persona_escritorio",
+            joinColumns={
+                    @JoinColumn(name="persona_cpf", referencedColumnName="cpf")},
+            inverseJoinColumns={
+                    @JoinColumn(name="escritorio_codigo", referencedColumnName="codigo")})
+    private Escritorio esloc;
+
     public Persona(String cpf, String nome) {
         this.cpf = cpf;
         this.nome = nome;
+    }
+
+    public Persona(
+            String cpf,
+            String nome,
+            String telefone,
+            LocalDate nascimento,
+            String endereco,
+            String cep,
+            String cidade,
+            String senha,
+            EnumCategoria categoria,
+            EnumPermissao permissao,
+            boolean enabled
+            ) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.categoria = categoria;
+        this.telefone = telefone;
+        this.nascimento = nascimento;
+        this.endereco = endereco;
+        this.cidade = cidade;
+        this.cep = cep;
+        this.permissao = permissao;
+        this.senha = senha;
+        this.enabled = enabled;
     }
 
     @Override
@@ -108,5 +140,20 @@ public class Persona implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Persona persona = (Persona) o;
+
+        return cpf.equals(persona.cpf);
+    }
+
+    @Override
+    public int hashCode() {
+        return cpf.hashCode();
     }
 }

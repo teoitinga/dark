@@ -6,16 +6,24 @@ import com.jp.dark.models.enums.EnumCategoria;
 import com.jp.dark.models.enums.EnumPermissao;
 import com.jp.dark.models.enums.EnumSimNao;
 import com.jp.dark.models.repository.*;
+import com.jp.dark.services.EslocService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Component
+@Slf4j
 public class DataLoader {
+
+    public static final String CPF_MASTER = "04459471604";
 
     private final PersonaRepository personaRepository;
 
@@ -25,6 +33,11 @@ public class DataLoader {
     private PricesItemRepository pricesItemRepository;
 
     private PasswordEncoder passwordEncoder;
+    private EscritorioRepository escritorioRepository;
+    private EslocService eslocService;
+
+    Persona userMaster;
+    Escritorio escritorio;
 
     @Autowired
     public DataLoader(ServiceProvidedRepository serviceRepository,
@@ -32,6 +45,8 @@ public class DataLoader {
                       ItemProducaoRepository itemProducaoRepository,
                       OrigemRendaRepository origemRepository,
                       PricesItemRepository pricesItemRepository,
+                      EscritorioRepository escritorioRepository,
+                      EslocService eslocService,
                       PasswordEncoder passwordEncoder
     ) {
         this.passwordEncoder = passwordEncoder;
@@ -40,18 +55,55 @@ public class DataLoader {
         this.itemProducaoRepository = itemProducaoRepository;
         this.origemRepository = origemRepository;
         this.pricesItemRepository = pricesItemRepository;
+        this.escritorioRepository = escritorioRepository;
+        this.eslocService = eslocService;
 /*
+
+ */
         LoadServicesProvided();
         LoadUsers();
         LoadItensProducao();
+        LoadEscritorio();
 
- */
+        //atualizando tabelas produtores e escritorio
+        try{
+            this.escritorio.getPublico();
+            this.escritorio.addPersona(userMaster);
+            this.escritorioRepository.save(this.escritorio);
+        }catch (NullPointerException exc){
+
+        }
+
+    }
+
+    private void LoadEscritorio() {
+
+        this.userMaster = this.personaRepository.findByCpf(CPF_MASTER).get();
+
+        Optional<Escritorio> register = this.escritorioRepository.findAll().stream().findFirst();
+
+        if(!(register.isPresent())){
+
+            this.escritorio = new Escritorio(
+                    "Escritorio Local de Tarumirim",
+                    "tarumirim@emater.mg.gov.br",
+                    "Rua José Tonel, 56 - Centro - Tarumirim/MG",
+                    "(33) 3233-1530",
+                    "Tarumirim",
+                    "EMATER/MG - Esloc Tarumirim",
+                    "(33) 9 9906-5029"
+            );
+
+            this.escritorio = this.escritorioRepository.save(this.escritorio);
+        }
+
     }
 
     private void LoadUsers() {
         List<Persona> qtd = this.personaRepository.findAll();
         if(!(qtd.size()>0)){
-        this.personaRepository.save(new Persona("04459471604", "João Paulo Santana Gusmão", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
+
+            this.personaRepository.save(new Persona(CPF_MASTER, "João Paulo Santana Gusmão", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
                 "35140000","Itinga",this.passwordEncoder.encode("jacare"), EnumCategoria.UNDEFINED, EnumPermissao.TECNICO, true));
 
             this.personaRepository.save(new Persona("47767541002", "Sirlene Ferreira", "33999065029", LocalDate.of(1979,1,4),"Rua José Tonel, 56",
