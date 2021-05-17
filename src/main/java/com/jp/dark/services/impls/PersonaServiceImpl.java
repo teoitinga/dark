@@ -4,6 +4,7 @@ import com.jp.dark.dtos.*;
 import com.jp.dark.exceptions.PasswordInvalidException;
 import com.jp.dark.exceptions.PersonaAlreadyExistsException;
 import com.jp.dark.exceptions.PersonaNotFoundException;
+import com.jp.dark.exceptions.ProdutorNotFoundException;
 import com.jp.dark.models.entities.Escritorio;
 import com.jp.dark.models.entities.Persona;
 import com.jp.dark.models.enums.EnumCategoria;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -198,13 +200,13 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public Persona findByCpf(String cpfReponsavel) {
-        return repository.findByCpf(cpfReponsavel).orElseThrow(()->new PersonaNotFoundException());
+        return repository.findByCpf(cpfReponsavel).orElseThrow(()->new PersonaNotFoundException(cpfReponsavel));
     }
 
     @Override
     public UserDTO save(UserDTO dto) {
         if(this.personaExists(dto.getLogin())){
-            throw new PersonaAlreadyExistsException("Este usuário já existe!");
+            throw new PersonaAlreadyExistsException("Este usuário " +  dto.getName()+ "já existe!");
         }
 
         //criptografa a senha para registro no banco de dados
@@ -265,7 +267,12 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public ProdutorDTO findProdutorByCpf(String cpf) {
-        Persona persona = this.repository.findByCpf(cpf).orElseThrow(() -> new PersonaNotFoundException());
+        Persona persona = new Persona();
+        try{
+            persona = this.repository.findByCpf(cpf).orElseThrow(() -> new ProdutorNotFoundException(cpf));
+        }catch (ProdutorNotFoundException e){
+            return null;
+        }
         ProdutorDTO produtor = this.toProdutorDTO(persona);
         return produtor;
     }
@@ -274,7 +281,7 @@ public class PersonaServiceImpl implements PersonaService {
 
         Persona persona;
 
-        persona = this.repository.findByCpf(cpf).orElseThrow(() -> new PersonaNotFoundException());
+        persona = this.repository.findByCpf(cpf).orElseThrow(() -> new PersonaNotFoundException(cpf));
 
         //Configura os dados atuais
         persona = this.toPersona(dto);

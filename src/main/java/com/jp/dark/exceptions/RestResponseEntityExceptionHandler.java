@@ -108,4 +108,10 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public ApiErrors NumberFormatExceptionException(NumberFormatException exception) {
         return new ApiErrors(exception.getMessage());
     }
+
+    @ExceptionHandler(ProdutorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors ProdutorNotFoundException(ProdutorNotFoundException exception) {
+        return new ApiErrors(exception.getMessage());
+    }
 }

@@ -122,7 +122,7 @@ public class EslocServiceImpl implements EslocService {
         boolean exists = escritorio.getPublico().contains(persona);
 
         if(!exists){
-            throw new PersonaNotFoundException("Usuário não encontrado para este escritório!");
+            throw new PersonaNotFoundException(persona.getCpf());
         }
 
         //registra
