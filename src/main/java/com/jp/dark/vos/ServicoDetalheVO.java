@@ -24,6 +24,9 @@ public class ServicoDetalheVO  implements Serializable {
     @JsonProperty("escritorio")
     private String esloc;
 
+    @JsonProperty("codEscritorio")
+    private String codEsloc;
+
     @JsonProperty("municipio")
     private String municipio;
 

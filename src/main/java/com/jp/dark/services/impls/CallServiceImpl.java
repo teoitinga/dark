@@ -544,6 +544,7 @@ public class CallServiceImpl implements CallService {
                 .codChamada(data[4].toString())
                 .nomeBeneficiario(data[5].toString())
                 .nomeResponsavel(data[6].toString())
+                .codEsloc(data[7].toString())
                 .build();
     }
 

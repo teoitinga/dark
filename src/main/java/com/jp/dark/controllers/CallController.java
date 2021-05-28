@@ -115,10 +115,10 @@ public class CallController {
     @GetMapping("relatorioReport")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiOperation("GET all servicos for report actual month")
-    public ServicosReportVO getServicos(@RequestParam String id, @RequestParam String mes){
+    public ServicosReportVO getServicos(@RequestParam String esloc, @RequestParam String mes){
         try{
 
-            return this.callService.getServicosReport(Integer.parseInt(id), mes);
+            return this.callService.getServicosReport(Integer.parseInt(esloc), mes);
 
         }catch (NumberFormatException e){
             throw new ParameterInvalidException("Parametros incorretos ou não esperados");
