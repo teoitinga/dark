@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -482,8 +481,8 @@ public class CallServiceImpl implements CallService {
     @Override
     public Page<ServicosPrestadosVO> getServicos(Pageable pageRequest) {
 
-        LocalDateTime inicio = LocalDateTime.now().withDayOfMonth(1);
-        LocalDateTime fim = LocalDateTime.now();
+        LocalDateTime inicio = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime fim = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
 
         Page<Object[]> result = this.repository.findCallsPorPeriodo(inicio, fim, pageRequest);
         List<ServicosPrestadosVO> list = result.getContent().stream().map(data -> mapServicosPrestadosVO(data)).collect(Collectors.toList());
@@ -492,34 +491,55 @@ public class CallServiceImpl implements CallService {
     }
 
     @Override
-    public ServicosReportVO getServicosReport(int codEsloc, String mes) {
+    public ServicosReportVO getServicosReportMensal(int codEsloc, String mes) {
 
         LocalDateTime inicio = LocalDateTime.now().withDayOfMonth(1);
+
         LocalDateTime fim = LocalDateTime.now();
 
         String header_report = "Relatório mensal de serviços prestados";
 
         int mesNumber = 0;
 
-        try{
-            mesNumber= Integer.parseInt(mes);
-        }catch (Exception e){
+        try {
+            mesNumber = Integer.parseInt(mes);
+        } catch (Exception e) {
             mesNumber = 0;
         }
 
-        if(mesNumber>0 && mesNumber <= 12){
-            inicio = LocalDateTime.now().withDayOfMonth(1);
+        if (mesNumber > 0 && mesNumber <= 12) {
+
+            inicio = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
             inicio = inicio.withMonth(mesNumber);
 
-            fim = LocalDateTime.now().withMonth(mesNumber);
-        }else {
-            header_report = "Relatório anual de serviços prestados";
-            inicio = LocalDateTime.now().withDayOfYear(1);
+            fim = LocalDateTime.now().withMonth(mesNumber).withHour(23).withMinute(59).withSecond(59);
         }
 
-
-
         //buscando os dados no repositório
+        List<Object[]> result = this.repository.findCallsReportPorPeriodo(inicio, fim, codEsloc);
+
+        List<ServicoDetalheVO> list = result.stream().map(data -> mapServicoDetalheVO(data)).collect(Collectors.toList());
+
+        ServicosReportVO servicoReport = ServicosReportVO.builder()
+                .dataFinal(fim.format(config.formaterPatternddMMyyyy()))
+                .dataInicial(inicio.format(config.formaterPatternddMMyyyy()))
+                .build();
+
+        servicoReport.setRelatorio(header_report);
+        servicoReport.setServico(list);
+
+        return servicoReport;
+    }
+    @Override
+    public ServicosReportVO getServicosReportAnual(int codEsloc) {
+
+        LocalDateTime inicio = LocalDateTime.now().withMonth(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+
+        LocalDateTime fim = LocalDateTime.now().withMonth(12).withDayOfMonth(31).withHour(23).withMinute(59).withSecond(59);
+
+        String header_report = "Relatório anual de serviços prestados";
+
+         //buscando os dados no repositório
         List<Object[]> result = this.repository.findCallsReportPorPeriodo(inicio, fim, codEsloc);
 
         List<ServicoDetalheVO> list = result.stream().map(data -> mapServicoDetalheVO(data)).collect(Collectors.toList());
@@ -588,9 +608,92 @@ public class CallServiceImpl implements CallService {
         return this.toCallDTOPost(call);
     }
 
+    @Override
+    public ServicosReportVO getServicosByUserTodayReport() {
+        //obtem o usuario logado
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails) principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona usuario = this.personaService.findByCpf(nome);
+        //obtem a data atual
+
+        //////////////////////////////////////
+
+        LocalDateTime inicio = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime fim = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
+
+        String header_report = "Meus serviços de hoje";
+
+        //buscando os dados no repositório
+        List<Object[]> result = this.repository.findCallsReportPorPeriodoAndUsuario(inicio, fim, usuario);
+
+        List<ServicoDetalheVO> list = result.stream().map(data -> mapServicoDetalheVO(data)).collect(Collectors.toList());
+
+        ServicosReportVO servicoReport = ServicosReportVO.builder()
+                .dataFinal(fim.format(config.formaterPatternddMMyyyy()))
+                .dataInicial(inicio.format(config.formaterPatternddMMyyyy()))
+                .build();
+
+        servicoReport.setRelatorio(header_report);
+        servicoReport.setServico(list);
+
+        return servicoReport;
+
+
+    }
+
+    @Override
+    public ServicosReportVO getDiarioServicos(int parseInt) {
+
+        LocalDateTime inicio = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime fim = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
+
+        String header_report = "Serviços prestados hoje neste escritório";
+
+        //Recuperando o escritório no qual o usuário atual se encontra logado
+        int codEsloc;
+        //obtem o usuario logado
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails) principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona usuario = this.personaService.findByCpf(nome);
+
+        codEsloc = usuario.getEsloc().getCodigo();
+
+        //buscando os dados no repositório
+        List<Object[]> result = this.repository.findCallsReportPorPeriodo(inicio, fim, codEsloc);
+
+        List<ServicoDetalheVO> list = result.stream().map(data -> mapServicoDetalheVO(data)).collect(Collectors.toList());
+
+        ServicosReportVO servicoReport = ServicosReportVO.builder()
+                .dataFinal(fim.format(config.formaterPatternddMMyyyy()))
+                .dataInicial(inicio.format(config.formaterPatternddMMyyyy()))
+                .build();
+
+        servicoReport.setRelatorio(header_report);
+        servicoReport.setServico(list);
+
+        return servicoReport;
+    }
+
     private AtividadesPrestadasVO mapAtividadesPrestadasVO(Visita data) {
 
-        log.info(data.toString());
         List<AcaoPrestadaVO> acoes = data.getChamadas().stream()
                 .map(call -> mapAcaoPrestadaVO(call))
                 .collect(Collectors.toList());
@@ -650,13 +753,6 @@ public class CallServiceImpl implements CallService {
     }
 
 
-    /*
-        private ServicosPrestadosVO toServicosPrestadosVO(Call call) {
-            return ServicosPrestadosVO.builder()
-                    .cpfProdutor(call.getVisita().getProdutores())
-                    .build();
-        }
-    */
     private CallDTOView toCallDTOPostView(Call call) {
         String servicoQuitadoEm = null;
         try {

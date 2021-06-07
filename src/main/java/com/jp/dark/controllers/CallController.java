@@ -112,17 +112,47 @@ public class CallController {
         return this.callService.getServicos(pageRequest);
     }
 
-    @GetMapping("relatorioReport")
+    @GetMapping("relatorioReportMensal")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiOperation("GET all servicos for report actual month")
-    public ServicosReportVO getServicos(@RequestParam String esloc, @RequestParam String mes){
+    public ServicosReportVO getServicosMensais(@RequestParam String esloc, @RequestParam String mes){
         try{
 
-            return this.callService.getServicosReport(Integer.parseInt(esloc), mes);
+            return this.callService.getServicosReportMensal(Integer.parseInt(esloc), mes);
 
         }catch (NumberFormatException e){
             throw new ParameterInvalidException("Parametros incorretos ou não esperados");
         }
+    }
+    @GetMapping("relatorioReportAnual")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation("GET all servicos for report actual YEAR")
+    public ServicosReportVO getServicosAno(@RequestParam String esloc){
+        try{
+
+            return this.callService.getServicosReportAnual(Integer.parseInt(esloc));
+
+        }catch (NumberFormatException e){
+            throw new ParameterInvalidException("Parametros incorretos ou não esperados");
+        }
+    }
+    @GetMapping("relatorioDiario")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation("GET all servicos for report actual day")
+    public ServicosReportVO getDiarioServicos(@RequestParam String esloc){
+        try{
+
+            return this.callService.getDiarioServicos(Integer.parseInt(esloc));
+
+        }catch (NumberFormatException e){
+            throw new ParameterInvalidException("Parametros incorretos ou não esperados");
+        }
+    }
+    @GetMapping("relatorioReportUser")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation("GET all servicos for report actual day")
+    public ServicosReportVO getServicosByUserToday(){
+            return this.callService.getServicosByUserTodayReport();
     }
 
     @GetMapping("gerenciar")

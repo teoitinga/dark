@@ -63,9 +63,15 @@ public interface CallService {
 
     Page<ServicosPrestadosVO> getServicos(Pageable pageRequest);
 
-    ServicosReportVO getServicosReport(int codEsloc, String mes);
+    ServicosReportVO getServicosReportMensal(int codEsloc, String mes);
+
+    ServicosReportVO getServicosReportAnual(int codEsloc);
 
     List<AtividadesPrestadasVO> getAtividades(String dataInicial, String dataFinal);
 
     CallDTOPost expirate(String id);
+
+    ServicosReportVO getServicosByUserTodayReport();
+
+    ServicosReportVO getDiarioServicos(int parseInt);
 }

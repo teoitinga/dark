@@ -48,6 +48,20 @@ public interface CallRepository extends JpaRepository<Call, String> {
     )
     List<Object[]> findCallsReportPorPeriodo(LocalDateTime inicio, LocalDateTime fim, int codigoEsloc);
 
+    @Query(value = "SELECT s.referency, v.dataDaVisita, e.referency, e.municipio, c.codigo, p.nome, r.nome, e.codigo " +
+            "FROM Visita v " +
+            "LEFT JOIN v.chamadas c " +
+            "LEFT JOIN v.produtores p " +
+            "INNER JOIN c.serviceProvided s " +
+            "RIGHT JOIN s.esloc e " +
+            "INNER JOIN c.responsavel r " +
+            "WHERE " +
+            "(c.created BETWEEN :inicio AND :fim) " +
+            "AND (c.status = 'FINALIZADA') " +
+            "AND (c.responsavel = :usuario)"
+    )
+    List<Object[]> findCallsReportPorPeriodoAndUsuario(LocalDateTime inicio, LocalDateTime fim, Persona usuario);
+
     @Query(value = "SELECT " +
             "v.codigo, " +
             "v.localDoAtendimento, " +

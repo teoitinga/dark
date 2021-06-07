@@ -44,14 +44,14 @@ public class UserController {
     }
     @GetMapping("{login}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("GET a User datails")
+    @ApiOperation("GET a User details")
     public UserDTO details(@PathVariable String login){
         return service.getDetailsUser(login);
     }
 
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation("Find produtor by name containing")
+    @ApiOperation("Find User by name containing")
     @ApiResponses({@ApiResponse(code = 200, message = "OK")})
     public List<UserDTO> findByName(@PathVariable String name){
         return this.service.findUserByNameContaining(name);

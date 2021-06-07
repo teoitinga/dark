@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -259,8 +260,24 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public List<UserDTO> findUserByNameContaining(String name) {
+        //Buscando o usuario logado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String nome;
+
+        if (principal instanceof UserDetails) {
+            nome = ((UserDetails) principal).getUsername();
+        } else {
+            nome = principal.toString();
+        }
+
+        Persona responsavel = this.findByCpf(nome);
+
         EnumPermissao permissao = EnumPermissao.CLIENTES;
-        List<Persona> result = this.repository.findByNomeContainingIgnoreCaseAndPermissaoNot(name, permissao);
+        //List<Persona> result = this.repository.findByNomeContainingIgnoreCaseAndPermissaoNot(name, permissao);
+
+        int codEsloc = responsavel.getEsloc().getCodigo();
+        List<Persona> result = this.repository.findByNomeUserByEsloc(name, permissao, codEsloc);
         List<UserDTO> list = result.stream().map(entity->toUserDTO(entity)).collect(Collectors.toList());
         return list;
     }
@@ -342,8 +359,13 @@ public class PersonaServiceImpl implements PersonaService {
         //Converte LOGIN para CPF
         String cpf = login;
 
-        persona = toPersona(dto);
+        //persona = toPersona(dto);
+        //Atualiza os dados obtidos
         persona.setCpf(cpf);
+        persona.setSenha(dto.getPassword());
+        persona.setPermissao(EnumPermissao.valueOf(dto.getRole()));
+        persona.setCidade(dto.getMunicipio());
+
 
         Persona saved = this.repository.save(persona);
 
